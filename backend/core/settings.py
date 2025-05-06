@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     #APPS CREADAS
     'ventas',
     'clientes',
+    'productos',
 ]
 
 MIDDLEWARE = [
