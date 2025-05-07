@@ -1,4 +1,4 @@
-# 💼 Sistema de Boletas Electrónicas
+# 💼 Sistema de Automatización en Boletas Electrónicas enlazado a la SUNAT
 
 Proyecto final para la generación de boletas electrónicas con conexión a SUNAT.  
 Desarrollado con:
@@ -9,7 +9,7 @@ Este sistema permite escanear productos mediante código de barras y generar bol
 El proyecto está diseñado para ser escalable y organizado en 3 componentes principales:
 
 - 🐍 **Django** (Backend)
-- ⚡ **Angular + Tailwind** (Frontend)
+- ⚡ **Angular** (Frontend)
 - 🧾 **Greenter** (Facturación electrónica - SUNAT)
 - 📦 **En duda** (Base de datos)
 
@@ -37,4 +37,4 @@ El proyecto está diseñado para ser escalable y organizado en 3 componentes pri
     - ng serve
 
 4. 📌 Greenter (Libreria de PHP para la conexion directa con la SUNAT):  https://youtu.be/6eiZ4eZ801M?si=5wTLw_HnEZwZgh9b&t=370
-
+    

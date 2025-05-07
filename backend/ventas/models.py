@@ -8,8 +8,14 @@ class Venta(models.Model):
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     estado = models.CharField(max_length=20, choices=[('pendiente', 'Pendiente'), ('enviado', 'Enviado'), ('anulado', 'Anulado')])
 
+    def calcular_total(self):
+        total_venta = sum([detalle.total for detalle in self.detalles.all()])
+        self.total = total_venta
+        self.save()
+
     def __str__(self):
         return f"Venta {self.id} - {self.cliente.rzn_social}"
+
 
 class DetalleVenta(models.Model):
     venta = models.ForeignKey(Venta, related_name="detalles", on_delete=models.CASCADE)
