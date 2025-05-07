@@ -1,7 +1,0 @@
-{
-    "require": {
-        "greenter/core": "^1.3",
-        "greenter/xml": "^1.2",
-        "greenter/ws": "^1.0"
-    }
-}
