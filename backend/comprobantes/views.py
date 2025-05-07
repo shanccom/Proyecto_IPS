@@ -7,7 +7,6 @@ import requests
 import json
 import logging
 
-# Configurar logging
 logger = logging.getLogger(__name__)
 
 class ComprobanteViewSet(viewsets.ModelViewSet):
@@ -77,7 +76,6 @@ class ComprobanteViewSet(viewsets.ModelViewSet):
                     resp_json = response.json()
                     logger.info("Respuesta JSON: %s", resp_json)
 
-                    # Si la respuesta de SUNAT es exitosa
                     if resp_json.get("success"):
                         comprobante.estado_sunat = 'enviado'  
                         comprobante.save()  
