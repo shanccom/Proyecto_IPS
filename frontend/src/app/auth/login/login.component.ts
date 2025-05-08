@@ -18,7 +18,7 @@ export class LoginComponent {
   constructor(private router: Router) {}
 
   
-
+// usuario admin, pasword 1234
   login() {
     if (this.username === 'admin' && this.password === '1234') {
       this.router.navigate(['/dashboard']);
