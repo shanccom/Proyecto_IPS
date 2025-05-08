@@ -1,0 +1,32 @@
+<div class="comprobante-form">
+    <h2>Crear Comprobante</h2>
+  
+    <form (ngSubmit)="crearComprobante()">
+        <label for="tipo_comprobante">Tipo de Comprobante:</label>
+        <select id="tipo_comprobante" [(ngModel)]="tipoComprobante" name="tipo_comprobante">
+            <option value="01">Factura</option>
+            <option value="03">Boleta</option>
+        </select>
+  
+        <label for="serie">Serie:</label>
+        <input type="text" id="serie" [(ngModel)]="serie" name="serie" required />
+  
+        <label for="correlativo">Correlativo:</label>
+        <input type="text" id="correlativo" [(ngModel)]="correlativo" name="correlativo" required />
+  
+        <label for="estado_sunat">Estado SUNAT:</label>
+        <select id="estado_sunat" [(ngModel)]="estadoSunat" name="estado_sunat">
+            <option value="pendiente">Pendiente</option>
+            <option value="enviado">Enviado</option>
+            <option value="observado">Observado</option>
+            <option value="rechazado">Rechazado</option>
+        </select>
+  
+        <label for="fecha_emision">Fecha de Emisión:</label>
+        <input type="datetime-local" id="fecha_emision" [(ngModel)]="fechaEmision" name="fecha_emision" />
+  
+        <button type="submit">Guardar</button>
+
+    </form>
+  </div>
+  

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     #OTROS
     'rest_framework',
+    'corsheaders',
 
     #APPS CREADAS
     'ventas',
@@ -56,6 +57,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+     #añadido
+    'corsheaders.middleware.CorsMiddleware',
+]
+# cors
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:4205',  
 ]
 
 ROOT_URLCONF = 'core.urls'
