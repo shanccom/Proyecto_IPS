@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   username = '';
   password = '';
+  showPassword = false;
   errorMessage = '';
 
   constructor(private router: Router) {}
@@ -26,6 +27,9 @@ export class LoginComponent {
     } else {
       this.errorMessage = 'Usuario o contraseña incorrectos';
     }
+  }
+  togglePasswordVisibilidad(){
+    this.showPassword = !this.showPassword;
   }
 }
 

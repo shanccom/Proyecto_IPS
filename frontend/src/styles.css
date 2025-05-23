@@ -1,1 +1,23 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+    color-scheme: dark light;
+    --background-color: #121212; /* Fondo oscuro */
+    --text-color: #ffffff; /* Texto blanco */
+    --primary-color: #bb86fc; /* Color primario para enlaces, botones, etc */
+    --secondary-color: #03dac6; /* Otro color de acento */
+    --input-background: #333333; /* Fondo oscuro para inputs */
+    --input-border: #444444; /* Borde oscuro para inputs */
+    --button-background: #3700b3; /* Fondo morado para botones */
+    --button-hover: #6200ee; /* Fondo más claro para botones al pasar */
+}
+
+/* Aplica los colores globales al tema oscuro */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-color);
+}
