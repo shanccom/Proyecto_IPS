@@ -2,12 +2,8 @@
     color-scheme: dark light;
     --background-color: #121212; /* Fondo oscuro */
     --text-color: #ffffff; /* Texto blanco */
-    --primary-color: #bb86fc; /* Color primario para enlaces, botones, etc */
-    --secondary-color: #03dac6; /* Otro color de acento */
-    --input-background: #333333; /* Fondo oscuro para inputs */
-    --input-border: #444444; /* Borde oscuro para inputs */
-    --button-background: #3700b3; /* Fondo morado para botones */
-    --button-hover: #6200ee; /* Fondo más claro para botones al pasar */
+    --primary-color: #A7DCFF; /* Color primario para enlaces, botones, etc */
+
 }
 
 /* Aplica los colores globales al tema oscuro */
