@@ -1,36 +1,61 @@
-import { Component } from '@angular/core';
-import { NavigationEnd, Router }from '@angular/router'
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { PageTitleService } from '../services/page-title.service';  // Importar el servicio
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-topbar',
-  imports: [],
   templateUrl: './topbar.component.html',
-  styleUrl: './topbar.component.css'
+  styleUrls: ['./topbar.component.css']
 })
-export class TopbarComponent {
-  pageTitle = "";
+export class TopbarComponent implements OnInit, OnDestroy {
+  pageTitle: string = ''; 
 
-  constructor(private router: Router){}
+  routerSubscription: Subscription | null = null;
+
+  constructor(
+    private router: Router,
+    private pageTitleService: PageTitleService  // Inyectar el servicio
+  ) {}
 
   ngOnInit(): void {
+    // Al iniciar, obtener el valor del título desde el servicio
+    this.pageTitle = this.pageTitleService.getTitle();
     this.actuTitulo();
   }
 
   actuTitulo(): void {
-    this.router.events.subscribe(event =>{
-      if (event instanceof NavigationEnd){ //verificar ssi la navegacion ya terminoy la url esta activa
+    this.routerSubscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
         const path = this.router.url;
-        if(path.includes('dashboard')) this.pageTitle = 'Dashboard';
-        else if (path.includes('inventario')) this.pageTitle = 'Inventario';
-        else if (path.includes('codBarras')) this.pageTitle = 'Códigos de Barras';
-        else if (path.includes('ventas')) this.pageTitle = 'Ventas';
-        else if (path.includes('histVent')) this.pageTitle = 'Historial de Ventas';
-        else if (path.includes('informe')) this.pageTitle = 'Informes';
-        else this.pageTitle = '';
 
+        // Actualizar el título en el servicio según la ruta
+        if (path.includes('dashboard')) {
+          this.pageTitleService.setTitle('Dashboard');
+        } else if (path.includes('inventario')) {
+          this.pageTitleService.setTitle('Inventario');
+        } else if (path.includes('codBarras')) {
+          this.pageTitleService.setTitle('Códigos de Barras');
+        } else if (path.includes('ventas')) {
+          this.pageTitleService.setTitle('Ventas');
+        } else if (path.includes('histVent')) {
+          this.pageTitleService.setTitle('Historial de Ventas');
+        } else if (path.includes('informe')) {
+          this.pageTitleService.setTitle('Informes');
+        } else {
+          this.pageTitleService.setTitle('');
+        }
+
+        // Actualizar la propiedad local `pageTitle` con el valor del servicio
+        this.pageTitle = this.pageTitleService.getTitle();
       }
-
     });
   }
 
+  ngOnDestroy(): void {
+    // Desuscribirse para evitar posibles fugas de memoria
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+  }
 }
