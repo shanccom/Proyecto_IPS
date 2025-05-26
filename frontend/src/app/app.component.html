@@ -4,7 +4,7 @@
 
   <main class="main-content">
     <div class="top">
-      <app-topbar *ngIf="showLayout"></app-topbar>
+      <app-topbar [ngClass]="{'hidden': !showLayout}"></app-topbar>
     </div>
     <div class="down">
       <router-outlet/>
