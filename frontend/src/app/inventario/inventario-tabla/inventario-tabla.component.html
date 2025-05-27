@@ -1,0 +1,27 @@
+<table class="tabla-productos">
+  <thead>
+    <tr>
+      <th>Código</th>
+      <th>Marca</th>
+      <th>Material</th>
+      <th>Color</th>
+      <th>Precio</th>
+      <th>Estado</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let producto of productos">
+      <td>{{ producto.codigo }}</td>
+      <td>{{ producto.marca }}</td>
+      <td>{{ producto.material }}</td>
+      <td>{{ producto.color }}</td>
+      <td>{{ producto.precio | currency:'PEN' }}</td>
+      <td>{{ producto.estado }}</td>
+      <td>
+        <button (click)="onEditar(producto)">Editar</button>
+        <button (click)="onEliminar(producto.codigo)">Eliminar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
