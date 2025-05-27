@@ -1,0 +1,41 @@
+<div class="comprobante-form">
+    <h2>Crear Comprobante</h2>
+  
+    <form (ngSubmit)="crearComprobante()">
+        <label for="tipo_comprobante">Tipo de Comprobante:</label>
+        <select id="tipo_comprobante" [(ngModel)]="tipoComprobante" name="tipo_comprobante">
+            <option value="01">Factura</option>
+            <option value="03">Boleta</option>
+        </select>
+  
+        <label for="serie">Serie:</label>
+        <input type="text" id="serie" [(ngModel)]="serie" name="serie" required />
+
+        <label for="estado_sunat">Estado SUNAT:</label>
+        <select id="estado_sunat" [(ngModel)]="estadoSunat" name="estado_sunat">
+            <option value="pendiente">Pendiente</option>
+            <option value="enviado">Enviado</option>
+            <option value="observado">Observado</option>
+            <option value="rechazado">Rechazado</option>
+        </select>
+
+        <div *ngFor="let item of items; let i = index">
+            <label>Tipo de Producto:</label>
+            <input [(ngModel)]="item.tipo_producto" name="tipoProducto{{i}}" required />
+            <label>Código:</label>
+            <input [(ngModel)]="item.producto_accesorio.codigo" name="codigo{{i}}" required />
+            <label>Descripción:</label>
+            <input [(ngModel)]="item.producto_accesorio.descripcion" name="descripcion{{i}}" required />
+            <label>Cantidad:</label>
+            <input type="number" [(ngModel)]="item.cantidad" name="cantidad{{i}}" required />
+            <label>Precio Unitario:</label>
+            <input type="number" [(ngModel)]="item.precio_unitario" name="precioUnitario{{i}}" required />
+            <button type="button" (click)="eliminarItem(i)">Eliminar</button>
+        </div>
+
+
+        <button type="submit">Guardar</button>
+
+    </form>
+  </div>
+  
