@@ -1,0 +1,38 @@
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+</head>
+
+
+
+<div class="login-container">
+    <h2>Iniciar Sesión</h2> 
+    <form (ngSubmit)="login()">
+      <div class="input-group">
+        <label>Nombre de Usuario</label>
+        <input type="text" [(ngModel)]="username" name="username" placeholder="Ingresa tu usuario"  required />
+      </div>
+      <div class="input-group">
+        <label>Contraseña</label>
+        <div class="password-container">
+          <input 
+            [type]="showPassword ? 'text': 'password'" 
+            [(ngModel)]="password" 
+            name="password" 
+            placeholder="Ingresa tu contraseña" 
+            required />
+          <i 
+            class="bx" 
+            [ngClass]="showPassword ? 'bx-eye': 'bx-eye-slash'" 
+            (click)="togglePasswordVisibilidad()"
+            style="cursor: pointer;"
+          ></i>
+        </div>
+      </div>
+      <button type="submit">Ingresar</button>
+    </form>
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  </div>
+  

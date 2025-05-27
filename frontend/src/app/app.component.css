@@ -1,0 +1,18 @@
+.app-container {
+  display: flex;
+}
+.main-content {
+  flex: 1;
+  padding: 20px;
+  margin-left: 140px;
+}
+.top{
+  
+}
+.down{
+  margin-top: 50px;
+}
+
+.hidden {
+  display: none;
+}
