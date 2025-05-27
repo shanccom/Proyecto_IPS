@@ -1,15 +1,21 @@
-.input-group {
-  margin-bottom: 20px;
+body, html {
+  height: 100%;
+  margin: 0;
 }
 
 .login-container {
   width: 100%;
   max-width: 500px;  
-  margin: 50px auto;
+  margin: 0 auto; 
   padding: 60px;
   border-radius: 20px;
   background-color: #292C2D;
-  box-sizing: border-box;/*el padding no afecta el tamaño total*/
+  box-sizing: border-box;
+  position: absolute; 
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Lo centra realmente */
+  box-shadow: 0 4px 6px rgba(0, 191, 255, 0.1), 0 1px 3px rgba(255, 251, 251, 0.08);
 }
 .login-container h2 {
   text-align: center;
