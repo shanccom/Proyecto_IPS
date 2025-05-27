@@ -30,7 +30,7 @@ export class TopbarComponent implements OnInit, OnDestroy {
         const path = this.router.url;
 
         // Actualizar el título en el servicio según la ruta
-        if (path.includes('dashboard')) {
+        if (path.includes('Dashboard')) {
           this.pageTitleService.setTitle('Dashboard');
         } else if (path.includes('inventario')) {
           this.pageTitleService.setTitle('Inventario');
