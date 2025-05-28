@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { InventarioFiltrosComponent } from './inventario-filtros/inventario-filtros.component'
 import { InventarioTablaComponent } from './inventario-tabla/inventario-tabla.component';
+import { InventarioService } from '../services/inventario.service';
 
 @Component({
   selector: 'app-inventario',
@@ -8,14 +9,27 @@ import { InventarioTablaComponent } from './inventario-tabla/inventario-tabla.co
   templateUrl: './inventario.component.html',
   styleUrl: './inventario.component.css'
 })
-export class InventarioComponent {
+export class InventarioComponent implements OnInit {
   // corregir
+  productos: any[] =[];
+  /*
   productos = [
     { codigo: 'P001', marca: 'Marca A', material: 'Madera', color: 'Rojo', precio: 100, estado: 'Disponible' },
     { codigo: 'P002', marca: 'Marca B', material: 'Plástico', color: 'Verde', precio: 150, estado: 'Vendido' },
     { codigo: 'P003', marca: 'Marca C', material: 'Metal', color: 'Azul', precio: 200, estado: 'Disponible' },
     
-  ];
+  ];*/
+  constructor(private inventarioService: InventarioService) {}
+
+  ngOnInit(): void {
+    
+   this.inventarioService.obtenerProductos().subscribe(data => {
+      console.log('Datos recibidos desde el backend:', data);  // Aquí vemos los datos que estamos recibiendo
+      this.productos = data;
+    }, (error) => {
+      console.error('Error al obtener productos:', error);
+    });
+  }
 
   productosFiltrados = [...this.productos];
 
