@@ -4,7 +4,11 @@
         <div class="p-10 pl-[300px] pr-[80px]">
             <div class="bg-[#292C2D] h-full rounded-[5%]">
                 <div class="p-8">
-                    <p class="text-xl  font-poppins">1. Agrega Productos</p>
+                    <p class="text-[15px]  font-poppins">1. Agrega Productos</p>
+                    <app-scanner (scanned)="handleScan($event)"></app-scanner>
+
+                    <p class="text-[15px] font-poppins pt-2">2. Agrega Clinte</p>
+
                 </div>
             </div>
         </div>
