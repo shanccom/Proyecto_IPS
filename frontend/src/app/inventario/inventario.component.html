@@ -3,10 +3,13 @@
     (filtrosAplicados)="aplicarFiltros($event)"
     (reset)="resetFiltros()">
   </app-inventario-filtros>
-
   <app-inventario-tabla
     [productos]="productosFiltrados"
     (editar)="editar($event)"
     (eliminar)="eliminar($event)">
   </app-inventario-tabla>
+  <!-- 
+  <app-inventario-tabla [productos]="productos"></app-inventario-tabla>
+-->
+  
 </div>

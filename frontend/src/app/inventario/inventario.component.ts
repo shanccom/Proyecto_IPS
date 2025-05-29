@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { InventarioFiltrosComponent } from './inventario-filtros/inventario-filtros.component'
 import { InventarioTablaComponent } from './inventario-tabla/inventario-tabla.component';
+import { InventarioService } from '../services/inventario.service';
 
 @Component({
   selector: 'app-inventario',
@@ -8,18 +9,30 @@ import { InventarioTablaComponent } from './inventario-tabla/inventario-tabla.co
   templateUrl: './inventario.component.html',
   styleUrl: './inventario.component.css'
 })
-export class InventarioComponent {
-  // corregir
-  productos = [
-    { codigo: 'P001', marca: 'Marca A', material: 'Madera', color: 'Rojo', precio: 100, estado: 'Disponible' },
-    { codigo: 'P002', marca: 'Marca B', material: 'Plástico', color: 'Verde', precio: 150, estado: 'Vendido' },
-    { codigo: 'P003', marca: 'Marca C', material: 'Metal', color: 'Azul', precio: 200, estado: 'Disponible' },
-    
-  ];
+export class InventarioComponent implements OnInit {
+  
+  productos: any[] = [];
+  productosFiltrados: any[] = [];
+  
+  constructor(private inventarioService: InventarioService) {}
 
-  productosFiltrados = [...this.productos];
+  ngOnInit(): void {
+    this.inventarioService.obtenerProductos().subscribe(
+      (data) => {
+        console.log('Datos recibidos desde el backend:', data);
+        this.productos = data;
+        this.productosFiltrados = [...data];
+      },
+      (error) => {
+        console.error('Error al obtener productos:', error);
+      }
+    );
+  }
 
+
+  // Filtros
   filtros = {
+    tipo: '',
     marca: '',
     material: '',
     color: '',
@@ -28,22 +41,25 @@ export class InventarioComponent {
   };
 
 // Métodos
+   // Aplicar filtros
   aplicarFiltros(filtrosAplicados: any) {
     this.filtros = { ...this.filtros, ...filtrosAplicados };
+
     this.productosFiltrados = this.productos.filter(producto => {
       return (
-        (this.filtros.marca ? producto.marca.includes(this.filtros.marca) : true) &&
-        (this.filtros.material ? producto.material.includes(this.filtros.material) : true) &&
-        (this.filtros.color ? producto.color.includes(this.filtros.color) : true) &&
-        (this.filtros.precio.min !== null ? producto.precio >= this.filtros.precio.min : true) &&
-        (this.filtros.precio.max !== null ? producto.precio <= this.filtros.precio.max : true) &&
-        (this.filtros.estado ? producto.estado === this.filtros.estado : true)
+        (this.filtros.tipo ? producto.tipo.includes(this.filtros.tipo) : true) &&  // Filtra por tipo
+        (this.filtros.marca ? producto.marca.includes(this.filtros.marca) : true) &&  // Filtra por marca
+        (this.filtros.material ? producto.material.includes(this.filtros.material) : true) &&  // Filtra por material
+        (this.filtros.color ? producto.color.includes(this.filtros.color) : true) &&  // Filtra por color
+        (this.filtros.precio.min !== null ? producto.proCosto >= this.filtros.precio.min : true) &&  // Filtra por precio mínimo
+        (this.filtros.precio.max !== null ? producto.proPrecioVenta <= this.filtros.precio.max : true) &&  // Filtra por precio máximo
+        (this.filtros.estado ? producto.estado === this.filtros.estado : true)  // Filtra por estado
       );
     });
   }
-
   resetFiltros() {
     this.filtros = {
+      tipo: '',
       marca: '',
       material: '',
       color: '',
