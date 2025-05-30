@@ -30,14 +30,13 @@ export class InventarioComponent implements OnInit {
   }
 
 
-  // Filtros
   filtros = {
-    tipo: '',
-    marca: '',
-    material: '',
-    color: '',
-    precio: { min: null, max: null },
-    estado: ''
+    tipo: [] as string[],
+    marca: [] as string[],
+    material: [] as string[],
+    color: [] as string[],
+    precio: { min: null as number | null, max: null as number | null },
+    estado: [] as string[]
   };
 
 // Métodos
@@ -47,29 +46,30 @@ export class InventarioComponent implements OnInit {
 
     this.productosFiltrados = this.productos.filter(producto => {
       return (
-        (this.filtros.tipo ? producto.tipo.includes(this.filtros.tipo) : true) &&  // Filtra por tipo
-        (this.filtros.marca ? producto.marca.includes(this.filtros.marca) : true) &&  // Filtra por marca
-        (this.filtros.material ? producto.material.includes(this.filtros.material) : true) &&  // Filtra por material
-        (this.filtros.color ? producto.color.includes(this.filtros.color) : true) &&  // Filtra por color
-        (this.filtros.precio.min !== null ? producto.proCosto >= this.filtros.precio.min : true) &&  // Filtra por precio mínimo
-        (this.filtros.precio.max !== null ? producto.proPrecioVenta <= this.filtros.precio.max : true) &&  // Filtra por precio máximo
-        (this.filtros.estado ? producto.estado === this.filtros.estado : true)  // Filtra por estado
+        (this.filtros.tipo.length === 0 || this.filtros.tipo.includes(producto.tipo)) &&
+        (this.filtros.marca.length === 0 || this.filtros.marca.includes(producto.marca)) &&
+        (this.filtros.material.length === 0 || this.filtros.material.includes(producto.material)) &&
+        (this.filtros.color.length === 0 || this.filtros.color.includes(producto.color)) &&
+        (this.filtros.precio.min === null || producto.proCosto >= this.filtros.precio.min) &&
+        (this.filtros.precio.max === null || producto.proPrecioVenta <= this.filtros.precio.max) &&
+        (this.filtros.estado.length === 0 || this.filtros.estado.includes(producto.estado))
       );
     });
   }
+
   resetFiltros() {
     this.filtros = {
-      tipo: '',
-      marca: '',
-      material: '',
-      color: '',
+      tipo: [],
+      marca: [],
+      material: [],
+      color: [],
       precio: { min: null, max: null },
-      estado: ''
+      estado: []
     };
     this.productosFiltrados = [...this.productos];
   }
 
-  
+    
   editar(producto: any) {
     console.log('Editar producto:', producto);
   }
