@@ -1,34 +1,38 @@
-<form (ngSubmit)="aplicar()">
-  <select [(ngModel)]="tipo" name="tipo">
-    <option value="">Tipo</option>
-    <option>San Fernando</option>
-    <option>Otra Marca</option>
-  </select>
+<div>
+  <div *ngFor="let campo of campos" class="relative">
+    <button
+      class="boton-filtro"
+      (click)="toggleDesplegable(campo)">
+      {{ campo | titlecase }}
+    </button>
 
-  <select [(ngModel)]="marca" name="marca">
-    <option value="">Marca</option>
-    <option>San Fernando</option>
-    <option>Otra Marca</option>
-  </select>
+    <div
+      *ngIf="desplegar[campo]"
+      class="menu-desplegable">
+      <label
+        *ngFor="let opcion of opcionesFiltros[campo]"
+        class="opcion-filtro">
+        <input
+          type="checkbox"
+          class="checkbox-filtro"
+          [checked]="seleccionados[campo].includes(opcion)"
+          (change)="toggleSeleccion(campo, opcion)"
+        />
+        <span>{{ opcion }}</span>
+      </label>
+    </div>
+  </div>
 
-  <select [(ngModel)]="material" name="material">
-    <option value="">Material</option>
-    <option>Plástico</option>
-    <option>Metal</option>
-  </select>
-
-  <select [(ngModel)]="color" name="color">
-    <option value="">Color</option>
-    <option>Rojo</option>
-    <option>Azul</option>
-  </select>
-
-  <select [(ngModel)]="estado" name="estado">
-    <option value="">Estado</option>
-    <option>Vendido</option>
-    <option>No vendido</option>
-  </select>
-
-  <button type="submit">Aplicar</button>
-  <button type="button" (click)="limpiarFiltros()">Resetear Filtros</button>
-</form>
+  <div class="botones">
+    <button
+      class="boton-aplicar"
+      (click)="aplicar()">
+      Aplicar
+    </button>
+    <button
+      class="boton-limpiar"
+      (click)="limpiar()">
+      Limpiar
+    </button>
+  </div>
+</div>
