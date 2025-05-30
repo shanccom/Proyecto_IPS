@@ -4,6 +4,7 @@ from .models import Montura, Luna, Accesorio
 
 class MonturaSerializer(serializers.ModelSerializer):
     codigo = serializers.CharField(source='proCod')
+    nombre = serializers.CharField(source='proNombre')
     tipo = serializers.CharField(source='proTipo')
     marca = serializers.CharField(source='monMarca')
     material = serializers.CharField(source='monMate')
@@ -13,11 +14,12 @@ class MonturaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Montura
-        fields = ['codigo', 'tipo', 'marca', 'material', 'color', 'precio', 'estado']
+        fields = ['codigo','nombre', 'tipo', 'marca', 'material', 'color', 'precio', 'estado']
 
 
 class LunaSerializer(serializers.ModelSerializer):
     codigo = serializers.CharField(source='proCod')
+    nombre = serializers.CharField(source='proNombre')
     tipo = serializers.CharField(source='proTipo')  
     material = serializers.CharField(source='lunaMat')
     color = serializers.CharField(source='lunaColorHalo', default="--")
@@ -26,11 +28,12 @@ class LunaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Luna
-        fields = ['codigo', 'tipo', 'material', 'color', 'precio', 'estado']
+        fields = ['codigo','nombre', 'tipo', 'material', 'color', 'precio', 'estado']
 
 
 class AccesorioSerializer(serializers.ModelSerializer):
     codigo = serializers.CharField(source='proCod')
+    nombre = serializers.CharField(source='proNombre')
     tipo = serializers.CharField(source='proTipo') 
     material = serializers.CharField(default="--")
     color = serializers.CharField(default="--")
@@ -40,4 +43,4 @@ class AccesorioSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Accesorio
-        fields = ['codigo', 'tipo', 'material', 'color', 'precio', 'estado', 'descripcion']
+        fields = ['codigo','nombre', 'tipo', 'material', 'color', 'precio', 'estado', 'descripcion']
