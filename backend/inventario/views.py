@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Montura, Luna, Accesorio
 from .serializers import MonturaSerializer, LunaSerializer, AccesorioSerializer
+from rest_framework.decorators import api_view
 # Create your views here.
 
 class ProductosView(APIView):

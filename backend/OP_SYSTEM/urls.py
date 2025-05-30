@@ -17,9 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from inventario.views import ProductosView
+from inventario.views import obtener_opciones_filtros
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('productos/', ProductosView.as_view(), name='productos'),
-    path('productos/filtros/', views.obtener_opciones_filtros),
+    path('productos/filtros/',obtener_opciones_filtros),
 ]
