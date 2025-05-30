@@ -21,4 +21,5 @@ from inventario.views import ProductosView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('productos/', ProductosView.as_view(), name='productos'),
+    path('productos/filtros/', views.obtener_opciones_filtros),
 ]

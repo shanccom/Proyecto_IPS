@@ -1,1 +1,34 @@
-<p>inventario-filtros works!</p>
+<form (ngSubmit)="aplicar()">
+  <select [(ngModel)]="tipo" name="tipo">
+    <option value="">Tipo</option>
+    <option>San Fernando</option>
+    <option>Otra Marca</option>
+  </select>
+
+  <select [(ngModel)]="marca" name="marca">
+    <option value="">Marca</option>
+    <option>San Fernando</option>
+    <option>Otra Marca</option>
+  </select>
+
+  <select [(ngModel)]="material" name="material">
+    <option value="">Material</option>
+    <option>Plástico</option>
+    <option>Metal</option>
+  </select>
+
+  <select [(ngModel)]="color" name="color">
+    <option value="">Color</option>
+    <option>Rojo</option>
+    <option>Azul</option>
+  </select>
+
+  <select [(ngModel)]="estado" name="estado">
+    <option value="">Estado</option>
+    <option>Vendido</option>
+    <option>No vendido</option>
+  </select>
+
+  <button type="submit">Aplicar</button>
+  <button type="button" (click)="limpiarFiltros()">Resetear Filtros</button>
+</form>
