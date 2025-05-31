@@ -2,18 +2,27 @@ from django.db import models
 from cliente.models import Cliente
 from django.utils import timezone
 from inventario.models import Montura, Luna, Accesorio
+from django.contrib.auth.models import BaseUserManager
+from rest_framework.authtoken.models import Token
 
 class Empleado(models.Model):
     CONDICION_EMPLEADO= [
         ('Activo', 'activo'),
         ('Inactivo', 'inactivo'),
     ]
+    CARGO= [
+        ('Gerente', 'Gerente'),
+        ('Colaborador', 'Colaborador'),
+    ]
     emplCod = models.AutoField(primary_key = True)
     emplNom = models.CharField(max_length = 50)
-    emplCarg = models.CharField(max_length = 20)
-    empUsua = models.CharField(max_length = 40)
-    empContr = models.CharField(max_length = 8)
+    emplCarg = models.CharField(max_length = 20, choices=CARGO)
     empCond = models.CharField(choices = CONDICION_EMPLEADO)
+    
+    def __str__(self):
+        return str( self.emplCod) + " " + str( self.emplNom) + " " + str( self.emplCargo)
+
+
     
 class Venta(models.Model):
     TIPO_PAGO = [
