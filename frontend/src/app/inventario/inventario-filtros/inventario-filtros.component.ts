@@ -2,12 +2,13 @@ import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InventarioService } from '../../services/inventario.service';
+import { HttpClientModule } from '@angular/common/http';
 
 type CampoFiltro = 'tipo' | 'marca' | 'material' | 'color' | 'estado';
 
 @Component({
   selector: 'app-inventario-filtros',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,HttpClientModule],
   templateUrl: './inventario-filtros.component.html',
   styleUrl: './inventario-filtros.component.css'
 })
