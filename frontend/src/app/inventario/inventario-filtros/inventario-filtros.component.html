@@ -1,38 +1,44 @@
-<div>
-  <div *ngFor="let campo of campos" class="relative">
-    <button
-      class="boton-filtro"
-      (click)="toggleDesplegable(campo)">
-      {{ campo | titlecase }}
-    </button>
 
-    <div
-      *ngIf="desplegar[campo]"
-      class="menu-desplegable">
-      <label
-        *ngFor="let opcion of opcionesFiltros[campo]"
-        class="opcion-filtro">
-        <input
-          type="checkbox"
-          class="checkbox-filtro"
-          [checked]="seleccionados[campo].includes(opcion)"
-          (change)="toggleSeleccion(campo, opcion)"
-        />
-        <span>{{ opcion }}</span>
-      </label>
+<div class="flex flex-wrap items-start gap-4 p-4 bg-[#292C2D] rounded-xl shadow" style="margin-left: 80px;">
+    <div *ngFor="let campo of campos" class="relative">
+        <div class="text-sm font-medium mb-2">
+            {{ campo | titlecase }}
+        </div>
+        <button
+            class="w-40 bg-[#3D4142] border border-[#313131] rounded-lg px-4 py-2 shadow-sm hover:bg-[#313131] focus:outline-none text-left text-[#B1B1B1] font-medium "
+            (click)="toggleDesplegable(campo)">
+            <span>Selecciona</span>
+        </button>
+
+        <div
+            *ngIf="desplegar[campo]"
+            class="absolute z-10 mt-2 w-40 bg-[#373737]  border border-[#313131] rounded-lg shadow-lg p-3 max-h-60 overflow-y-auto"
+        >
+        <label
+            *ngFor="let opcion of opcionesFiltros[campo]"
+            class="flex items-center space-x-2 py-1 text-sm"
+        >
+            <input
+            type="checkbox"
+            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            [checked]="seleccionados[campo].includes(opcion)"
+            (change)="toggleSeleccion(campo, opcion)"
+            />
+            <span>{{ opcion }}</span>
+        </label>
+        </div>
     </div>
-  </div>
 
-  <div class="botones">
-    <button
-      class="boton-aplicar"
-      (click)="aplicar()">
-      Aplicar
-    </button>
-    <button
-      class="boton-limpiar"
-      (click)="limpiar()">
-      Limpiar
-    </button>
-  </div>
+    <div class="ml-auto flex gap-2 mt-4">
+        <button
+            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+            (click)="aplicar()">
+            Aplicar
+        </button>
+        <button
+            class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400 transition"
+            (click)="limpiar()">
+            Limpiar
+        </button>
+    </div>
 </div>
