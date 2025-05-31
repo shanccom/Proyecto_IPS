@@ -30,42 +30,53 @@ export class InventarioComponent implements OnInit {
   }
 
 
-  filtros = {
-    tipo: [] as string[],
-    marca: [] as string[],
-    material: [] as string[],
-    color: [] as string[],
-    precio: { min: null as number | null, max: null as number | null },
-    estado: [] as string[]
+  filtros: any = {
+    tipo: [],
+    marca: [],
+    material: [],
+    color: [],
+    estado: [],
+    precio: { min: null, max: null }
   };
 
 // Métodos
    // Aplicar filtros
   aplicarFiltros(filtrosAplicados: any) {
-    this.filtros = { ...this.filtros, ...filtrosAplicados };
+    // Convertimos el filtro de tipo a minúsculas
+    const tiposFiltro = (filtrosAplicados.tipo || []).map((v: string) => v.toLowerCase());
+    const marcaFiltro = (filtrosAplicados.marca || []).map((v: string) => v.toLowerCase());
+    const materialFiltro = (filtrosAplicados.material || []).map((v: string) => v.toLowerCase());
+    const colorFiltro = (filtrosAplicados.color || []).map((v: string) => v.toLowerCase());
+    
 
+    console.log('Filtros recibidos:', tiposFiltro);
     this.productosFiltrados = this.productos.filter(producto => {
-      return (
-        (this.filtros.tipo.length === 0 || this.filtros.tipo.includes(producto.tipo)) &&
-        (this.filtros.marca.length === 0 || this.filtros.marca.includes(producto.marca)) &&
-        (this.filtros.material.length === 0 || this.filtros.material.includes(producto.material)) &&
-        (this.filtros.color.length === 0 || this.filtros.color.includes(producto.color)) &&
-        (this.filtros.precio.min === null || producto.proCosto >= this.filtros.precio.min) &&
-        (this.filtros.precio.max === null || producto.proPrecioVenta <= this.filtros.precio.max) &&
-        (this.filtros.estado.length === 0 || this.filtros.estado.includes(producto.estado))
-      );
+      const tipoProducto = (producto.tipo || '').toLowerCase();
+      const marcaProducto = (producto.marca || '').toLowerCase();
+      const materialProducto = (producto.material || '').toLowerCase();
+      const colorProducto = (producto.color || '').toLowerCase();
+      const precio = producto.proPrecioVenta ?? 0;
+
+
+      const tipoPasa = tiposFiltro.length === 0 || tiposFiltro.includes(tipoProducto);
+      const marcaPasa = marcaFiltro.length === 0 || marcaFiltro.includes(marcaProducto);
+      const materialPasa = materialFiltro.length === 0 || materialFiltro.includes(materialProducto);
+      const colorPasa = colorFiltro.length === 0 || colorFiltro.includes(colorProducto);
+      const precioMinPasa = this.filtros.precio.min == null || precio >= this.filtros.precio.min;
+      const precioMaxPasa = this.filtros.precio.max == null || precio <= this.filtros.precio.max;
+
+      const pasaFiltro = tipoPasa && marcaPasa && materialPasa && colorPasa && precioMinPasa && precioMaxPasa
+
+      console.log(`Producto: ${producto.nombre} | Tipo: ${producto.tipo} => pasa: ${pasaFiltro}`);
+      return pasaFiltro;
     });
+
+    console.log('Productos filtrados:', this.productosFiltrados);
   }
 
+
+  
   resetFiltros() {
-    this.filtros = {
-      tipo: [],
-      marca: [],
-      material: [],
-      color: [],
-      precio: { min: null, max: null },
-      estado: []
-    };
     this.productosFiltrados = [...this.productos];
   }
 
