@@ -3,7 +3,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Q
 from .models import Cliente, Luna
-from .serializers import ClienteSerializer, LunaSerializer
+from .serializers import ClienteSerializer, LunaSerializer, BoletaElectronicaSerializers
+from .
 
 class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
@@ -25,6 +26,7 @@ class LunaViewSet(viewsets.ModelViewSet):
 #Comentarios = crear empleados y eliminar empleados solo a miembros del staff
 #Eliminar ventas solo miembros de staff
 #El resto de Views
+
 class BoletaElectronicaCreateView(APIView):
     def post(self, request):
         serializer = BoletaElectronicaSerializer(data=request.data)
