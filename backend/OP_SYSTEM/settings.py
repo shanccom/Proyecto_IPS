@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'ventas',
     'rest_framework.authtoken',
 ]
+# VAR URL GLOBAL
+
+API_BASE_URL = "http://localhost:8000/OP_SYTEM/"  # Cambiar esto para subir a la nube
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
