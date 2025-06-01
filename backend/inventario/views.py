@@ -106,13 +106,14 @@ def crear_montura(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         m = Montura(
-            proNombre=data['proNombre'],
+            #proNombre=data['proNombre'],
             proCosto=data['proCosto'],
             proPrecioVenta=data['proPrecioVenta'],
             monMarca=data['monMarca'],
             monMate=data['monMate'],
             monPubl=data['monPubl'],
-            proTipo=data['proTipo']
+            monColor=data['monColor'],
+            monVendida= data['monVendida']
         )
         m.save()
         return JsonResponse({'mensaje': 'Montura guardada'})
