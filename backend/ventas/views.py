@@ -1,21 +1,26 @@
-from django.shortcuts import get_object_or_404, render
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.exceptions import ValidationError
-from rest_framework import status
+from django.db.models import Q
+from .models import Cliente, Luna
+from .serializers import ClienteSerializer, LunaSerializer
 
-#Validacion de contraseña
-from django.contrib.auth.password_validation import validate_password
+class ClienteViewSet(viewsets.ModelViewSet):
+    queryset = Cliente.objects.all()
+    serializer_class = ClienteSerializer
 
-from django.shortcuts import render
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from .serializer import BoletaElectronicaSerializer
+class LunaViewSet(viewsets.ModelViewSet):
+    queryset = Luna.objects.all()
+    serializer_class = LunaSerializer
 
+    @action(detail=False, methods=['get'])
+    def opciones(self, request):
+        """Obtener las opciones disponibles para los campos de selección"""
+        return Response({
+            'propiedades': Luna.LUNA_CHOICES,
+            'materiales': Luna.MATERIALLUNA_CHOICES,
+            'colores_halo': Luna.HALO_CHOICES
+        })
 
 #Comentarios = crear empleados y eliminar empleados solo a miembros del staff
 #Eliminar ventas solo miembros de staff
