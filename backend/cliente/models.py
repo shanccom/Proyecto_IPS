@@ -29,10 +29,10 @@ class Receta(models.Model):
     recOI_cyl = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
     recOI_eje = models.DecimalField(max_digits=3,decimal_places=3, null=True, blank=True)
     # Distancia Interpupilar para campo de visión correcta
-    recDIP = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
+    recDIPLejos = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
+    recDIPCerca = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
     #Adicion para presbicia
-    recOD_adicion = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
-    recOI_adicion = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
+    rec_adicion = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
     recObsAdic = models.CharField(max_length=50, null=True, blank=True)
     
     recCod= models.CharField(max_length=50, unique=True, editable=False)

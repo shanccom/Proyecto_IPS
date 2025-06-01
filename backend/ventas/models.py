@@ -1,8 +1,6 @@
 from django.db import models
 from cliente.models import Cliente
 from django.utils import timezone
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from rest_framework.authtoken.models import Token
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
