@@ -1,33 +1,122 @@
-<select 
-  class="mt-4 p-2 rounded w-full max-w-md font-poppins"
-  [(ngModel)]="selectedDeviceId"
-  (change)="cambiarCamara()">
-  <option *ngFor="let camara of videoDevices" [value]="camara.deviceId">
-    {{ camara.label || 'Cámara ' + camara.deviceId }}
-  </option>
-</select>
-
 <!-- scanner.component.html -->
 <div class="flex flex-col items-center pt-2">
-  <!-- Contenedor del scanner -->
-  <div class="relative w-full max-w-xl bg-black overflow-hidden">
-    
-    <!-- Elemento scanner -->
-    
-    <div id="scanner"
-        class="w-full h-[250px] relative bg-center bg-cover bg-no-repeat"
-        style="background-image: url('https://img.freepik.com/vector-gratis/escanear-codigo-barras-digital-ilustracion-diseno-plano_23-2150703199.jpg?w=2000');">
-    </div>
-
-    
-    <!-- Línea guía para centrar el código de barras -->
-    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
-                w-4/5 h-0.5 bg-red-500 z-10 pointer-events-none"></div>
-    
-    <!-- Esquinas del marco de escaneo -->
-    <div class="absolute top-1/4 left-1/4 w-8 h-8 border-t-2 border-l-2 border-white"></div>
-    <div class="absolute top-1/4 right-1/4 w-8 h-8 border-t-2 border-r-2 border-white"></div>
-    <div class="absolute bottom-1/4 left-1/4 w-8 h-8 border-b-2 border-l-2 border-white"></div>
-    <div class="absolute bottom-1/4 right-1/4 w-8 h-8 border-b-2 border-r-2 border-white"></div>
+  
+  <!-- Mensajes de estado -->
+  <div *ngIf="errorMessage" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg max-w-md text-center">
+    <p class="font-medium">{{ errorMessage }}</p>
+    <button 
+      (click)="resetPermissions()" 
+      class="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors">
+      Reintentar
+    </button>
   </div>
+
+  <div *ngIf="isLoading" class="mb-4 p-3 bg-blue-100 border border-blue-400 text-blue-700 rounded-lg max-w-md text-center">
+    <div class="flex items-center justify-center">
+      <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-700 mr-2"></div>
+      <span>Iniciando cámara...</span>
+    </div>
+  </div>
+
+  <!-- Selector de cámara -->
+  <select 
+    *ngIf="videoDevices.length > 1 && !isLoading"
+    class="mb-4 p-2 rounded w-full max-w-md font-poppins border border-gray-300 bg-white"
+    [(ngModel)]="selectedDeviceId"
+    [ngModelOptions]="{standalone: true}"
+    (change)="cambiarCamara()"
+    [disabled]="isLoading">
+    <option *ngFor="let camara of videoDevices" [value]="camara.deviceId">
+      {{ camara.label || 'Cámara ' + (videoDevices.indexOf(camara) + 1) }}
+    </option>
+  </select>
+
+  <!-- Contenedor del scanner -->
+  <div class="relative w-full max-w-xl bg-black overflow-hidden rounded-lg shadow-lg">
+    
+    <!-- Video element -->
+    <video 
+      #videoElement
+      class="w-full h-[300px] object-cover"
+      [class.hidden]="!isInitialized || isLoading"
+      autoplay 
+      muted 
+      playsinline>
+    </video>
+    
+    <!-- Imagen de fondo cuando no hay video -->
+    <div 
+      *ngIf="!isInitialized || isLoading"
+      class="w-full h-[300px] bg-center bg-cover bg-no-repeat flex items-center justify-center"
+      style="background-image: url('https://img.freepik.com/vector-gratis/escanear-codigo-barras-digital-ilustracion-diseno-plano_23-2150703199.jpg?w=2000');">
+      
+      <div *ngIf="isLoading" class="bg-black bg-opacity-50 text-white p-4 rounded-lg text-center">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-2"></div>
+        <p>Cargando scanner...</p>
+      </div>
+    </div>
+    
+    <!-- Overlay de escaneo -->
+    <div class="absolute inset-0 pointer-events-none" *ngIf="isInitialized && !isLoading">
+      
+      <!-- Línea guía para centrar el código de barras -->
+      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4/5 h-0.5 bg-red-500 z-10">
+        <!-- Animación de línea de escaneo -->
+        <div class="absolute inset-0 bg-red-400 animate-pulse"></div>
+      </div>
+      
+      <!-- Marco de escaneo -->
+      <div class="absolute inset-4 border-2 border-white border-opacity-50 rounded-lg">
+        <!-- Esquinas del marco de escaneo -->
+        <div class="absolute -top-1 -left-1 w-6 h-6 border-t-4 border-l-4 border-green-400"></div>
+        <div class="absolute -top-1 -right-1 w-6 h-6 border-t-4 border-r-4 border-green-400"></div>
+        <div class="absolute -bottom-1 -left-1 w-6 h-6 border-b-4 border-l-4 border-green-400"></div>
+        <div class="absolute -bottom-1 -right-1 w-6 h-6 border-b-4 border-r-4 border-green-400"></div>
+      </div>
+      
+      <!-- Indicador de estado de escaneo -->
+      <div class="absolute top-4 left-4 right-4 text-center">
+        <div class="bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm inline-block">
+          <span *ngIf="isScanning" class="flex items-center">
+            <div class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
+            Escaneando...
+          </span> 
+          <span *ngIf="!isScanning" class="flex items-center">
+            <div class="w-2 h-2 bg-gray-400 rounded-full mr-2"></div>
+            Pausado
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controles del scanner -->
+  <div class="mt-4 flex gap-2" *ngIf="isInitialized && !isLoading">
+    <button 
+      (click)="startScan()" 
+      [disabled]="isScanning"
+      class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors">
+      Iniciar
+    </button>
+    
+    <button 
+      (click)="stopScan()" 
+      [disabled]="!isScanning"
+      class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors">
+      Detener
+    </button>
+    
+    <button 
+      (click)="resetPermissions()" 
+      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
+      Reiniciar
+    </button>
+  </div>
+
+  <!-- Instrucciones -->
+  <div class="mt-4 max-w-md text-center text-sm text-gray-600" *ngIf="isInitialized">
+    <p class="mb-2">Coloca el código de barras dentro del marco verde</p>
+    <p>El escaneo se pausará automáticamente después de detectar un código</p>
+  </div>
+
 </div>

@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
-import Quagga from '@ericblade/quagga2';
+import { Component, OnInit, OnDestroy, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, PLATFORM_ID } from '@angular/core';
+import { BrowserMultiFormatReader, NotFoundException } from '@zxing/library';
 
 @Component({
   selector: 'app-scanner',
@@ -12,19 +12,29 @@ import { Inject, PLATFORM_ID } from '@angular/core';
   styleUrls: ['./scanner.component.css']
 })
 export class ScannerComponent implements OnInit, OnDestroy {
+  @ViewChild('videoElement', { static: false }) videoElement!: ElementRef<HTMLVideoElement>;
+  
   videoDevices: MediaDeviceInfo[] = [];
   selectedDeviceId: string = '';
   @Output() scanned = new EventEmitter<string>();
-  private isQuaggaInitialized = false;
+  
+  private codeReader: BrowserMultiFormatReader | null = null;
+  private currentStream: MediaStream | null = null;
   private lastScannedCode = '';
-  private scannedCodes: string[] = [];
   private scanTimeout: any;
+  
+  // Estado del scanner (públicas para el template)
+  public isScanning = false;
+  public isInitialized = false;
+  public hasPermission = false;
+  public errorMessage = '';
+  public isLoading = false;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      this.requestCameraPermission();
+      this.initializeScanner();
     }
   }
 
@@ -32,13 +42,40 @@ export class ScannerComponent implements OnInit, OnDestroy {
     this.stopScanner();
   }
 
+  private async initializeScanner(): Promise<void> {
+    try {
+      this.isLoading = true;
+      this.errorMessage = '';
+      
+      // Inicializar ZXing
+      this.codeReader = new BrowserMultiFormatReader();
+      
+      // Solicitar permisos
+      await this.requestCameraPermission();
+      
+      // Listar cámaras disponibles
+      await this.listCameras();
+      
+      // Iniciar escáner
+      await this.startScanning();
+      
+      this.isInitialized = true;
+      this.isLoading = false;
+      
+    } catch (error) {
+      console.error('Error inicializando scanner:', error);
+      this.handleError(error);
+      this.isLoading = false;
+    }
+  }
+
   private async requestCameraPermission(): Promise<void> {
     try {
-      // Verificar el estado de permisos primero
+      // Verificar estado de permisos
       const permission = await navigator.permissions.query({ name: 'camera' as PermissionName });
       console.log('Estado de permisos de cámara:', permission.state);
       
-      // Solicitar permisos de cámara explícitamente
+      // Solicitar acceso a la cámara
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
           facingMode: 'environment' // Preferir cámara trasera
@@ -46,200 +83,256 @@ export class ScannerComponent implements OnInit, OnDestroy {
       });
       
       console.log('Permisos de cámara concedidos');
+      this.hasPermission = true;
       
-      // Detener el stream temporal
+      // Detener stream temporal
       stream.getTracks().forEach(track => track.stop());
       
-      await this.listarCamaras();
-      this.initializeScanner();
     } catch (error) {
-      console.error('Error al solicitar permisos de cámara:', error);
-      this.handlePermissionError(error);
+      console.error('Error solicitando permisos:', error);
+      this.hasPermission = false;
+      throw error;
     }
   }
 
-  private handlePermissionError(error: any): void {
-    if (error.name === 'NotAllowedError') {
-      console.error('Permisos de cámara denegados. Por favor, permite el acceso a la cámara en la configuración del navegador.');
-      alert('Para usar el escáner, necesitas permitir el acceso a la cámara. Ve a la configuración del navegador y permite el acceso a la cámara para este sitio.');
-    } else if (error.name === 'NotFoundError') {
-      console.error('No se encontró ninguna cámara disponible.');
-      alert('No se detectó ninguna cámara en tu dispositivo.');
-    } else if (error.name === 'NotReadableError') {
-      console.error('La cámara está siendo usada por otra aplicación.');
-      alert('La cámara está siendo usada por otra aplicación. Cierra otras aplicaciones que usen la cámara e intenta de nuevo.');
-    } else {
-      console.error('Error desconocido:', error);
-      alert('Error al acceder a la cámara: ' + error.message);
+  private async listCameras(): Promise<void> {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      this.videoDevices = devices.filter(device => device.kind === 'videoinput');
+      
+      if (this.videoDevices.length > 0 && !this.selectedDeviceId) {
+        // Buscar cámara trasera primero
+        const backCamera = this.videoDevices.find(device => 
+          device.label.toLowerCase().includes('back') || 
+          device.label.toLowerCase().includes('rear') ||
+          device.label.toLowerCase().includes('environment')
+        );
+        
+        this.selectedDeviceId = backCamera ? backCamera.deviceId : this.videoDevices[0].deviceId;
+      }
+      
+      console.log('Cámaras disponibles:', this.videoDevices.length);
+      
+    } catch (error) {
+      console.error('Error listando cámaras:', error);
+      throw error;
     }
   }
 
-  private initializeScanner(): void {
-    const scannerElement = document.querySelector('#scanner');
-    if (!scannerElement) {
-      console.error('No se encontró el elemento #scanner');
+  private async startScanning(): Promise<void> {
+    if (!this.codeReader || !this.hasPermission || this.isScanning) {
       return;
     }
 
-    const config: any = {
-      inputStream: {
-        name: "Live",
-        type: "LiveStream",
-        target: scannerElement,
-        constraints: {
-          width: 640,
-          height: 480,
-          facingMode: "environment",
-          deviceId: this.selectedDeviceId || undefined
-        }
-      },
-      decoder: {
-        readers: [
-          "code_128_reader",
-          "ean_reader",
-          "ean_8_reader",
-          "code_39_reader",
-          "upc_reader"
-        ]
-      },
-      locate: true,
-      locator: {
-        patchSize: "medium",
-        halfSample: true
-      },
-      numOfWorkers: 2,
-      frequency: 10
-    };
-
-    Quagga.init(config, (err: any) => {
-      if (err) {
-        console.error('Error inicializando Quagga:', err);
-        return;
-      }
+    try {
+      this.isScanning = true;
+      this.errorMessage = '';
       
-      console.log('Quagga inicializado correctamente');
-      this.isQuaggaInitialized = true;
-      Quagga.start();
-    });
-
-    Quagga.onDetected((result) => {
-      const code = result.codeResult?.code;
-      if (code && this.isValidBarcode(code, result)) {
-        this.handleCodeDetection(code);
+      // Detener stream anterior si existe
+      this.stopCurrentStream();
+      
+      const videoElement = this.videoElement?.nativeElement;
+      if (!videoElement) {
+        throw new Error('Elemento de video no encontrado');
       }
-    });
+
+      // Configurar constraints para la cámara
+      const constraints = {
+        video: {
+          deviceId: this.selectedDeviceId ? { exact: this.selectedDeviceId } : undefined,
+          width: { ideal: 640 },
+          height: { ideal: 480 },
+          facingMode: this.selectedDeviceId ? undefined : 'environment'
+        }
+      };
+
+      // Obtener stream de video
+      this.currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+      videoElement.srcObject = this.currentStream;
+      
+      // Reproducir video
+      await videoElement.play();
+      
+      // Iniciar decodificación continua
+      this.codeReader.decodeFromVideoDevice(
+        this.selectedDeviceId,
+        videoElement,
+        (result, error) => {
+          if (result) {
+            this.handleBarcodeDetected(result.getText());
+          } else if (error && !(error instanceof NotFoundException)) {
+            console.error('Error de decodificación:', error);
+          }
+        }
+      );
+      
+      console.log('Scanner iniciado correctamente');
+      
+    } catch (error) {
+      console.error('Error iniciando scanner:', error);
+      this.isScanning = false;
+      this.handleError(error);
+    }
   }
 
-  private isValidBarcode(code: string, result: any): boolean {
-    if (code.length < 4 || code.length > 20) {
+  private handleBarcodeDetected(code: string): void {
+    if (!code || code === this.lastScannedCode) {
+      return;
+    }
+
+    // Validar código de barras
+    if (!this.isValidBarcode(code)) {
+      return;
+    }
+
+    console.log('Código detectado:', code);
+    this.lastScannedCode = code;
+    
+    // Pausar temporalmente el escáner
+    this.pauseScanning();
+    
+    // Emitir el código escaneado
+    this.scanned.emit(code);
+    
+    // Reanudar después de un tiempo
+    this.scanTimeout = setTimeout(() => {
+      this.resumeScanning();
+    }, 500);
+  }
+
+  private isValidBarcode(code: string): boolean {
+    // Validaciones básicas
+    if (!code || code.length < 4 || code.length > 50) {
       return false;
     }
 
-    const qualityThreshold = 100;
-    if (result.codeResult.decodedCodes) {
-      const avgQuality = result.codeResult.decodedCodes.reduce((sum: number, decoded: any) => {
-        return sum + (decoded.error || 0);
-      }, 0) / result.codeResult.decodedCodes.length;
-     
-      if (avgQuality > qualityThreshold) {
-        return false;
-      }
-    }
-
-    if (result.codeResult.format.includes('ean') || result.codeResult.format.includes('upc')) {
-      if (!/^\d+$/.test(code)) {
-        return false;
-      }
+    // Evitar códigos duplicados muy rápidos
+    if (this.scanTimeout) {
+      return false;
     }
 
     return true;
   }
 
-  private handleCodeDetection(code: string): void {
-    if (code === this.lastScannedCode) {
-      return;
-    }
-
-    this.scannedCodes.push(code);
-     
-    if (this.scannedCodes.length > 3) {
-      this.scannedCodes.shift();
-    }
-
-    const codeCount = this.scannedCodes.filter(c => c === code).length;
-     
-    if (codeCount >= 2) {
-      this.confirmBarcode(code);
+  public async cambiarCamara(): Promise<void> {
+    console.log('Cambiando a cámara:', this.selectedDeviceId);
+    
+    try {
+      this.isLoading = true;
+      await this.stopScanner();
+      await this.startScanning();
+      this.isLoading = false;
+    } catch (error) {
+      console.error('Error cambiando cámara:', error);
+      this.handleError(error);
+      this.isLoading = false;
     }
   }
 
-  private confirmBarcode(code: string): void {
-    console.log('Código confirmado:', code);
-    this.lastScannedCode = code;
-    this.scannedCodes = [];
-     
-    this.pauseScanning();
-    this.scanned.emit(code);
-     
-    this.scanTimeout = setTimeout(() => {
-      this.startScanning();
-    }, 1000);
+  private pauseScanning(): void {
+    if (this.codeReader) {
+      this.codeReader.reset();
+    }
+  }
+
+  private resumeScanning(): void {
+    if (this.isScanning && this.codeReader) {
+      const videoElement = this.videoElement?.nativeElement;
+      if (videoElement) {
+        this.codeReader.decodeFromVideoDevice(
+          this.selectedDeviceId,
+          videoElement,
+          (result, error) => {
+            if (result) {
+              this.handleBarcodeDetected(result.getText());
+            } else if (error && !(error instanceof NotFoundException)) {
+              console.error('Error de decodificación:', error);
+            }
+          }
+        );
+      }
+    }
+  }
+
+  private stopCurrentStream(): void {
+    if (this.currentStream) {
+      this.currentStream.getTracks().forEach(track => track.stop());
+      this.currentStream = null;
+    }
   }
 
   private stopScanner(): void {
     if (this.scanTimeout) {
       clearTimeout(this.scanTimeout);
+      this.scanTimeout = null;
     }
-     
-    if (this.isQuaggaInitialized) {
-      Quagga.stop();
-      this.isQuaggaInitialized = false;
-      console.log('Scanner detenido');
+
+    if (this.codeReader) {
+      this.codeReader.reset();
     }
+
+    this.stopCurrentStream();
+    this.isScanning = false;
+    this.lastScannedCode = '';
+    
+    console.log('Scanner detenido');
   }
 
-  public startScanning(): void {
-    if (this.isQuaggaInitialized) {
-      Quagga.start();
-    }
-  }
-
-  public pauseScanning(): void {
-    if (this.isQuaggaInitialized) {
-      Quagga.pause();
-    }
-  }
-
-  async listarCamaras() {
-    try {
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      this.videoDevices = devices.filter(device => device.kind === 'videoinput');
-      if (this.videoDevices.length > 0 && !this.selectedDeviceId) {
-        this.selectedDeviceId = this.videoDevices[0].deviceId;
-      }
-    } catch (error) {
-      console.error('Error listando cámaras:', error);
-    }
-  }
-
-  async cambiarCamara() {
-    this.stopScanner();
-    await this.requestCameraPermission();
-  }
-
-  // Método para reiniciar permisos manualmente
   public async resetPermissions(): Promise<void> {
     console.log('Reiniciando permisos de cámara...');
-    this.stopScanner();
     
-    // Limpiar cualquier stream anterior
-    const video = document.querySelector('#scanner video') as HTMLVideoElement;
-    if (video && video.srcObject) {
-      const stream = video.srcObject as MediaStream;
-      stream.getTracks().forEach(track => track.stop());
-      video.srcObject = null;
+    try {
+      this.isLoading = true;
+      this.errorMessage = '';
+      
+      await this.stopScanner();
+      
+      // Limpiar estado
+      this.hasPermission = false;
+      this.isInitialized = false;
+      this.videoDevices = [];
+      this.selectedDeviceId = '';
+      
+      // Reinicializar
+      await this.initializeScanner();
+      
+    } catch (error) {
+      console.error('Error reiniciando permisos:', error);
+      this.handleError(error);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  private handleError(error: any): void {
+    this.isScanning = false;
+    this.isLoading = false;
+    
+    if (error.name === 'NotAllowedError') {
+      this.errorMessage = 'Permisos de cámara denegados. Por favor, permite el acceso a la cámara.';
+    } else if (error.name === 'NotFoundError') {
+      this.errorMessage = 'No se encontró ninguna cámara disponible.';
+    } else if (error.name === 'NotReadableError') {
+      this.errorMessage = 'La cámara está siendo usada por otra aplicación.';
+    } else if (error.name === 'OverconstrainedError') {
+      this.errorMessage = 'La cámara seleccionada no es compatible.';
+    } else {
+      this.errorMessage = `Error: ${error.message || 'Error desconocido'}`;
     }
     
-    await this.requestCameraPermission();
+    console.error('Error del scanner:', this.errorMessage);
+  }
+
+  // Métodos públicos para control externo
+  public startScan(): void {
+    this.startScanning();
+  }
+
+  public stopScan(): void {
+    this.stopScanner();
+  }
+
+  public get isActive(): boolean {
+    return this.isScanning;
   }
 }

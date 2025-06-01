@@ -110,6 +110,7 @@
                   <input 
                     type="text" 
                     [(ngModel)]="codigoBusqueda"
+                    [ngModelOptions]="{standalone: true}"
                     (keypress)="onEnterPressed($event)"
                     placeholder="Ingrese un codigo"
                     class="flex-1 py-2 rounded-lg font-poppins text-center"

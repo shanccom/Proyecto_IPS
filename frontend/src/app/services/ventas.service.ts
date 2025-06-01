@@ -47,12 +47,12 @@ interface BoletaResponse {
 @Injectable({
     providedIn: 'root'
 })
-
 export class VentasService {
-    private apiUrl = 'http://localhost:3000/api'; // CAMBIAR LA URL CUANDO YA ESTE LISTA
+    private apiUrl = 'http://localhost:3000/api';
 
     constructor(private http: HttpClient) {}
     
+    // Corregir los tipos de retorno:
     buscarProductoPorCodigo(codigo: string): Observable<ProductoResponse> {
         return this.http.get<ProductoResponse>(`${this.apiUrl}/productos/${codigo}`);
     }
@@ -61,11 +61,12 @@ export class VentasService {
         return this.http.post<BoletaResponse>(`${this.apiUrl}/boletas`, boletaData);
     }
 
-    obtenerBoletas(boletaData: BoletaRequest): Observable<BoletaResponse[]> {
+    obtenerBoletas(): Observable<BoletaResponse[]> { // Corregido: eliminé el parámetro innecesario
         return this.http.get<BoletaResponse[]>(`${this.apiUrl}/boletas`);
     }
 
     obtenerSiguienteCorrelativo(serie: string): Observable<{ correlativo: string }> {
         return this.http.get<{ correlativo: string }>(`${this.apiUrl}/boletas/siguiente-correlativo/${serie}`);
     }
+    
 }

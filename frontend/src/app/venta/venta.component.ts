@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Va
 import { VentasService } from '../services/ventas.service';
 import { catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 interface ProductoEscaneado {
   id: number;
@@ -23,6 +24,7 @@ interface ProductoEscaneado {
   templateUrl: './venta.component.html',
   styleUrl: './venta.component.css'
 })
+
 export class VentaComponent implements OnInit {
   ventaForm: FormGroup;
   mostrarScanner = false;
