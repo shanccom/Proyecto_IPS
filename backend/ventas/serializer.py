@@ -47,6 +47,13 @@ class DetalleVentaAccesorioSerializer(serializers.ModelSerializer):
         if data['detVenValorUni'] <= 0:
             raise serializers.ValidationError("El valor unitario debe ser mayor a 0.")
         return data
+    
+class EmpleadoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Empleado
+        fields = [
+            'emplCod', 'emplNom', 'emplCarg', 'empCond'  
+        ]
 
 
 class VentaSerializer(serializers.ModelSerializer):

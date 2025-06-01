@@ -9,9 +9,3 @@ class UsuarioSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return Usuario.objects.create_user(**validated_data)
     
-class EmpleadoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Empleado
-        fields = [
-            'emplCod', 'emplNom', 'emplCarg', 'empCond'  
-        ]
