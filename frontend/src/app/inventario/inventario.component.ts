@@ -2,15 +2,30 @@ import { Component, OnInit } from '@angular/core';
 import { InventarioFiltrosComponent } from './inventario-filtros/inventario-filtros.component'
 import { InventarioTablaComponent } from './inventario-tabla/inventario-tabla.component';
 import { InventarioService } from '../services/inventario.service';
+import { CommonModule } from '@angular/common'; 
+import { FormularioAccesorioComponent } from './formulario-accesorio/formulario-accesorio.component';
+import { FormularioLunaComponent } from './formulario-luna/formulario-luna.component';
+import { FormularioMonturaComponent } from './formulario-montura/formulario-montura.component';
 
 @Component({
   selector: 'app-inventario',
-  imports: [  InventarioFiltrosComponent,InventarioTablaComponent],
+  imports: [  
+    InventarioFiltrosComponent, 
+    InventarioTablaComponent, 
+    CommonModule,
+    FormularioAccesorioComponent,
+    FormularioLunaComponent,
+    FormularioMonturaComponent
+    ],
   templateUrl: './inventario.component.html',
   styleUrl: './inventario.component.css'
 })
 export class InventarioComponent implements OnInit {
-  
+  //boton
+  modalVisible = false;
+  tipoFormulario = 'montura';
+  //
+
   productos: any[] = [];
   productosFiltrados: any[] = [];
   
@@ -30,46 +45,58 @@ export class InventarioComponent implements OnInit {
   }
 
 
-  // Filtros
-  filtros = {
-    tipo: '',
-    marca: '',
-    material: '',
-    color: '',
-    precio: { min: null, max: null },
-    estado: ''
+  filtros: any = {
+    tipo: [],
+    marca: [],
+    material: [],
+    color: [],
+    estado: [],
+    precio: { min: null, max: null }
   };
 
 // Métodos
    // Aplicar filtros
   aplicarFiltros(filtrosAplicados: any) {
-    this.filtros = { ...this.filtros, ...filtrosAplicados };
+    // Convertimos el filtro de tipo a minúsculas
+    const tiposFiltro = (filtrosAplicados.tipo || []).map((v: string) => v.toLowerCase());
+    const marcaFiltro = (filtrosAplicados.marca || []).map((v: string) => v.toLowerCase());
+    const materialFiltro = (filtrosAplicados.material || []).map((v: string) => v.toLowerCase());
+    const colorFiltro = (filtrosAplicados.color || []).map((v: string) => v.toLowerCase());
+    
 
+    console.log('Filtros recibidos:', tiposFiltro);
     this.productosFiltrados = this.productos.filter(producto => {
-      return (
-        (this.filtros.tipo ? producto.tipo.includes(this.filtros.tipo) : true) &&  // Filtra por tipo
-        (this.filtros.marca ? producto.marca.includes(this.filtros.marca) : true) &&  // Filtra por marca
-        (this.filtros.material ? producto.material.includes(this.filtros.material) : true) &&  // Filtra por material
-        (this.filtros.color ? producto.color.includes(this.filtros.color) : true) &&  // Filtra por color
-        (this.filtros.precio.min !== null ? producto.proCosto >= this.filtros.precio.min : true) &&  // Filtra por precio mínimo
-        (this.filtros.precio.max !== null ? producto.proPrecioVenta <= this.filtros.precio.max : true) &&  // Filtra por precio máximo
-        (this.filtros.estado ? producto.estado === this.filtros.estado : true)  // Filtra por estado
-      );
+      const tipoProducto = (producto.tipo || '').toLowerCase();
+      const marcaProducto = (producto.marca || '').toLowerCase();
+      const materialProducto = (producto.material || '').toLowerCase();
+      const colorProducto = (producto.color || '').toLowerCase();
+      const precio = producto.proPrecioVenta ?? 0;
+
+
+      const tipoPasa = tiposFiltro.length === 0 || tiposFiltro.includes(tipoProducto);
+      const marcaPasa = marcaFiltro.length === 0 || marcaFiltro.includes(marcaProducto);
+      const materialPasa = materialFiltro.length === 0 || materialFiltro.includes(materialProducto);
+      const colorPasa = colorFiltro.length === 0 || colorFiltro.includes(colorProducto);
+      const precioMinPasa = this.filtros.precio.min == null || precio >= this.filtros.precio.min;
+      const precioMaxPasa = this.filtros.precio.max == null || precio <= this.filtros.precio.max;
+
+      const pasaFiltro = tipoPasa && marcaPasa && materialPasa && colorPasa && precioMinPasa && precioMaxPasa
+
+      console.log(`Producto: ${producto.nombre} | Tipo: ${producto.tipo} => pasa: ${pasaFiltro}`);
+      
+      return pasaFiltro;
     });
+
+    console.log('Productos filtrados:', this.productosFiltrados);
   }
+
+
+  
   resetFiltros() {
-    this.filtros = {
-      tipo: '',
-      marca: '',
-      material: '',
-      color: '',
-      precio: { min: null, max: null },
-      estado: ''
-    };
     this.productosFiltrados = [...this.productos];
   }
 
-  
+    
   editar(producto: any) {
     console.log('Editar producto:', producto);
   }
@@ -78,5 +105,30 @@ export class InventarioComponent implements OnInit {
     this.productos = this.productos.filter(p => p.codigo !== codigo);
     this.productosFiltrados = this.productosFiltrados.filter(p => p.codigo !== codigo);
   }
+  //Metodos Boton
+  seleccionarFormulario(tipo: string){
+    this.tipoFormulario = tipo as any;
+  }
+  abrirModal() {
+    this.modalVisible = true;
+    this.tipoFormulario = 'montura'; // Reset al abrir
+  }
+
+  cerrarModal() {
+    this.modalVisible = false;
+  }
+  refrescarProductos() {
+    console.log("Refrescando productos");
+    this.inventarioService.obtenerProductos().subscribe(
+      (data) => {
+        this.productos = data; 
+      },
+      (error) => {
+        console.error("Error al refrescar productos:", error);
+      }
+    );
+  }
+
+
 
 }
