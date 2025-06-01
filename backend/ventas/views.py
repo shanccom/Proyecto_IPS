@@ -3,13 +3,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Q
 from .models import Cliente, Luna
-<<<<<<< HEAD
-from .serializers import ClienteSerializer, LunaSerializer, BoletaElectronicaSerializers
-from .
-=======
 from .serializers import ClienteSerializer, LunaSerializer
 from rest_framework.views import APIView
->>>>>>> 3c493fccc23a63c668119317fa6f33360b7b321e
 
 class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
