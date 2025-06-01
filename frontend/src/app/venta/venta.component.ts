@@ -18,6 +18,7 @@ interface ProductoEscaneado {
 
 @Component({
   selector: 'app-venta',
+  standalone: true,
   imports: [RouterModule, ScannerComponent, CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './venta.component.html',
   styleUrl: './venta.component.css'
@@ -51,8 +52,8 @@ export class VentaComponent implements OnInit {
   ngOnInit(): void {
     this.generarNuevoCorrelativo();
     this.calcularTotalesCompletos();
-    this.cargarBoletasPendientes();
   }
+
   //PARA ASEGURARNOS DE QUE EL SERVICIO DE SUNAT FUNCIONE DEBE DE TENER ESTA ESTRUCTURA
   createForm(): FormGroup {
     return this.fb.group({
@@ -153,40 +154,6 @@ export class VentaComponent implements OnInit {
     console.log(`Producto agregado: ${producto.nombre}`);
   }
 
-  // ========== BÚSQUEDA DE CLIENTE ==========
-
-  buscarCliente(): void {
-    const clienteGroup = this.ventaForm.get('cliente');
-    const tipoDoc = clienteGroup?.get('tipo_doc')?.value;
-    const numDoc = clienteGroup?.get('num_doc')?.value;
-
-    if (!numDoc || numDoc.length < 8) {
-      alert('Ingrese un número de documento válido');
-      return;
-    }
-
-    this.ventaService.buscarClientePorDocumento(tipoDoc, numDoc)
-      .pipe(
-        catchError(error => {
-          console.error('Error al buscar cliente:', error);
-          if (error.status === 404) {
-            alert('Cliente no encontrado. Puede ingresar los datos manualmente.');
-          } else {
-            alert('Error al buscar cliente. Intente nuevamente.');
-          }
-          return of(null);
-        })
-      )
-      .subscribe(cliente => {
-        if (cliente) {
-          clienteGroup?.patchValue({
-            rzn_social: cliente.razon_social || cliente.nombre_completo
-          });
-        }
-      });
-  }
-
-
   guardarBoleta(): void {
     if (this.ventaForm.invalid) {
       alert('Por favor, complete todos los campos requeridos.');
@@ -239,7 +206,6 @@ export class VentaComponent implements OnInit {
       });
   }
 
-
   generarNuevoCorrelativo(): void {
     const serieActual = this.ventaForm.get('serie')?.value || 'B001';
     
@@ -256,21 +222,6 @@ export class VentaComponent implements OnInit {
         });
       });
   }
-
-
-  cargarBoletasPendientes(): void {
-    this.ventaService.obtenerBoletasPendientes()
-      .pipe(
-        catchError(error => {
-          console.error('Error al cargar boletas pendientes:', error);
-          return of({ cantidad: 0 });
-        })
-      )
-      .subscribe(response => {
-        this.boletasPendientes = response.cantidad || 0;
-      });
-  }
-
 
   eliminarItem(index: number): void {
     this.items.removeAt(index);
@@ -312,7 +263,7 @@ export class VentaComponent implements OnInit {
 
   generarHash(): void {
     const data = `${this.ventaForm.get('serie')?.value}-${this.totalConIgv}-${this.fechaActual.getTime()}`;
-    this.hashGenerado = btoa(data).substring(0, 10); // Hash simulado
+    this.hashGenerado = btoa(data).substring(0, 10);
   }
 
   limpiarFormulario(): void {
@@ -352,8 +303,8 @@ export class VentaComponent implements OnInit {
   }
 
   onEnterPressed(event: KeyboardEvent): void {
-  if (event.key === 'Enter') {
-    this.buscarProductoPorCodigo();
+    if (event.key === 'Enter') {
+      this.buscarProductoPorCodigo();
+    }
   }
-}
 }
