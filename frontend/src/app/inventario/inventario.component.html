@@ -1,76 +1,95 @@
-<div class="flex items-center justify-end mb-6">
+<!-- Selector y botón Agregar en la misma línea -->
+<div class="flex justify-between items-center mb-6 mt-20 px-20">
+
+  <!-- Botones de tipo de producto a la izquierda -->
+  <div class="flex">
+    <button
+      class="px-4 py-2 mx-2 rounded-lg transition font-medium"
+      [ngClass]="{
+        'bg-[#A7DCFF] text-black': tipoFormulario === 'montura',
+        'bg-gray-200 text-gray-700 hover:bg-gray-300': tipoFormulario !== 'montura'
+      }"
+      (click)="seleccionarFormulario('montura')"
+    >
+      Montura
+    </button>
+
+    <button
+      class="px-4 py-2 mx-2 rounded-lg transition font-medium"
+      [ngClass]="{
+        'bg-[#A7DCFF] text-black': tipoFormulario === 'accesorio',
+        'bg-gray-200 text-gray-700 hover:bg-gray-300': tipoFormulario !== 'accesorio'
+      }"
+      (click)="seleccionarFormulario('accesorio')"
+    >
+      Accesorio
+    </button>
+  </div>
+
+  <!-- Botón Agregar a la derecha -->
   <button
     class="bg-[#A7DCFF] text-black px-4 py-2 rounded-lg shadow hover:bg-[#79A5C3] transition"
     (click)="abrirModal()"
   >
-    Agregar producto
+    Agregar {{ tipoFormulario === 'montura' ? 'Montura' : 'Accesorio' }}
   </button>
+
 </div>
 
 
-<div class="inventario-container">
-  <app-inventario-filtros
-    (filtrosAplicados)="aplicarFiltros($event)"
-    (reset)="resetFiltros()">
-  </app-inventario-filtros>
+<!-- Mostrar según el tipo seleccionado -->
+<ng-container [ngSwitch]="tipoFormulario">
 
-  <app-inventario-tabla
-    [productos]="productosFiltrados"
-    (editar)="editar($event)"
-    (eliminar)="eliminar($event)">
-  </app-inventario-tabla>
-  <!-- 
-  <app-inventario-tabla [productos]="productos"></app-inventario-tabla>
--->  
-</div>
+  <!-- Montura -->
+  <div *ngSwitchCase="'montura'">
 
-<!-- Agregar prodctos-->
+    <div class="inventario-container">
+      <app-inventario-filtros
+        [tipo]="tipoFormulario"
+        (filtrosAplicados)="aplicarFiltros($event)"
+        (reset)="resetFiltros()">
+      </app-inventario-filtros>
+
+      <app-inventario-tabla
+        [tipo]="tipoFormulario"
+        [productos]="productosFiltrados"
+        (editar)="editar($event)"
+        (eliminar)="eliminar($event)">
+      </app-inventario-tabla>
+    </div>
+  </div>
+
+  <!-- Accesorio -->
+  <div *ngSwitchCase="'accesorio'">
+
+    <div class="inventario-container">
+      <app-inventario-filtros
+        [tipo]="tipoFormulario"
+        (filtrosAplicados)="aplicarFiltros($event)"
+        (reset)="resetFiltros()">
+      </app-inventario-filtros>
+
+      <app-inventario-tabla
+        [tipo]="tipoFormulario"
+        [productos]="productosFiltrados"
+        (editar)="editar($event)"
+        (eliminar)="eliminar($event)">
+      </app-inventario-tabla>
+    </div>
+  </div>
+
+</ng-container>
+
+<!-- Modal de formulario dinámico -->
 <div
   *ngIf="modalVisible"
   class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
 >
   <div class="bg-[#292C2D] rounded-xl shadow-lg p-6 w-full max-w-2xl">
 
-   <h3 class="text-xl font-bold text-white font-medium">Agregar Producto</h3>
-   <hr class="border-t-2 border-[#5E5E5E] my-4">
+    <h3 class="text-xl font-bold text-white font-medium">Agregar Producto</h3>
+    <hr class="border-t-2 border-[#5E5E5E] my-4">
 
-    <div class="flex justify-center gap-4 mb-6">
-      <button
-        class="px-4 py-2 rounded-lg transition font-medium"
-        [ngClass]="{
-          'bg-[#A7DCFF] text-black': tipoFormulario === 'montura',
-          'bg-gray-200 text-gray-700 hover:bg-gray-300': tipoFormulario !== 'montura'
-        }"
-        (click)="seleccionarFormulario('montura')"
-      >
-        Montura
-      </button>
-      <!-- Sin luna opcion
-      
-      <button
-        class="px-4 py-2 rounded-lg transition font-medium"
-        [ngClass]="{
-          'bg-[#A7DCFF] text-black': tipoFormulario === 'luna',
-          'bg-gray-200 text-gray-700 hover:bg-gray-300 ': tipoFormulario !== 'luna'
-        }"
-        (click)="seleccionarFormulario('luna')"
-      >
-        Luna
-      </button>
-      -->
-      <button
-        class="px-4 py-2 rounded-lg transition font-medium"
-        [ngClass]="{
-          'bg-[#A7DCFF] text-white': tipoFormulario === 'accesorio',
-          'bg-gray-200 text-gray-700 hover:bg-gray-300': tipoFormulario !== 'accesorio'
-        }"
-        (click)="seleccionarFormulario('accesorio')"
-      >
-        Accesorio
-      </button>
-    </div>
-
-    <!-- Contenido dinámico del formulario -->
     <ng-container [ngSwitch]="tipoFormulario">
       <app-formulario-montura
         *ngSwitchCase="'montura'"
@@ -78,17 +97,12 @@
         (guardado)="refrescarProductos()"
       ></app-formulario-montura>
 
-      <app-formulario-luna
-        *ngSwitchCase="'luna'"
-        (cerrar)="cerrarModal()"
-        (guardado)="refrescarProductos()"
-      ></app-formulario-luna>
-
       <app-formulario-accesorio
         *ngSwitchCase="'accesorio'"
         (cerrar)="cerrarModal()"
         (guardado)="refrescarProductos()"
       ></app-formulario-accesorio>
     </ng-container>
+
   </div>
 </div>

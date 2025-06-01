@@ -15,10 +15,10 @@ export class InventarioService {
     return this.http.get<any[]>(`${this.baseUrl}productoslista/`);
   }
 
-  obtenerOpcionesFiltros() {
-  return this.http.get<any>(`${this.baseUrl}productoslista/filtros/`);
+  obtenerOpcionesFiltros(tipo: 'montura' | 'accesorio') {
+    return this.http.get<any>(`${this.baseUrl}productoslista/filtros/${tipo}/`);
   }
-  
+    
   crearMontura(montura: any): Observable<any> {
     return this.http.post(`${this.baseUrl}monturas/`, montura);
   }
