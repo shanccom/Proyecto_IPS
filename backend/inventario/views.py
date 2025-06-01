@@ -16,7 +16,7 @@ from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
-
+#Eliminar inventario solo para miembros del staff
 
 #todo
 class ProductosView(APIView):
@@ -69,11 +69,6 @@ def search(request):
     montura = Montura.objects.filter(monCod=codigo).first()
     if montura:
         return Response(MonturaSerializer(montura).data)
-    
-    luna = Luna.objects.filter(lunaCod=codigo).first()
-    if luna:
-        return Response(LunaSerializer(luna).data)
-
     accesorio = Accesorio.objects.filter(accCod=codigo).first()
     if accesorio:
         return Response(AccesorioSerializer(accesorio).data)

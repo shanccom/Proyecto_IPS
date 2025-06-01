@@ -17,7 +17,8 @@ from rest_framework import status
 from .serializer import BoletaElectronicaSerializer
 
 
-
+#Comentarios = crear empleados y eliminar empleados solo a miembros del staff
+#Eliminar ventas solo miembros de staff
 #El resto de Views
 class BoletaElectronicaCreateView(APIView):
     def post(self, request):

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Montura, Luna, Accesorio
+from .models import Montura, Accesorio
 
 
 class MonturaSerializer(serializers.ModelSerializer):
@@ -22,7 +22,7 @@ class MonturaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Montura
         fields = ['codigo', 'tipo', 'marca', 'publico', 'material', 'color', 'costo', 'precio', 'vendido']
-
+"""
 class LunaSerializer(serializers.ModelSerializer):
     codigo = serializers.IntegerField(source='lunaCod')
     tipo = serializers.CharField(source='lunaProp')
@@ -39,7 +39,7 @@ class LunaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Luna
         fields = ['codigo', 'tipo', 'material', 'color', 'precio', 'estado']
-
+"""
 class AccesorioSerializer(serializers.ModelSerializer):
     codigo = serializers.IntegerField(source='accCod')
     tipo = serializers.CharField(default="Accesorio")

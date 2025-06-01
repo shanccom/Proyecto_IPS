@@ -58,28 +58,6 @@ class Montura(Producto):
             self.monCod = f"{codigo_base}{ultimo}"
         super().save(*args, **kwargs)
 
-class Luna(Producto):
-    LUNA_CHOICES = [
-        ('blue', 'Blue'),
-        ('fotocromatico', 'Fotocromatico'),
-        ('blue_fotocromatico', 'Blue Fotocromatico'),
-        ('ar', 'AR'),
-    ]
-    HALO_CHOICES = [
-        ('azul', 'Azul'),
-        ('verde', 'Verde'),
-        ('morado', 'Morado'),
-    ]
-    MATERIALLUNA_CHOICES= [
-        ('policarbonato', 'Policarbonato'),
-        ('nk', 'NK'),
-        ('resina', 'Resina'),
-        ('cristal', 'cristal'),
-    ]
-    lunaCod = models.AutoField(primary_key=True)
-    lunaProp = models.CharField(max_length=50, choices=LUNA_CHOICES)
-    lunaMat = models.CharField(max_length=20, choices=MATERIALLUNA_CHOICES)
-    lunaColorHalo = models.CharField(max_length=20, choices=HALO_CHOICES)
 
 class Accesorio(Producto):
     accNombre = models.CharField(max_length=100)
