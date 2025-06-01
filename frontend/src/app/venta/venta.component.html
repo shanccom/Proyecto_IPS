@@ -1,19 +1,397 @@
-<div class=" pl-[150px]">
-    <button [routerLink]="['/dashboard']" class="text-white text-xl font-poppins">🢀 Venta</button>
-    <div class="grid grid-cols-2  w-full h-[calc(95vh-60px)]">
-        <div class="p-10 pl-[300px] pr-[80px]">
-            <div class="bg-[#292C2D] h-full rounded-[5%]">
-                <div class="p-8">
-                    <p class="text-xl  font-poppins">1. Agrega Productos</p>
+<div class="pl-[120px]">
+  <button [routerLink]="['/dashboard']" class="text-white text-xl font-poppins">
+    🢀 Venta
+  </button>
+  
+  <div class="grid grid-cols-2 w-full h-[calc(95vh-60px)]">
+    <!-- Panel Izquierdo - Formulario -->
+    <div class=" pt-[40px]">
+      <div class="h-full bg-[#292C2D] py-6 px-4 rounded-[5%]">
+        <div class="max-w-4xl mx-auto">
+          
+          <!-- Header -->
+          <div class="pr-6 pl-6 pt-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <h1 class="text-2xl font-bold text-[#A7DCFF] font-poppins">Registro de Boletas</h1>
+                <p class="text-sm text-white mt-2 font-poppins">Escanea productos y registra la venta</p>
+              </div>
+              <div class="flex items-center space-x-4">
+                <div class="text-right">
+                  <div class="text-sm text-gray font-poppins">Boletas Pendientes</div>
+                  <div class="text-xl font-bold text-[#A7DCFF]">{{boletasPendientes}}</div>
                 </div>
+                <div class="h-12 w-px bg-gray-300"></div>
+                <button 
+                  routerLink="/lista-boletas"
+                  class="bg-[#A7DCFF] text-black px-4 py-2 rounded-lg font-medium">
+                  Ver Lista de Boletas
+                </button>
+              </div>
             </div>
-        </div>
-        <div class="p-10 pl-[80px] pr-[300px]">
-            <div class="bg-[#292C2D] h-full rounded-[5%]">
-                <div class="p-8">
-                    <p class="text-xl font-poppins">Boleta</p>
+          </div>
+
+          <!-- Formulario Principal -->
+          <form [formGroup]="ventaForm" (ngSubmit)="guardarBoleta()" class="space-y-1">
+            
+            <!-- Información de la Boleta -->
+            <div class="p-6">
+              <h2 class="text-xl font-semibold text-white mb-6 font-poppins">Información de la Boleta</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-sm font-poppins text-white mb-2">Serie</label>
+                  <select 
+                    formControlName="serie"
+                    (change)="generarNuevoCorrelativo()"
+                    class="w-full px-3 py-2 rounded-lg">
+                    <option value="B001">B001 - Boleta</option>
+                    <option value="F001">F001 - Factura</option>
+                  </select>
                 </div>
+                <div>
+                  <label class="block text-sm font-poppins text-white mb-2">Correlativo</label>
+                  <input 
+                    type="text" 
+                    formControlName="correlativo"
+                    class="w-full px-3 py-2 rounded-lg bg-gray-100 text-black"
+                    readonly>
+                </div>
+              </div>
             </div>
+
+            <!-- Información del Cliente -->
+            <div class="pr-6 pl-6" formGroupName="cliente">
+              <h2 class="text-xl font-semibold text-white mb-6">Datos del Cliente</h2>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label class="block text-sm font-medium text-white mb-2">Tipo de Documento</label>
+                  <select 
+                    formControlName="tipo_doc"
+                    class="w-full px-3 py-2 rounded-lg">
+                    <option value="1">DNI</option>
+                    <option value="6">RUC</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-white mb-2">Número de Documento</label>
+                  <input 
+                    type="text" 
+                    formControlName="num_doc"
+                    class="w-full px-3 py-2 rounded-lg"
+                    placeholder="12345678">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-white mb-2">Nombre/Razón Social</label>
+                  <input 
+                    type="text" 
+                    formControlName="rzn_social"
+                    class="w-full px-3 py-2 rounded-lg"
+                    placeholder="Juan Pérez">
+                </div>
+              </div>
+            </div>
+
+            <!-- Scanner y Productos -->
+            <div class="rounded-lg p-6">
+              
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-semibold text-white">Productos</h2>
+                <div class="flex space-x-2">
+                  <button 
+                    type="button"
+                    (click)="abrirScanner()"
+                    class="bg-[#A7DCFF] text-black px-2 py-2 rounded-lg font-poppins flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 16h4.01M20 12h.01M16 8h.01M16 4h.01M12 8h.01M8 12h.01M4 12h.01M8 8h.01M8 16h.01M4 16h.01M4 8h.01M8 4h.01"></path>
+                    </svg>
+                    Escanear Producto
+                  </button>
+
+                  <input 
+                    type="text" 
+                    [(ngModel)]="codigoBusqueda"
+                    [ngModelOptions]="{standalone: true}"
+                    (keypress)="onEnterPressed($event)"
+                    placeholder="Ingrese un codigo"
+                    class="flex-1 py-2 rounded-lg font-poppins text-center"
+                  >
+                  <button 
+                    type="button"
+                    (click)="buscarProductoPorCodigo()"
+                    class="bg-gray-600 text-white px-2 py-2 rounded-lg font-poppins">
+                    Buscar por Código
+                  </button>
+                </div>
+              </div>
+
+              <!-- Scanner Component -->
+              <div *ngIf="mostrarScanner" class="mb-6 p-4 rounded-lg bg-gray-200">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-lg font-semibold text-black">Scanner de Códigos de Barras</h3>
+                  <button 
+                    type="button"
+                    (click)="cerrarScanner()"
+                    class="text-black font-medium">
+                    Cerrar
+                  </button>
+                </div>
+                
+                <!-- Aquí iría tu componente scanner -->
+                <app-scanner (scanned)="onCodigoEscaneado($event)"></app-scanner>
+                
+                <!-- Instrucciones -->
+                <div class="mt-4 text-sm text-black">
+                  <p>• Mantén el código centrado y enfocado</p>
+                </div>
+              </div>
+
+              <!-- Total General -->
+              <div *ngIf="items.length > 0" class="mt-6 p-6 bg-[#A7DCFF] text-white rounded-lg">
+                <div class="flex justify-between items-center">
+                  <div>
+                    <div class="text-black text-md">Total de la Boleta</div>
+                    <div class="text-gray-500 text-sm">{{items.length}} producto(s)</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-black text-2xl font-bold">S/ {{totalConIgv | number:'1.2-2'}}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Lista de Productos Escaneados -->
+            <div class="space-y-4" [formGroup]="ventaForm">
+              <div formArrayName="items">
+                <div *ngIf="items.length === 0" class="text-center py-12 text-gray-500">
+                  <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                  </svg>
+                  <p class="text-lg font-medium text-white">No hay productos agregados</p>
+                  <p class="text-sm text-gray-300">Usa el scanner o busca por código para agregar productos</p>
+                </div>
+
+                <div 
+                  *ngFor="let item of items.controls; let i = index" 
+                  [formGroupName]="i"
+                  class="rounded-lg p-3 bg-[#3B3B3B]">
+                  
+                  <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center">
+                      <div class="bg-white text-black px-3 py-1 rounded-full text-sm  mr-3 font-bold">
+                        Producto {{i + 1}}
+                      </div>
+                      <span class="text-sm text-white">Código: {{item.get('codigo')?.value}}</span>
+                    </div>
+                    <button 
+                      type="button"
+                      (click)="eliminarItem(i)"
+                      class="text-white font-medium bg-red-800 px-[40px] py-1 rounded-lg transition-colors">
+                      Eliminar
+                    </button>
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="md:col-span-2">
+                      <label class="block text-sm font-medium text-gray-300 mb-2">Descripción del Producto</label>
+                      <input 
+                        type="text" 
+                        formControlName="descripcion"
+                        class="w-full px-3 py-2 rounded-lg bg-[#292C2D] text-gray-300"
+                        readonly>
+                    </div>
+
+                    <div>
+                      <label class="block text-sm font-medium text-gray-300 mb-2">Cantidad</label>
+                      <input 
+                        type="number" 
+                        formControlName="cantidad"
+                        (input)="calcularSubtotal(i)"
+                        min="1"
+                        [max]="item.get('stock_disponible')?.value"
+                        class="w-full px-3 py-2 rounded-lg bg-[#292C2D] text-white">
+                      <div class="text-xs text-gray-400 mt-1">
+                        Stock: {{item.get('stock_disponible')?.value}} unidades
+                      </div>
+                    </div>
+
+                    <div>
+                      <label class="block text-sm font-medium text-gray-300 mb-2">Precio Unitario</label>
+                      <div class="relative">
+                        <span class="absolute left-3 top-2 text-gray-400">S/</span>
+                        <input 
+                          type="number" 
+                          formControlName="valor_unitario"
+                          (input)="calcularSubtotal(i)"
+                          step="0.01"
+                          min="0.01"
+                          class="w-full pl-8 pr-3 py-2 rounded-lg bg-[#292C2D] text-white">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Subtotal destacado -->
+                  <div class="mt-4 p-3 bg-[#292C2D] rounded-lg">
+                    <div class="flex justify-between items-center">
+                      <span class="text-sm font-medium text-white">Subtotal:</span>
+                      <span class="text-lg font-bold text-white">S/ {{item.get('subtotal')?.value | number:'1.2-2'}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="flex justify-center space-x-6 pt-4">
+              <button 
+                type="button"
+                (click)="limpiarFormulario()"
+                class="bg-gray-500 text-white px-6 py-3 rounded-lg font-semibold ">
+                Limpiar Formulario
+              </button>
+              <button 
+                type="submit"
+                [disabled]="ventaForm.invalid || items.length === 0"
+                class="bg-[#A7DCFF] text-black px-8 py-3 rounded-lg font-semibold text-lg">
+                Guardar Boleta
+              </button>
+            </div>
+          </form>
+
         </div>
+      </div>
     </div>
+
+    <!-- Panel Derecho - Vista Previa de Boleta -->
+    <div class="p-10">
+      <div class="bg-[#292C2D] h-full rounded-[5%] overflow-hidden">
+        <div class="p-8 pt-[90px] h-full overflow-y-auto">
+          <p class="text-xl font-poppins text-white mb-6">Vista Previa de Boleta</p>
+          
+          <!-- Simulador de Boleta -->
+          <div class="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto font-mono text-sm">
+            
+            <!-- Header de la Empresa -->
+            <div class="text-center pb-4 mb-4">
+              <h1 class="font-bold text-lg text-gray-600">VISION IDEAL S.A.C.</h1>
+              <p class="text-xs text-gray-600">RUC: 20123456789</p>
+              <p class="text-xs text-gray-600">Jr. Ejemplo 123 - Arequipa</p>
+              <p class="text-xs text-gray-600">Tel: (054) 123-4567</p>
+            </div>
+
+            <!-- Tipo de Documento -->
+            <div class="text-center mb-4">
+              <div class="border-2 border-black p-2">
+                <p class="font-bold text-black ">
+                  {{ventaForm.get('serie')?.value === 'B001' ? 'BOLETA DE VENTA ELECTRÓNICA' : 'FACTURA ELECTRÓNICA'}}
+                </p>
+                <p class="font-bold text-lg text-gray-500">
+                  {{ventaForm.get('serie')?.value}}-{{ventaForm.get('correlativo')?.value || '00000001'}}
+                </p>
+              </div>
+            </div>
+
+            <!-- Fecha y Hora -->
+            <div class="mb-4 text-xs text-gray-700">
+              <p><strong>Fecha:</strong> {{fechaActual | date:'dd/MM/yyyy'}}</p>
+              <p><strong>Hora:</strong> {{fechaActual | date:'HH:mm:ss'}}</p>
+            </div>
+
+            <!-- Datos del Cliente -->
+            <div class="border-t border-b border-dashed border-gray-400 text-gray-700 py-3 mb-4 text-xs">
+              <p class="text-black"><strong>CLIENTE:</strong></p>
+              <p *ngIf="ventaForm.get('cliente.rzn_social')?.value; else sinCliente">
+                {{ventaForm.get('cliente.rzn_social')?.value}}
+              </p>
+              <ng-template #sinCliente>
+                <p class="text-gray-500 italic">Sin especificar</p>
+              </ng-template>
+              
+              <p *ngIf="ventaForm.get('cliente.num_doc')?.value">
+                <strong>{{ventaForm.get('cliente.tipo_doc')?.value === '1' ? 'DNI' : 'RUC'}}:</strong> 
+                {{ventaForm.get('cliente.num_doc')?.value}}
+              </p>
+            </div>
+
+            <!-- Detalle de Productos -->
+            <div class="mb-4">
+              <div class="border-b border-gray-400 pb-2 mb-2">
+                <div class="grid grid-cols-12 gap-1 text-xs font-bold">
+                  <div class="col-span-1 text-gray-700">CANT</div>
+                  <div class="col-span-6 text-gray-700">DESCRIPCIÓN</div>
+                  <div class="col-span-2 text-gray-700">P.UNIT</div>
+                  <div class="col-span-3 text-right text-gray-700">TOTAL</div>
+                </div>
+              </div>
+
+              <!-- Lista de productos -->
+              <div *ngIf="items.length > 0; else noProductos">
+                <div *ngFor="let item of items.controls; let i = index" class="mb-2 text-xs">
+                  <div class="grid grid-cols-12 gap-1">
+                    <div class="col-span-1 text-gray-700">{{item.get('cantidad')?.value || 1}}</div>
+                    <div class="col-span-6">
+                      <div class="truncate text-gray-700">{{item.get('descripcion')?.value || 'Producto sin nombre'}}</div>
+                      <div class="text-gray-500 text-xs text-gray-700">Cód: {{item.get('codigo')?.value}}</div>
+                    </div>
+                    <div class="col-span-2 text-gray-700">{{(item.get('valor_unitario')?.value || 0) | currency:'S/ ':'symbol':'1.2-2'}}</div>
+                    <div class="col-span-3 text-right font-semibold text-gray-700">
+                      {{(item.get('subtotal')?.value || 0) | currency:'S/ ':'symbol':'1.2-2'}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <ng-template #noProductos>
+                <div class="text-center py-8 text-xs text-gray-700">
+                  <p>No hay productos agregados</p>
+                </div>
+              </ng-template>
+            </div>
+
+            <!-- Totales -->
+            <div *ngIf="items.length > 0" class="border-t-2 border-dashed border-gray-400 pt-3">
+              <div class="space-y-1 text-xs">
+                <div class="flex justify-between text-gray-700">
+                  <span>SUB TOTAL:</span>
+                  <span>{{subtotalSinIgv | currency:'S/ ':'symbol':'1.2-2'}}</span>
+                </div>
+                <div class="flex justify-between text-gray-700">
+                  <span>IGV (18%):</span>
+                  <span>{{igv | currency:'S/ ':'symbol':'1.2-2'}}</span>
+                </div>
+                <div class="flex justify-between font-bold text-sm border-t border-gray-300 pt-1 text-gray-700">
+                  <span>TOTAL:</span>
+                  <span>{{ totalConIgv | currency:'S/ ':'symbol':'1.2-2' }}</span>
+                </div>
+              </div>
+
+              <!-- Total en letras -->
+              <div class="mt-3 text-xs text-gray-700">
+                <p><strong>SON:</strong> {{totalEnLetras || 'CERO CON 00/100 SOLES'}}</p>
+              </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="mt-6 text-center text-xs border-t border-dashed border-gray-400 pt-3 text-gray-700">
+              <p class="mb-2">¡Gracias por su compra!</p>
+              <p class="text-gray-500">Representación impresa de Comprobante Electrónico</p>
+            </div>
+
+            
+          </div>
+
+          <!-- Información adicional -->
+          <div class="mt-6 text-center">
+            <div class="bg-[#A7DCFF] text-black px-4 py-2 rounded-lg inline-block font-poppins">
+              <p class="text-sm">
+                Productos: {{items.length}} | 
+                Total: {{totalConIgv | currency:'S/ ':'symbol':'1.2-2'}}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
 </div>
