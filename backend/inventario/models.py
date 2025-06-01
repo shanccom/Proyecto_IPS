@@ -16,7 +16,6 @@ class Producto(models.Model):  #modelo abstracto no existente
 #Subclases
 class Montura(Producto):
     monCod = models.CharField(max_length=10, unique=True, blank=True, primary_key=True)
-
     MATERIAL_CHOICES = [
         ('M', 'Metal'),
         ('P', 'Plástico'),
@@ -65,7 +64,6 @@ class Montura(Producto):
         super().save(*args, **kwargs)
 
 class Luna(Producto):
-
     LUNA_CHOICES = [
         ('blue', 'Blue'),
         ('fotocromatico', 'Fotocromatico'),
@@ -77,16 +75,18 @@ class Luna(Producto):
         ('verde', 'Verde'),
         ('morado', 'Morado'),
     ]
-    MATERIALLUNA_CHOICES = [
+    MATERIALLUNA_CHOICES= [
         ('policarbonato', 'Policarbonato'),
         ('nk', 'NK'),
         ('resina', 'Resina'),
-        ('cristal', 'Cristal'),
+        ('cristal', 'cristal'),
     ]
-    
+    lunaCod = models.AutoField(primary_key=True)
     lunaProp = models.CharField(max_length=50, choices=LUNA_CHOICES)
     lunaMat = models.CharField(max_length=20, choices=MATERIALLUNA_CHOICES)
     lunaColorHalo = models.CharField(max_length=20, choices=HALO_CHOICES)
 
 class Accesorio(Producto):
-    accDescrip = models.TextField(blank=True, null=True)
+    accNombre = models.CharField(max_length=100)
+    accCod = models.AutoField(primary_key=True)
+    

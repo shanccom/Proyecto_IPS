@@ -21,3 +21,14 @@ class LunaViewSet(viewsets.ModelViewSet):
             'materiales': Luna.MATERIALLUNA_CHOICES,
             'colores_halo': Luna.HALO_CHOICES
         })
+
+#Comentarios = crear empleados y eliminar empleados solo a miembros del staff
+#Eliminar ventas solo miembros de staff
+#El resto de Views
+class BoletaElectronicaCreateView(APIView):
+    def post(self, request):
+        serializer = BoletaElectronicaSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

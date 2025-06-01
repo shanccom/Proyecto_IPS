@@ -1,5 +1,27 @@
 from django.db import models
-from decimal import Decimal
+from cliente.models import Cliente
+from django.utils import timezone
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from rest_framework.authtoken.models import Token
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
+
+class Empleado(models.Model):
+    CONDICION_EMPLEADO= [
+        ('activo', 'Activo'),
+        ('inactivo', 'Inactivo'),
+    ]
+    CARGO= [
+        ('gerente', 'Gerente'),
+        ('colaborador', 'Colaborador'),
+    ]
+    emplCod = models.AutoField(primary_key = True)
+    emplNom = models.CharField(max_length = 50)
+    emplCarg = models.CharField(max_length = 20, choices=CARGO)
+    empCond = models.CharField(choices = CONDICION_EMPLEADO, max_length=20)
+    
+    def __str__(self):
+        return f"{self.emplCod} {self.emplNom} {self.emplCarg}"
 
 class Cliente(models.Model):
     id = models.AutoField(primary_key=True)
@@ -14,10 +36,7 @@ class Cliente(models.Model):
         verbose_name = "Cliente"
         verbose_name_plural = "Clientes"
         db_table = 'venta_cliente'
-
-    def __str__(self):
-        return f"{self.cliNom} - {self.cliNumDoc}"
-
+        
 class Luna(models.Model):
     LUNA_CHOICES = [
         ('blue', 'Blue'),
