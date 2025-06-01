@@ -23,7 +23,9 @@ export class FormularioMonturaComponent {
       proPrecioVenta: [0],
       monMarca: [''],
       monPubl: [''],
-      monMate: ['']
+      monMate: [''],
+      monColor: [''],
+      monVendida: [false]
     });
   }
 

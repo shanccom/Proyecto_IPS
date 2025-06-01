@@ -4,12 +4,12 @@ from .models import Montura, Luna, Accesorio
 
 class MonturaSerializer(serializers.ModelSerializer):
     
-    #codigo = serializers.CharField(source='monCod')
-    #tipo = serializers.CharField(default='Montura')
+    codigo = serializers.CharField(source='monCod')
+    tipo = serializers.CharField(default='Montura')
 
-    codigo = serializers.CharField(source='proCod')
-    nombre = serializers.CharField(source='proNombre')
-    tipo = serializers.CharField(source='proTipo')
+    #codigo = serializers.CharField(source='proCod')
+    #nombre = serializers.CharField(source='proNombre')
+    #tipo = serializers.CharField(source='proTipo')
 
     marca = serializers.CharField(source='monMarca')
     publico = serializers.CharField(source='monPubl')
@@ -21,15 +21,15 @@ class MonturaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Montura
-        fields = ['codigo','nombre', 'tipo', 'marca', 'material', 'color', 'precio', 'estado']
+        fields = ['codigo', 'tipo', 'marca', 'publico', 'material', 'color', 'costo', 'precio', 'vendido']
 
 class LunaSerializer(serializers.ModelSerializer):
-    #codigo = serializers.IntegerField(source='lunaCod')
-    #tipo = serializers.CharField(source='lunaProp')
+    codigo = serializers.IntegerField(source='lunaCod')
+    tipo = serializers.CharField(source='lunaProp')
 
-    codigo = serializers.CharField(source='proCod')
-    nombre = serializers.CharField(source='proNombre')
-    tipo = serializers.CharField(source='proTipo')  
+    #codigo = serializers.CharField(source='proCod')
+    #nombre = serializers.CharField(source='proNombre')
+    #tipo = serializers.CharField(source='proTipo')  
 
     material = serializers.CharField(source='lunaMat')
     color_halo = serializers.CharField(source='lunaColorHalo', default="--")
@@ -38,15 +38,15 @@ class LunaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Luna
-        fields = ['codigo','nombre', 'tipo', 'material', 'color', 'precio', 'estado']
+        fields = ['codigo', 'tipo', 'material', 'color', 'precio', 'estado']
 
 class AccesorioSerializer(serializers.ModelSerializer):
-    #codigo = serializers.IntegerField(source='accCod')
-    #tipo = serializers.CharField(default="Accesorio")
+    codigo = serializers.IntegerField(source='accCod')
+    tipo = serializers.CharField(default="Accesorio")
 
-    codigo = serializers.CharField(source='proCod')
-    nombre = serializers.CharField(source='proNombre')
-    tipo = serializers.CharField(source='proTipo') 
+    #codigo = serializers.CharField(source='proCod')
+    #nombre = serializers.CharField(source='proNombre')
+    #tipo = serializers.CharField(source='proTipo') 
 
     material = serializers.CharField(default="--")
     color = serializers.CharField(default="--")
@@ -56,4 +56,4 @@ class AccesorioSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Accesorio
-        fields = ['codigo','nombre', 'tipo', 'material', 'color', 'precio', 'estado', 'descripcion']
+        fields = ['codigo','tipo', 'material', 'color', 'precio', 'estado', 'descripcion']
