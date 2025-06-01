@@ -2,16 +2,20 @@ from django.db import models
 import string
 #Solo llevar inventario de Producto y Accesorios la luna se crea al momento de la venta para tener registro de su existencia y pedido
 class Producto(models.Model):  #modelo abstracto no existente
+    proCod = models.AutoField(primary_key=True)
+    proNombre = models.CharField(max_length=100)
+    proTipo = models.CharField(max_length=50)  # Montura/luna/accesorio
     proCosto = models.DecimalField(max_digits=10, decimal_places=2)
     proPrecioVenta = models.DecimalField(max_digits=10, decimal_places=2)
-    proDescrip = models.TextField(blank=True, null=True) 
+    proDescrip = models.TextField(blank=True, null=True)
+    
     class Meta:
         abstract = True
         
 
 #Subclases
 class Montura(Producto):
-    monCod = models.CharField(primary_key=True, max_length=10, unique=True)
+    monCod = models.CharField(max_length=10, unique=True, blank=True, primary_key=True)
     MATERIAL_CHOICES = [
         ('M', 'Metal'),
         ('P', 'Plástico'),
@@ -50,7 +54,8 @@ class Montura(Producto):
     monMate = models.CharField(max_length=25, choices=MATERIAL_CHOICES)
     monColor = models.CharField(max_length=25, choices=COLOR_CHOICES, default='negro')
     monVendida = models.BooleanField(default=False) #Producto vendido?
-    #Ajuste para guardar segun el material y sea un autofield
+    
+    # Ajuste para guardar segun el material y sea un autofield
     def save(self, *args, **kwargs):
         if not self.monCod:
             codigo_base = self.monMate
@@ -58,7 +63,30 @@ class Montura(Producto):
             self.monCod = f"{codigo_base}{ultimo}"
         super().save(*args, **kwargs)
 
+class Luna(Producto):
+    LUNA_CHOICES = [
+        ('blue', 'Blue'),
+        ('fotocromatico', 'Fotocromatico'),
+        ('blue_fotocromatico', 'Blue Fotocromatico'),
+        ('ar', 'AR'),
+    ]
+    HALO_CHOICES = [
+        ('azul', 'Azul'),
+        ('verde', 'Verde'),
+        ('morado', 'Morado'),
+    ]
+    MATERIALLUNA_CHOICES= [
+        ('policarbonato', 'Policarbonato'),
+        ('nk', 'NK'),
+        ('resina', 'Resina'),
+        ('cristal', 'cristal'),
+    ]
+    lunaCod = models.AutoField(primary_key=True)
+    lunaProp = models.CharField(max_length=50, choices=LUNA_CHOICES)
+    lunaMat = models.CharField(max_length=20, choices=MATERIALLUNA_CHOICES)
+    lunaColorHalo = models.CharField(max_length=20, choices=HALO_CHOICES)
 
 class Accesorio(Producto):
-    accCod = models.AutoField(primary_key=True)
     accNombre = models.CharField(max_length=100)
+    accCod = models.AutoField(primary_key=True)
+    
