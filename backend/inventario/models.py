@@ -6,7 +6,7 @@ class Producto(models.Model):  #modelo abstracto no existente
     proCosto = models.DecimalField(max_digits=10, decimal_places=2)
     proPrecioVenta = models.DecimalField(max_digits=10, decimal_places=2)
     proDescrip = models.TextField(blank=True, null=True) 
-   
+
     class Meta:
         abstract = True
 
