@@ -1,25 +1,7 @@
 from rest_framework import serializers
-from .models import Empleado, Venta, BoletaElectronica, Usuario
+from .models import Empleado, Venta, BoletaElectronica
 # Asumo que estos modelos existen según tus serializers previos
 from .models import DetalleVentaMontura, DetalleVentaLuna, DetalleVentaAccesorio  
-
-#Usuario 
-class UsuarioSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Usuario
-        fields = ['NombreUser', 'empleado', 'apellidos']
-        
-    def create(self, validated_data):
-        return Usuario.objects.create_user(**validated_data)
-    
-class EmpleadoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Empleado
-        fields = [
-            'emplCod', 'emplNom', 'emplCarg', 'empCond'  
-        ]
-
-    # Si quieres validar alguna contraseña, debería estar en otro modelo o manejada aparte
 
 
 class DetalleVentaMonturaSerializer(serializers.ModelSerializer):
@@ -65,6 +47,13 @@ class DetalleVentaAccesorioSerializer(serializers.ModelSerializer):
         if data['detVenValorUni'] <= 0:
             raise serializers.ValidationError("El valor unitario debe ser mayor a 0.")
         return data
+    
+class EmpleadoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Empleado
+        fields = [
+            'emplCod', 'emplNom', 'emplCarg', 'empCond'  
+        ]
 
 
 class VentaSerializer(serializers.ModelSerializer):
