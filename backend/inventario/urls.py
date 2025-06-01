@@ -1,16 +1,12 @@
-from django.contrib import admin
-from django.urls import include, path
-from rest_framework import routers
+from django.urls import path
 from .views import (
-    PublicacionViewSet,
-    get_publicaciones_amigos
+    ProductosView,
+    new_product_montura,
+    search
 )
 
-router = routers.DefaultRouter()
-router.register(r'movie', views.MovieViewSet)
 urlpatterns = [
-    path(r'admin', admin.site.urls),
-    path('', include(router.urls)),
-    path(r'api-auth', include('router.urls', name='rest_framework'))
-path(r'<direccion', <viewPetition>, name='rest_framework'))
+    path('', ProductosView.as_view(), name="listar_productos"),
+    path(r'create_montura', new_product_montura, name="crear_montura"),
+    path(r'buscar', search, name="buscar_producto"),
 ]
