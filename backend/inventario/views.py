@@ -82,25 +82,32 @@ def search(request):
 
 
 @api_view(['GET'])
-def obtener_opciones_filtros(request):
-    tipos = ['Montura', 'Luna', 'Accesorio']
+def obtener_filtros_montura(request):
+    filtros = {
+        'marcas': [m[0] for m in Montura.MARCAS_CHOICES],
+        'publicos': [p[0] for p in Montura.PUBLICO_CHOICES],
+        'materiales': [m[0] for m in Montura.MATERIAL_CHOICES],
+        'colores': [c[0] for c in Montura.COLOR_CHOICES],
+        'precio_min': Montura.objects.all().order_by('proPrecioVenta').first().proPrecioVenta,
+        'precio_max': Montura.objects.all().order_by('-proPrecioVenta').first().proPrecioVenta,
+    }
+    return Response(filtros)
 
-    marcas = list(Montura.objects.values_list('monMarca', flat=True).distinct())
-    materiales = list(Montura.objects.values_list('monMate', flat=True).distinct()) + \
-                 list(Luna.objects.values_list('lunaMat', flat=True).distinct())
-
-    colores = list(Luna.objects.values_list('lunaColorHalo', flat=True).distinct())
-
-    estados = ['Vendido', 'No vendido']  # Puedes ajustar según tus datos
-
-    return Response({
-        'tipos': tipos,
-        'marcas': marcas,
-        'materiales': list(set(materiales)),
-        'colores': list(set(colores)),
-        'estados': estados
-    })
-
+@api_view(['GET'])
+def obtener_filtros_accesorio(request):
+    queryset = Accesorio.objects.all()
+    if queryset.exists():
+        filtros = {
+            'precio_min': queryset.order_by('proPrecioVenta').first().proPrecioVenta,
+            'precio_max': queryset.order_by('-proPrecioVenta').first().proPrecioVenta,
+        }
+    else:
+        filtros = {
+            'precio_min': 0,
+            'precio_max': 0,
+        }
+    return Response(filtros)
+    
 @csrf_exempt
 def crear_montura(request):
     if request.method == 'POST':
