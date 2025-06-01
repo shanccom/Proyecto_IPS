@@ -2,15 +2,30 @@ import { Component, OnInit } from '@angular/core';
 import { InventarioFiltrosComponent } from './inventario-filtros/inventario-filtros.component'
 import { InventarioTablaComponent } from './inventario-tabla/inventario-tabla.component';
 import { InventarioService } from '../services/inventario.service';
+import { CommonModule } from '@angular/common'; 
+import { FormularioAccesorioComponent } from './formulario-accesorio/formulario-accesorio.component';
+import { FormularioLunaComponent } from './formulario-luna/formulario-luna.component';
+import { FormularioMonturaComponent } from './formulario-montura/formulario-montura.component';
 
 @Component({
   selector: 'app-inventario',
-  imports: [  InventarioFiltrosComponent,InventarioTablaComponent],
+  imports: [  
+    InventarioFiltrosComponent, 
+    InventarioTablaComponent, 
+    CommonModule,
+    FormularioAccesorioComponent,
+    FormularioLunaComponent,
+    FormularioMonturaComponent
+    ],
   templateUrl: './inventario.component.html',
   styleUrl: './inventario.component.css'
 })
 export class InventarioComponent implements OnInit {
-  
+  //boton
+  modalVisible = false;
+  tipoFormulario = 'montura';
+  //
+
   productos: any[] = [];
   productosFiltrados: any[] = [];
   
@@ -68,6 +83,7 @@ export class InventarioComponent implements OnInit {
       const pasaFiltro = tipoPasa && marcaPasa && materialPasa && colorPasa && precioMinPasa && precioMaxPasa
 
       console.log(`Producto: ${producto.nombre} | Tipo: ${producto.tipo} => pasa: ${pasaFiltro}`);
+      
       return pasaFiltro;
     });
 
@@ -89,5 +105,30 @@ export class InventarioComponent implements OnInit {
     this.productos = this.productos.filter(p => p.codigo !== codigo);
     this.productosFiltrados = this.productosFiltrados.filter(p => p.codigo !== codigo);
   }
+  //Metodos Boton
+  seleccionarFormulario(tipo: string){
+    this.tipoFormulario = tipo as any;
+  }
+  abrirModal() {
+    this.modalVisible = true;
+    this.tipoFormulario = 'montura'; // Reset al abrir
+  }
+
+  cerrarModal() {
+    this.modalVisible = false;
+  }
+  refrescarProductos() {
+    console.log("Refrescando productos");
+    this.inventarioService.obtenerProductos().subscribe(
+      (data) => {
+        this.productos = data; 
+      },
+      (error) => {
+        console.error("Error al refrescar productos:", error);
+      }
+    );
+  }
+
+
 
 }

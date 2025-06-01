@@ -1,5 +1,5 @@
 
-<div class="flex flex-wrap items-start gap-4 p-4 bg-[#292C2D] rounded-xl shadow" style="margin-left: 80px;">
+<div class="flex flex-no-wrap items-start gap-4 p-4 bg-[#292C2D] rounded-xl shadow" style="margin-left: 80px;">
     <div *ngFor="let campo of campos" class="relative">
         <div class="text-sm font-medium mb-2">
             {{ campo | titlecase }}
@@ -31,7 +31,7 @@
 
     <div class="ml-auto flex gap-2 mt-4">
         <button
-            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+            class="bg-[#A7DCFF] text-black px-4 py-2 rounded-lg hover:bg-[#79A5C3] transition"
             (click)="aplicar()">
             Aplicar
         </button>

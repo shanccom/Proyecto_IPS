@@ -18,4 +18,17 @@ export class InventarioService {
   obtenerOpcionesFiltros() {
   return this.http.get<any>(`${this.baseUrl}productos/filtros/`);
   }
+  
+  crearMontura(montura: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}monturas/`, montura);
+  }
+
+  crearLuna(luna: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}lunas/`, luna);
+  }
+
+  crearAccesorio(accesorio: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}accesorios/`, accesorio);
+  }
+
 }
