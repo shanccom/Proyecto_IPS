@@ -2,14 +2,12 @@ from django.contrib import admin
 from django.urls import path
 from django.urls import path, include
 from inventario.views import ProductosView #url 
-from usuario.views import login  #Para poner login como pagina principal para pruebas tokens
 from inventario.views import ProductosView #url products
 from inventario.views import obtener_filtros_accesorio, obtener_filtros_montura
 from inventario.views import crear_montura, crear_accesorio 
 
 
 urlpatterns = [
-    path('', login),
     path('admin/', admin.site.urls),
     path('productos/', include('inventario.urls')),
     path('venta/', include('ventas.urls')),
