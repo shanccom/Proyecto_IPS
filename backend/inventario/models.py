@@ -11,7 +11,7 @@ class Producto(models.Model):  #modelo abstracto no existente
 
 #Subclases
 class Montura(Producto):
-    monCod = models.CharField(max_length=10, unique=True)
+    monCod = models.CharField(primary_key=True, max_length=10, unique=True)
     MATERIAL_CHOICES = [
         ('M', 'Metal'),
         ('P', 'Plástico'),
@@ -60,6 +60,5 @@ class Montura(Producto):
 
 
 class Accesorio(Producto):
-    accNombre = models.CharField(max_length=100)
     accCod = models.AutoField(primary_key=True)
-    
+    accNombre = models.CharField(max_length=100)
