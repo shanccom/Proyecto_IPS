@@ -64,7 +64,7 @@ def new_product_montura(request):
 #@permission_classes([IsAuthenticated])
 def search(request):
     codigo = request.query_params.get("codigo")
-    
+        
     # Buscar en cada modelo
     montura = Montura.objects.filter(monCod=codigo).first()
     if montura:
