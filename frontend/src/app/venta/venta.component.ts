@@ -6,7 +6,6 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Va
 import { VentasService } from '../services/ventas.service';
 import { catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 
 interface ProductoEscaneado {
   id: number;

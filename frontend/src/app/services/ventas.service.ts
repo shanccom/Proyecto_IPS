@@ -48,15 +48,16 @@ interface BoletaResponse {
     providedIn: 'root'
 })
 export class VentasService {
-    private apiUrl = 'http://localhost:3000/api';
+    private apiUrl = 'http://localhost:8000';
 
     constructor(private http: HttpClient) {}
     
     // Corregir los tipos de retorno:
     buscarProductoPorCodigo(codigo: string): Observable<ProductoResponse> {
-        return this.http.get<ProductoResponse>(`${this.apiUrl}/productos/${codigo}`);
+        return this.http.get<ProductoResponse>(`http://localhost:8000/productos/buscar?codigo=${codigo}`);
     }
 
+    
     crearBoleta(boletaData: BoletaRequest): Observable<BoletaResponse> {
         return this.http.post<BoletaResponse>(`${this.apiUrl}/boletas`, boletaData);
     }
