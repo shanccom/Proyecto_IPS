@@ -83,14 +83,18 @@ def search(request):
 
 @api_view(['GET'])
 def obtener_filtros_montura(request):
+    montura_min = Montura.objects.all().order_by('proPrecioVenta').first()
+    montura_max = Montura.objects.all().order_by('-proPrecioVenta').first()
+
     filtros = {
         'marcas': [m[0] for m in Montura.MARCAS_CHOICES],
         'publicos': [p[0] for p in Montura.PUBLICO_CHOICES],
         'materiales': [m[0] for m in Montura.MATERIAL_CHOICES],
         'colores': [c[0] for c in Montura.COLOR_CHOICES],
-        'precio_min': Montura.objects.all().order_by('proPrecioVenta').first().proPrecioVenta,
-        'precio_max': Montura.objects.all().order_by('-proPrecioVenta').first().proPrecioVenta,
+        'precio_min': montura_min.proPrecioVenta if montura_min else 0,  # Valor predeterminado si no hay monturas
+        'precio_max': montura_max.proPrecioVenta if montura_max else 0,  # Valor predeterminado si no hay monturas
     }
+    
     return Response(filtros)
 
 @api_view(['GET'])
@@ -107,7 +111,7 @@ def obtener_filtros_accesorio(request):
             'precio_max': 0,
         }
     return Response(filtros)
-    
+
 @csrf_exempt
 def crear_montura(request):
     if request.method == 'POST':
