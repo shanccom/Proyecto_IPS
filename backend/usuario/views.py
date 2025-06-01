@@ -18,7 +18,7 @@ from usuario.serializers import UsuarioSerializer
 import logging
 
 logger = logging.getLogger(__name__)
-
+# Primer usuario automaticamnete superusuario STAFF 
 # REGISTER
 @api_view(['POST'])
 def register(request):
