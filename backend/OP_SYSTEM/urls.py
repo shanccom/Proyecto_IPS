@@ -25,7 +25,9 @@ from inventario.views import crear_montura, crear_luna, crear_accesorio
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('productos/', include('inventario.urls')),
+    path('venta/', include('ventas.urls')),
 
+    
     path('productoslista/', ProductosView.as_view(), name='productos'),
     path('productoslista/filtros/',obtener_opciones_filtros),
     path('monturas/', crear_montura),
