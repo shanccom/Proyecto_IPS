@@ -20,8 +20,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 #todo
 class ProductosView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    #authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
     def get(self, request):
         monturas = MonturaSerializer(Montura.objects.all(), many=True).data
         lunas = LunaSerializer(Luna.objects.all(), many=True).data
@@ -30,8 +30,8 @@ class ProductosView(APIView):
 
 #Add new product Montura
 @api_view(["POST"])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
 
 def new_product_montura(request):
     marca = request.data.get('Marca_montura')
@@ -60,8 +60,8 @@ def new_product_montura(request):
     
 #Get product with de code
 @api_view(["GET"])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
 def search(request):
     codigo = request.query_params.get("codigo")
     
