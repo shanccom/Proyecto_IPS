@@ -12,7 +12,7 @@ import { TopbarComponent } from './topbar/topbar.component';
     RouterOutlet,
     SidebarComponent,
     TopbarComponent,
-    CommonModule
+    CommonModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'

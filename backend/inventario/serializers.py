@@ -21,7 +21,8 @@ class MonturaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Montura
-        fields = ['codigo','nombre', 'tipo', 'marca', 'material', 'color', 'precio', 'estado']
+        #fields = ['codigo', 'tipo', 'marca', 'material', 'color', 'costo', 'precio', 'vendido']
+        fields = '__all__'
 
 class LunaSerializer(serializers.ModelSerializer):
     #codigo = serializers.IntegerField(source='lunaCod')
