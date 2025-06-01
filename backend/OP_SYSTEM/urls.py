@@ -20,6 +20,8 @@ from django.urls import path, include
 from inventario.views import ProductosView #url 
 from usuario.views import login  #Para poner login como pagina principal para pruebas tokens
 from inventario.views import obtener_opciones_filtros
+from inventario.views import ProductosView #url products
+from inventario.views import obtener_filtros_accesorio, obtener_filtros_montura
 from inventario.views import crear_montura, crear_luna, crear_accesorio 
 
 
@@ -29,7 +31,9 @@ urlpatterns = [
     path('productos/', include('inventario.urls')),
     path('usuario/', include('usuario.urls')),
     path('productoslista/', ProductosView.as_view(), name='productos'),
-    path('productoslista/filtros/',obtener_opciones_filtros),
+    path('productoslista/filtros/montura/', obtener_filtros_montura),
+    path('productoslista/filtros/accesorio/', obtener_filtros_accesorio),
+    #path('productoslista/filtros/',obtener_opciones_filtros),
     path('monturas/', crear_montura),
     path('lunas/', crear_luna),
     path('accesorios/', crear_accesorio),

@@ -7,6 +7,8 @@ import { FormularioAccesorioComponent } from './formulario-accesorio/formulario-
 import { FormularioLunaComponent } from './formulario-luna/formulario-luna.component';
 import { FormularioMonturaComponent } from './formulario-montura/formulario-montura.component';
 
+type TipoFormulario = 'montura' | 'accesorio';
+
 @Component({
   selector: 'app-inventario',
   imports: [  
@@ -14,7 +16,6 @@ import { FormularioMonturaComponent } from './formulario-montura/formulario-mont
     InventarioTablaComponent, 
     CommonModule,
     FormularioAccesorioComponent,
-    FormularioLunaComponent,
     FormularioMonturaComponent
     ],
   templateUrl: './inventario.component.html',
@@ -23,7 +24,8 @@ import { FormularioMonturaComponent } from './formulario-montura/formulario-mont
 export class InventarioComponent implements OnInit {
   //boton
   modalVisible = false;
-  tipoFormulario = 'montura';
+  tipoFormulario: TipoFormulario = 'montura'; 
+  
   //
 
   productos: any[] = [];
@@ -109,6 +111,8 @@ export class InventarioComponent implements OnInit {
   seleccionarFormulario(tipo: string){
     this.tipoFormulario = tipo as any;
   }
+
+
   abrirModal() {
     this.modalVisible = true;
     this.tipoFormulario = 'montura'; // Reset al abrir
@@ -122,13 +126,14 @@ export class InventarioComponent implements OnInit {
     this.inventarioService.obtenerProductos().subscribe(
       (data) => {
         this.productos = data; 
+        this.productosFiltrados = [...this.productos];
+
       },
       (error) => {
         console.error("Error al refrescar productos:", error);
       }
     );
+    
   }
-
-
 
 }
