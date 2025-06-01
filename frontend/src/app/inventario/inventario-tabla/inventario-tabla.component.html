@@ -3,7 +3,7 @@
   <thead>
     <tr>
       <th>Código</th>
-      <th>Tipo</th>
+      <th>Nombre</th>
       <th>Marca</th>
       <th>Material</th>
       <th>Color</th>
@@ -35,7 +35,7 @@
     <thead class="bg-[#292C2D] ">
       <tr>
         <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Código</th>
-        <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Tipo</th>
+        <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Nombre</th>
         <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Marca</th>
         <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Material</th>
         <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Color</th>
@@ -47,7 +47,7 @@
     <tbody class="bg-[#3D4142] divide-y divide-[#6B6B6B]">
       <tr *ngFor="let producto of productos">
         <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.codigo }}</td>
-        <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.tipo }}</td>
+        <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.nombre }}</td>
         <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.marca }}</td>
         <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.material }}</td>
         <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.color }}</td>

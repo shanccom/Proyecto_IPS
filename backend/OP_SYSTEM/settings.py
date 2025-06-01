@@ -44,6 +44,12 @@ INSTALLED_APPS = [
     'ventas',
     'rest_framework.authtoken',
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
+
 # VAR URL GLOBAL
 
 API_BASE_URL = "http://localhost:8000/OP_SYTEM/"  # Cambiar esto para subir a la nube
