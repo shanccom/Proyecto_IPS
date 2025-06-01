@@ -3,18 +3,9 @@ import { RouterModule } from '@angular/router';
 import { ScannerComponent } from '../shared/scanner/scanner.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
-import { VentasService } from '../services/ventas.service';
+import { VentasService, Producto } from '../services/ventas.service';
 import { catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
-
-interface ProductoEscaneado {
-  id: number;
-  codigo: string;
-  nombre: string;
-  tipo: 'Montura' | 'Luna' | 'Accesorio';
-  precio: number;
-  stock: number;
-}
 
 @Component({
   selector: 'app-venta',
@@ -28,7 +19,6 @@ export class VentaComponent implements OnInit {
   ventaForm: FormGroup;
   mostrarScanner = false;
   
-
   cargandoProducto = false;
   guardandoBoleta = false;
   
@@ -40,7 +30,6 @@ export class VentaComponent implements OnInit {
   igv = 0;
   totalConIgv = 0;
   totalEnLetras = '';
-  hashGenerado = '';
   boletaGuardada = false;
 
   constructor(
@@ -69,7 +58,7 @@ export class VentaComponent implements OnInit {
     });
   }
 
-  createItemForm(producto?: ProductoEscaneado): FormGroup {
+  createItemForm(producto?: Producto): FormGroup {
     return this.fb.group({
       producto_id: [producto?.id || null, Validators.required],
       codigo: [producto?.codigo || '', Validators.required],
@@ -84,7 +73,6 @@ export class VentaComponent implements OnInit {
   get items(): FormArray {
     return this.ventaForm.get('items') as FormArray;
   }
-
 
   onCodigoEscaneado(codigo: string): void {
     console.log('Código escaneado:', codigo);
@@ -123,12 +111,12 @@ export class VentaComponent implements OnInit {
         if (producto) {
           this.agregarProductoAlFormulario(producto);
           this.mostrarScanner = false;
-          this.mostrarProductoAgregado(producto);
+          console.log(`Producto agregado: ${producto.nombre}`);
         }
       });
   }
 
-  agregarProductoAlFormulario(producto: ProductoEscaneado): void {
+  agregarProductoAlFormulario(producto: Producto): void {
     const itemExistente = this.items.controls.findIndex(
       item => item.get('producto_id')?.value === producto.id
     );
@@ -149,10 +137,6 @@ export class VentaComponent implements OnInit {
       this.items.push(nuevoItem);
       this.calcularSubtotal(this.items.length - 1);
     }
-  }
-
-  mostrarProductoAgregado(producto: ProductoEscaneado): void {
-    console.log(`Producto agregado: ${producto.nombre}`);
   }
 
   guardarBoleta(): void {
@@ -254,17 +238,7 @@ export class VentaComponent implements OnInit {
     
     this.igv = this.subtotalSinIgv * 0.18;
     this.totalConIgv = this.subtotalSinIgv + this.igv;
-    this.totalEnLetras = this.convertirNumeroALetras(this.totalConIgv);
-    this.generarHash();
-  }
-
-  convertirNumeroALetras(numero: number): string {
-    return `${numero.toFixed(2)} SOLES`;
-  }
-
-  generarHash(): void {
-    const data = `${this.ventaForm.get('serie')?.value}-${this.totalConIgv}-${this.fechaActual.getTime()}`;
-    this.hashGenerado = btoa(data).substring(0, 10);
+    this.totalEnLetras = `${this.totalConIgv.toFixed(2)} SOLES`;
   }
 
   limpiarFormulario(): void {
@@ -280,19 +254,10 @@ export class VentaComponent implements OnInit {
     this.igv = 0;
     this.totalConIgv = 0;
     this.totalEnLetras = '';
-    this.hashGenerado = '';
     this.boletaGuardada = false;
     this.fechaActual = new Date();
     
     this.generarNuevoCorrelativo();
-  }
-
-  get total(): number {
-    return this.totalConIgv;
-  }
-
-  get subtotal(): number {
-    return this.subtotalSinIgv;
   }
 
   abrirScanner(): void {

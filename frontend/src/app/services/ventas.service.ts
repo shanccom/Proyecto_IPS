@@ -2,17 +2,18 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-interface ProductoResponse {
+// Interfaz unificada para productos
+export interface Producto {
     id: number;
     codigo: string;
     nombre: string;
     tipo: 'Montura' | 'Luna' | 'Accesorio';
     precio: number;
     stock: number;
-    activo: boolean;
+    activo?: boolean; // Opcional, por si el backend lo envía
 }
 
-interface BoletaRequest {
+export interface BoletaRequest {
     serie: string;
     cliente: {
         tipo_doc: string;
@@ -29,7 +30,7 @@ interface BoletaRequest {
     total: number;
 }
 
-interface BoletaResponse {
+export interface BoletaResponse {
     id: number;
     serie: string;
     correlativo: string;
@@ -49,25 +50,31 @@ interface BoletaResponse {
 })
 export class VentasService {
     private apiUrl = 'http://localhost:8000';
+    private httpOptions = {
+        headers: new HttpHeaders({
+            'Content-Type': 'application/json'
+        })
+    };
 
     constructor(private http: HttpClient) {}
-    
-    // Corregir los tipos de retorno:
-    buscarProductoPorCodigo(codigo: string): Observable<ProductoResponse> {
-        return this.http.get<ProductoResponse>(`http://localhost:8000/productos/buscar?codigo=${codigo}`);
+
+    // Buscar producto por código
+    buscarProductoPorCodigo(codigo: string): Observable<Producto> {
+        return this.http.get<Producto>(`${this.apiUrl}/productos/buscar?codigo=${codigo}`);
     }
 
-    
+    // Crear una boleta
     crearBoleta(boletaData: BoletaRequest): Observable<BoletaResponse> {
-        return this.http.post<BoletaResponse>(`${this.apiUrl}/boletas`, boletaData);
+        return this.http.post<BoletaResponse>(`${this.apiUrl}/boletas`, boletaData, this.httpOptions);
     }
 
-    obtenerBoletas(): Observable<BoletaResponse[]> { // Corregido: eliminé el parámetro innecesario
+    // Obtener todas las boletas
+    obtenerBoletas(): Observable<BoletaResponse[]> {
         return this.http.get<BoletaResponse[]>(`${this.apiUrl}/boletas`);
     }
 
+    // Obtener siguiente correlativo
     obtenerSiguienteCorrelativo(serie: string): Observable<{ correlativo: string }> {
         return this.http.get<{ correlativo: string }>(`${this.apiUrl}/boletas/siguiente-correlativo/${serie}`);
     }
-    
 }
