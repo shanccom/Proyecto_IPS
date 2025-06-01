@@ -1,13 +1,14 @@
 from django.db import models
+
 import string
 #Solo llevar inventario de Producto y Accesorios la luna se crea al momento de la venta para tener registro de su existencia y pedido
 class Producto(models.Model):  #modelo abstracto no existente
     proCosto = models.DecimalField(max_digits=10, decimal_places=2)
     proPrecioVenta = models.DecimalField(max_digits=10, decimal_places=2)
     proDescrip = models.TextField(blank=True, null=True) 
+   
     class Meta:
         abstract = True
-        
 
 #Subclases
 class Montura(Producto):
@@ -45,11 +46,13 @@ class Montura(Producto):
         ('transparente', 'Transparente'),
         ('plomo', 'Plomo'),
     ]
+
     monMarca = models.CharField(max_length=50, choices=MARCAS_CHOICES)
     monPubl = models.CharField(max_length=25, choices=PUBLICO_CHOICES)
     monMate = models.CharField(max_length=25, choices=MATERIAL_CHOICES)
     monColor = models.CharField(max_length=25, choices=COLOR_CHOICES, default='negro')
     monVendida = models.BooleanField(default=False) #Producto vendido?
+
     #Ajuste para guardar segun el material y sea un autofield
     def save(self, *args, **kwargs):
         if not self.monCod:
