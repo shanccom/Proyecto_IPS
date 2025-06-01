@@ -9,8 +9,8 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
-from .models import Montura, Luna, Accesorio
-from .serializers import MonturaSerializer, LunaSerializer, AccesorioSerializer
+from .models import Montura, Accesorio
+from .serializers import MonturaSerializer, AccesorioSerializer
 
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
@@ -24,9 +24,8 @@ class ProductosView(APIView):
     #permission_classes = [IsAuthenticated]
     def get(self, request):
         monturas = MonturaSerializer(Montura.objects.all(), many=True).data
-        lunas = LunaSerializer(Luna.objects.all(), many=True).data
         accesorios = AccesorioSerializer(Accesorio.objects.all(), many=True).data
-        return Response(monturas + lunas + accesorios)
+        return Response(monturas + accesorios)
 
 #Add new product Montura
 @api_view(["POST"])
@@ -123,23 +122,7 @@ def crear_montura(request):
         )
         m.save()
         return JsonResponse({'mensaje': 'Montura guardada'})
-@csrf_exempt
-def crear_luna(request):
-    if request.method == 'POST':
-        data = json.loads(request.body) 
-        
-        luna = Luna(
-            proNombre=data['proNombre'],
-            proCosto=data['proCosto'],
-            proPrecioVenta=data['proPrecioVenta'],
-            lunaProp=data['lunaProp'],
-            lunaMat=data['lunaMat'],
-            lunaColorHalo=data['lunaColorHalo'],
-            proTipo='Luna'
-        )
-        luna.save()  
-        
-        return JsonResponse({'mensaje': 'Luna guardada correctamente'})
+    
 @csrf_exempt
 def crear_accesorio(request):
     if request.method == 'POST':
