@@ -1,17 +1,18 @@
 from django.db import models
 
-class Producto(models.Model):  #modelo abstracto
-    proCod = models.AutoField(primary_key=True)
-    proNombre = models.CharField(max_length=100)
-    proTipo = models.CharField(max_length=50) #Montura/luna/accesorio
-    proCosto= models.DecimalField(max_digits=10, decimal_places=2)
+import string
+#Solo llevar inventario de Producto y Accesorios la luna se crea al momento de la venta para tener registro de su existencia y pedido
+class Producto(models.Model):  #modelo abstracto no existente
+    proCosto = models.DecimalField(max_digits=10, decimal_places=2)
     proPrecioVenta = models.DecimalField(max_digits=10, decimal_places=2)
-    
+    proDescrip = models.TextField(blank=True, null=True) 
+   
     class Meta:
         abstract = True
 
 #Subclases
 class Montura(Producto):
+    monCod = models.CharField(primary_key=True, max_length=10, unique=True)
     MATERIAL_CHOICES = [
         ('M', 'Metal'),
         ('P', 'Plástico'),
@@ -52,5 +53,15 @@ class Montura(Producto):
     monColor = models.CharField(max_length=25, choices=COLOR_CHOICES, default='negro')
     monVendida = models.BooleanField(default=False) #Producto vendido?
 
+    #Ajuste para guardar segun el material y sea un autofield
+    def save(self, *args, **kwargs):
+        if not self.monCod:
+            codigo_base = self.monMate
+            ultimo = self.__class__.objects.filter(monCod__startswith=codigo_base).count() + 1
+            self.monCod = f"{codigo_base}{ultimo}"
+        super().save(*args, **kwargs)
+
+
 class Accesorio(Producto):
-    accDescrip = models.TextField(blank=True, null=True)
+    accCod = models.AutoField(primary_key=True)
+    accNombre = models.CharField(max_length=100)
