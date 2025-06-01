@@ -36,7 +36,7 @@ class Cliente(models.Model):
         verbose_name = "Cliente"
         verbose_name_plural = "Clientes"
         db_table = 'venta_cliente'
-        
+
 class Luna(models.Model):
     LUNA_CHOICES = [
         ('blue', 'Blue'),
