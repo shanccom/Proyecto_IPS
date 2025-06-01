@@ -1,23 +1,23 @@
 from django.db import models
-
-class Producto(models.Model):  #modelo abstracto
-    proCod = models.AutoField(primary_key=True)
-    proNombre = models.CharField(max_length=100)
-    proTipo = models.CharField(max_length=50) #Montura/luna/accesorio
+import string
+#Solo llevar inventario de Producto y Accesorios la luna se crea al momento de la venta para tener registro de su existencia y pedido
+class Producto(models.Model):  #modelo abstracto no existente
     proCosto= models.DecimalField(max_digits=10, decimal_places=2)
     proPrecioVenta = models.DecimalField(max_digits=10, decimal_places=2)
     
     class Meta:
         abstract = True
+        
 
 #Subclases
 class Montura(Producto):
+    monCod = models.CharField(max_length=10, unique=True, blank=True)
     MATERIAL_CHOICES = [
-        ('metal', 'Metal'),
-        ('plastico', 'Plástico'),
-        ('acetato', 'Acetato'),
-        ('carey', 'Carey'),
-        ('tr', 'TR'),
+        ('M', 'Metal'),
+        ('P', 'Plástico'),
+        ('A', 'Acetato'),
+        ('C', 'Carey'),
+        ('TR', 'TR'),
     ]
     PUBLICO_CHOICES = [
         ('mujer_clasico', 'Mujer Clasico'),
@@ -34,6 +34,14 @@ class Montura(Producto):
     monMarca = models.CharField(max_length=50, choices=MARCAS_CHOICES)
     monPubl = models.CharField(max_length=25, choices=PUBLICO_CHOICES)
     monMate = models.CharField(max_length=25, choices=MATERIAL_CHOICES)
+    
+    #Ajuste para guardar segun el material y sea un autofield
+    def save(self, *args, **kwargs):
+        if not self.monCod:
+            codigo_base = self.monMate
+            ultimo = self.__class__.objects.filter(monCod__startswith=codigo_base).count() + 1
+            self.monCod = f"{codigo_base}{ultimo}"
+        super().save(*args, **kwargs)
 
 class Luna(Producto):
     LUNA_CHOICES = [
@@ -53,9 +61,12 @@ class Luna(Producto):
         ('resina', 'Resina'),
         ('cristal', 'cristal'),
     ]
+    lunaCod = models.AutoField(primary_key=True)
     lunaProp = models.CharField(max_length=50, choices=LUNA_CHOICES)
     lunaMat = models.CharField(max_length=20, choices=MATERIALLUNA_CHOICES)
     lunaColorHalo = models.CharField(max_length=20, choices=HALO_CHOICES)
 
 class Accesorio(Producto):
-    accDescrip = models.TextField(blank=True, null=True)
+    accNombre = models.CharField(max_length=100)
+    accCod = models.AutoField(primary_key=True)
+    accDescrip = models.TextField(blank=True, null=True) 
