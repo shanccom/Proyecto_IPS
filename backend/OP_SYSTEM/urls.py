@@ -17,15 +17,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import path, include
-from inventario.views import ProductosView #url products
+from inventario.views import ProductosView #url 
+from usuario.views import login  #Para poner login como pagina principal para pruebas tokens
 from inventario.views import obtener_opciones_filtros
 from inventario.views import crear_montura, crear_luna, crear_accesorio 
 
 
 urlpatterns = [
+    path('', login),
     path('admin/', admin.site.urls),
     path('productos/', include('inventario.urls')),
-
+    path('usuario/', include('usuario.urls')),
     path('productoslista/', ProductosView.as_view(), name='productos'),
     path('productoslista/filtros/',obtener_opciones_filtros),
     path('monturas/', crear_montura),

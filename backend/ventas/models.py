@@ -23,6 +23,31 @@ class Empleado(models.Model):
     def __str__(self):
         return f"{self.emplCod} {self.emplNom} {self.emplCarg}"
 
+class Luna(models.Model):
+    LUNA_CHOICES = [
+        ('blue', 'Blue'),
+        ('fotocromatico', 'Fotocromatico'),
+        ('blue_fotocromatico', 'Blue Fotocromatico'),
+        ('ar', 'AR'),
+    ]
+    HALO_CHOICES = [
+        ('azul', 'Azul'),
+        ('verde', 'Verde'),
+        ('morado', 'Morado'),
+    ]
+    MATERIALLUNA_CHOICES= [
+        ('policarbonato', 'Policarbonato'),
+        ('nk', 'NK'),
+        ('resina', 'Resina'),
+        ('cristal', 'cristal'),
+    ]
+    lunaCod = models.AutoField(primary_key=True)
+    lunaProp = models.CharField(max_length=50, choices=LUNA_CHOICES)
+    lunaMat = models.CharField(max_length=20, choices=MATERIALLUNA_CHOICES)
+    lunaColorHalo = models.CharField(max_length=20, choices=HALO_CHOICES)
+    lunaCosto = models.DecimalField(max_digits= 10,decimal_places= 2)
+    lunaPrecioVenta = models.DecimalField(max_digits= 10,decimal_places= 2)
+    
 
 class Venta(models.Model):
     TIPO_PAGO = [
