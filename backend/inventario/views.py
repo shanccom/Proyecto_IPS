@@ -9,14 +9,14 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
-from .models import Montura, Luna, Accesorio
-from .serializers import MonturaSerializer, LunaSerializer, AccesorioSerializer
+from .models import Montura, Accesorio
+from .serializers import MonturaSerializer, AccesorioSerializer
 
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
-
+#Eliminar inventario solo para miembros del staff
 
 #todo
 class ProductosView(APIView):
@@ -24,9 +24,8 @@ class ProductosView(APIView):
     #permission_classes = [IsAuthenticated]
     def get(self, request):
         monturas = MonturaSerializer(Montura.objects.all(), many=True).data
-        lunas = LunaSerializer(Luna.objects.all(), many=True).data
         accesorios = AccesorioSerializer(Accesorio.objects.all(), many=True).data
-        return Response(monturas + lunas + accesorios)
+        return Response(monturas + accesorios)
 
 #Add new product Montura
 @api_view(["POST"])
@@ -69,11 +68,6 @@ def search(request):
     montura = Montura.objects.filter(monCod=codigo).first()
     if montura:
         return Response(MonturaSerializer(montura).data)
-    
-    luna = Luna.objects.filter(lunaCod=codigo).first()
-    if luna:
-        return Response(LunaSerializer(luna).data)
-
     accesorio = Accesorio.objects.filter(accCod=codigo).first()
     if accesorio:
         return Response(AccesorioSerializer(accesorio).data)
@@ -82,24 +76,35 @@ def search(request):
 
 
 @api_view(['GET'])
-def obtener_opciones_filtros(request):
-    tipos = ['Montura', 'Luna', 'Accesorio']
+def obtener_filtros_montura(request):
+    montura_min = Montura.objects.all().order_by('proPrecioVenta').first()
+    montura_max = Montura.objects.all().order_by('-proPrecioVenta').first()
 
-    marcas = list(Montura.objects.values_list('monMarca', flat=True).distinct())
-    materiales = list(Montura.objects.values_list('monMate', flat=True).distinct()) + \
-                 list(Luna.objects.values_list('lunaMat', flat=True).distinct())
+    filtros = {
+        'marcas': [m[0] for m in Montura.MARCAS_CHOICES],
+        'publicos': [p[0] for p in Montura.PUBLICO_CHOICES],
+        'materiales': [m[0] for m in Montura.MATERIAL_CHOICES],
+        'colores': [c[0] for c in Montura.COLOR_CHOICES],
+        'precio_min': montura_min.proPrecioVenta if montura_min else 0,  # Valor predeterminado si no hay monturas
+        'precio_max': montura_max.proPrecioVenta if montura_max else 0,  # Valor predeterminado si no hay monturas
+    }
+    
+    return Response(filtros)
 
-    colores = list(Luna.objects.values_list('lunaColorHalo', flat=True).distinct())
-
-    estados = ['Vendido', 'No vendido']  # Puedes ajustar según tus datos
-
-    return Response({
-        'tipos': tipos,
-        'marcas': marcas,
-        'materiales': list(set(materiales)),
-        'colores': list(set(colores)),
-        'estados': estados
-    })
+@api_view(['GET'])
+def obtener_filtros_accesorio(request):
+    queryset = Accesorio.objects.all()
+    if queryset.exists():
+        filtros = {
+            'precio_min': queryset.order_by('proPrecioVenta').first().proPrecioVenta,
+            'precio_max': queryset.order_by('-proPrecioVenta').first().proPrecioVenta,
+        }
+    else:
+        filtros = {
+            'precio_min': 0,
+            'precio_max': 0,
+        }
+    return Response(filtros)
 
 @csrf_exempt
 def crear_montura(request):
@@ -117,23 +122,7 @@ def crear_montura(request):
         )
         m.save()
         return JsonResponse({'mensaje': 'Montura guardada'})
-@csrf_exempt
-def crear_luna(request):
-    if request.method == 'POST':
-        data = json.loads(request.body) 
-        
-        luna = Luna(
-            proNombre=data['proNombre'],
-            proCosto=data['proCosto'],
-            proPrecioVenta=data['proPrecioVenta'],
-            lunaProp=data['lunaProp'],
-            lunaMat=data['lunaMat'],
-            lunaColorHalo=data['lunaColorHalo'],
-            proTipo='Luna'
-        )
-        luna.save()  
-        
-        return JsonResponse({'mensaje': 'Luna guardada correctamente'})
+    
 @csrf_exempt
 def crear_accesorio(request):
     if request.method == 'POST':

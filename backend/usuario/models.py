@@ -4,7 +4,8 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from rest_framework.authtoken.models import Token
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
-
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 # Create your models here.
 class CustomUserManager(BaseUserManager):
@@ -25,7 +26,7 @@ class CustomUserManager(BaseUserManager):
 
 class Usuario(AbstractBaseUser):
     usuarioNom = models.CharField(unique= True, max_length = 10)
-    emplCod = models.OneToOneField(Empleado, related_name='Dueño', on_delete=models.CASCADE)
+    emplCod = models.OneToOneField(Empleado, related_name='usuario', on_delete=models.CASCADE)
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     objects = CustomUserManager()
@@ -35,4 +36,8 @@ class Usuario(AbstractBaseUser):
 
     def __str__(self):
         return str( self.usuarioNom)
-    
+# Señal para crear token automáticamente
+@receiver(post_save, sender=Usuario)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)

@@ -11,6 +11,8 @@ export class InventarioTablaComponent {
   @Input() productos: any[] = [];
   @Output() editar = new EventEmitter<any>();
   @Output() eliminar = new EventEmitter<string>();
+  @Input() tipo: 'montura' | 'accesorio' = 'montura';
+
 
   onEditar(producto: any) {
     this.editar.emit(producto);
