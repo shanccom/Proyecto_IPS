@@ -26,9 +26,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('productos/', include('inventario.urls')),
 
-
-urlpatterns = [
-    
     path('productoslista/', ProductosView.as_view(), name='productos'),
     path('productoslista/filtros/',obtener_opciones_filtros),
     path('monturas/', crear_montura),

@@ -12,11 +12,11 @@ export class InventarioService {
   constructor(private http: HttpClient) { }
 
   obtenerProductos(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}productos/`);
+    return this.http.get<any[]>(`${this.baseUrl}productoslista/`);
   }
 
   obtenerOpcionesFiltros() {
-  return this.http.get<any>(`${this.baseUrl}productos/filtros/`);
+  return this.http.get<any>(`${this.baseUrl}productoslista/filtros/`);
   }
   
   crearMontura(montura: any): Observable<any> {
