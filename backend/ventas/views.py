@@ -26,6 +26,7 @@ class LunaViewSet(viewsets.ModelViewSet):
 #Comentarios = crear empleados y eliminar empleados solo a miembros del staff
 #Eliminar ventas solo miembros de staff
 #El resto de Views
+
 class BoletaElectronicaCreateView(APIView):
     def post(self, request):
         serializer = BoletaElectronicaSerializer(data=request.data)
