@@ -1,9 +1,7 @@
 from django.contrib import admin
-from ventas.models import Empleado, Venta, DetalleVentaLuna, DetalleVentaMontura, DetalleVentaAccesorio, BoletaElectronica
+from ventas.models import Empleado, Venta, DetalleVenta, BoletaElectronica
 # Register your models here.
 admin.site.register(Empleado)
 admin.site.register(Venta)
-admin.site.register(DetalleVentaLuna)
-admin.site.register(DetalleVentaMontura)
-admin.site.register(DetalleVentaAccesorio)
+admin.site.register(DetalleVenta)
 admin.site.register(BoletaElectronica)
