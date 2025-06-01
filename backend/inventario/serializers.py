@@ -14,7 +14,7 @@ class MonturaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Montura
-        fields = ['codigo', 'tipo', 'marca', 'publico', 'material', 'color', 'costo', 'precio', 'vendido']
+        fields = ['codigo', 'nombre','tipo', 'marca', 'publico', 'material', 'color', 'costo', 'precio', 'vendido']
 
 class AccesorioSerializer(serializers.ModelSerializer):
     codigo = serializers.CharField(source='proCod')
