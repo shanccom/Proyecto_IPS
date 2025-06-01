@@ -18,9 +18,13 @@ from django.contrib import admin
 from django.urls import path
 from inventario.views import ProductosView
 from inventario.views import obtener_opciones_filtros
+from inventario.views import crear_montura, crear_luna, crear_accesorio 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('productos/', ProductosView.as_view(), name='productos'),
     path('productos/filtros/',obtener_opciones_filtros),
+    path('monturas/', crear_montura),
+    path('lunas/', crear_luna),
+    path('accesorios/', crear_accesorio),
 ]
