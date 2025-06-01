@@ -3,13 +3,13 @@ from .models import Montura, Luna, Accesorio
 
 
 class MonturaSerializer(serializers.ModelSerializer):
-    codigo = serializers.CharField(source='proCod')
-    tipo = serializers.CharField(source='proTipo')
+    codigo = serializers.CharField(source='monCod')
+    tipo = serializers.CharField(default='Montura')
     marca = serializers.CharField(source='monMarca')
     material = serializers.CharField(source='monMate')
     color = serializers.CharField(default="--")
     precio = serializers.DecimalField(source='proCosto', max_digits=10, decimal_places=2)
-    estado = serializers.CharField(source='proPrecioVenta', default="Disponible")
+    estado = serializers.DecimalField(source='proPrecioVenta', max_digits=10, decimal_places=2)
 
     class Meta:
         model = Montura
@@ -17,12 +17,12 @@ class MonturaSerializer(serializers.ModelSerializer):
 
 
 class LunaSerializer(serializers.ModelSerializer):
-    codigo = serializers.CharField(source='proCod')
-    tipo = serializers.CharField(source='proTipo')  
+    codigo = serializers.IntegerField(source='lunaCod')
+    tipo = serializers.CharField(source='lunaProp')
     material = serializers.CharField(source='lunaMat')
     color = serializers.CharField(source='lunaColorHalo', default="--")
     precio = serializers.DecimalField(source='proCosto', max_digits=10, decimal_places=2)
-    estado = serializers.CharField(source='proPrecioVenta', default="Disponible")
+    estado = serializers.DecimalField(source='proPrecioVenta', max_digits=10, decimal_places=2)
 
     class Meta:
         model = Luna
@@ -30,12 +30,12 @@ class LunaSerializer(serializers.ModelSerializer):
 
 
 class AccesorioSerializer(serializers.ModelSerializer):
-    codigo = serializers.CharField(source='proCod')
-    tipo = serializers.CharField(source='proTipo') 
+    codigo = serializers.IntegerField(source='accCod')
+    tipo = serializers.CharField(default="Accesorio")
     material = serializers.CharField(default="--")
     color = serializers.CharField(default="--")
     precio = serializers.DecimalField(source='proCosto', max_digits=10, decimal_places=2)
-    estado = serializers.CharField(source='proPrecioVenta', default="Disponible")
+    estado = serializers.DecimalField(source='proPrecioVenta', max_digits=10, decimal_places=2)
     descripcion = serializers.CharField(source='accDescrip')
 
     class Meta:
