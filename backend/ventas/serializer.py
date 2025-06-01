@@ -1,17 +1,25 @@
 from rest_framework import serializers
-from .models import Empleado, Venta, DetalleVentaMontura, DetalleVentaLuna, DetalleVentaAccesorio, BoletaElectronica
+from .models import Empleado, Venta, BoletaElectronica, Usuario
+# Asumo que estos modelos existen según tus serializers previos
+from .models import DetalleVentaMontura, DetalleVentaLuna, DetalleVentaAccesorio  
 
+#Usuario 
+class UsuarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = ['NombreUser', 'empleado', 'apellidos']
+        
+    def create(self, validated_data):
+        return Usuario.objects.create_user(**validated_data)
+    
 class EmpleadoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Empleado
         fields = [
-            'emplCod', 'emplNom', 'emplCarg', 'empUsua', 'empContr', 'empCond'
+            'emplCod', 'emplNom', 'emplCarg', 'empCond'  
         ]
 
-    def validate_empContr(self, value):
-        if len(value) < 6:
-            raise serializers.ValidationError("La contraseña debe tener al menos 6 caracteres.")
-        return value
+    # Si quieres validar alguna contraseña, debería estar en otro modelo o manejada aparte
 
 
 class DetalleVentaMonturaSerializer(serializers.ModelSerializer):
@@ -73,13 +81,14 @@ class VentaSerializer(serializers.ModelSerializer):
         lunas = DetalleVentaLuna.objects.filter(ventNum=obj)
         accesorios = DetalleVentaAccesorio.objects.filter(ventNum=obj)
 
-        total = sum(item.detVenCantidad * item.detVenValorUni for item in monturas)
-        total += sum(item.detVenCantidad * item.detVenValorUni for item in lunas)
-        total += sum(item.detVenCantidad * item.detVenValorUni for item in accesorios)
+        total = sum(item.detVenCantidad * float(item.detVenValorUni) for item in monturas)
+        total += sum(item.detVenCantidad * float(item.detVenValorUni) for item in lunas)
+        total += sum(item.detVenCantidad * float(item.detVenValorUni) for item in accesorios)
         return total
 
     def validate(self, data):
-        if data['venTipoPago'] == 'Credito' and (data.get('venSaldoRes') is None or data['venSaldoRes'] <= 0):
+        # Aseguramos que el venTipoPago y venEstado sean minúsculas según modelo
+        if data.get('venTipoPago') == 'credito' and (data.get('venSaldoRes') is None or data['venSaldoRes'] <= 0):
             raise serializers.ValidationError("Para crédito, debe haber un saldo restante positivo.")
         return data
 
@@ -93,9 +102,9 @@ class BoletaElectronicaSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, data):
-        venta = data['ventNum']
-        if venta.venEstado != 'Cancelado':
-            boleEstadoEnvio = 'N'
+        venta = data.get('ventNum')
+        if venta and venta.venEstado != 'cancelado':
+            raise serializers.ValidationError("La boleta solo puede generarse si la venta está cancelada totalmente")
         return data
 
     def validate_boleFech(self, value):
