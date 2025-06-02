@@ -1,30 +1,31 @@
-<form [formGroup]="form" (ngSubmit)="guardar()" class="grid grid-cols-2 gap-4 p-6 rounded-lg text-white ">
-  <!-- Nombre -->
-  <div class="flex flex-col col-span-2">
-    <label class="mb-1 font-medium">Nombre</label>
-    <input formControlName="proNombre" placeholder="Nombre"
-      class="bg-[#3D4142] text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+<form [formGroup]="form" (ngSubmit)="guardar()" class="grid grid-cols-2 gap-4 p-6 rounded-lg text-white">
+  
+  <!-- Nombre del Accesorio -->
+  <div class="flex flex-col">
+    <label class="mb-1 font-medium">Nombre del Accesorio</label>
+    <input type="text" formControlName="accNombre" placeholder="Nombre del Accesorio"
+      class="bg-[#3D4142] text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
   </div>
 
-  <!-- Precio Venta -->
+  <!-- Descripción -->
   <div class="flex flex-col">
-    <label class="mb-1 font-medium">Precio Venta</label>
-    <input type="number" formControlName="proPrecioVenta" placeholder="Precio Venta"
-      class="bg-[#3D4142] text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+    <label class="mb-1 font-medium">Descripción</label>
+    <textarea formControlName="accDescrip" placeholder="Descripción"
+      class="bg-[#3D4142] text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
   </div>
 
   <!-- Costo -->
   <div class="flex flex-col">
     <label class="mb-1 font-medium">Costo</label>
     <input type="number" formControlName="proCosto" placeholder="Costo"
-      class="bg-[#3D4142] text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+      class="bg-[#3D4142] text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
   </div>
 
-  <!-- Descripción -->
-  <div class="flex flex-col col-span-2">
-    <label class="mb-1 font-medium">Descripción</label>
-    <textarea formControlName="accDescrip" placeholder="Descripción"
-      class="bg-[#3D4142] text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"></textarea>
+  <!-- Precio de Venta -->
+  <div class="flex flex-col">
+    <label class="mb-1 font-medium">Precio de Venta</label>
+    <input type="number" formControlName="proPrecioVenta" placeholder="Precio de Venta"
+      class="bg-[#3D4142] text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
   </div>
 
   <!-- Botones -->

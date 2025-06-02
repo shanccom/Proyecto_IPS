@@ -6,8 +6,9 @@ router = DefaultRouter()
 router.register(r'clientes', views.ClienteViewSet, basename='cliente')
 router.register(r'lunas', views.LunaViewSet, basename='luna')
 
-# URLs de la app venta
 urlpatterns = [
-    # Incluir todas las rutas del router
     path('', include(router.urls)),
+    path('boletas/', views.crear_boleta, name='crear_boleta'),
+    path('boletas/lista/', views.listar_boletas, name='listar_boletas'),
+    path('boletas/siguiente-correlativo/<str:serie>/', views.obtener_siguiente_correlativo, name='siguiente_correlativo'),
 ]

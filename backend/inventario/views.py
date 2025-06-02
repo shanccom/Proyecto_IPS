@@ -126,16 +126,28 @@ def crear_montura(request):
 @csrf_exempt
 def crear_accesorio(request):
     if request.method == 'POST':
-        data = json.loads(request.body) 
-        
-        accesorio = Accesorio(
-            proNombre=data['proNombre'],
-            proCosto=data['proCosto'],
-            proPrecioVenta=data['proPrecioVenta'],
-            accDescrip=data.get('accDescrip', ''),
-            proTipo='Accesorio'
-        )
-        accesorio.save()
-        
-        return JsonResponse({'mensaje': 'Accesorio guardado correctamente'})
+        try:
+            data = json.loads(request.body)
 
+            accesorio = Accesorio(
+                proCosto=data['proCosto'],
+                proPrecioVenta=data['proPrecioVenta'],
+                proDescrip=data.get('accDescrip', ''),  
+                accNombre=data['accNombre'], 
+            )
+            accesorio.save()
+            return JsonResponse({'mensaje': 'Accesorio guardado correctamente', 'id': accesorio.accCod})
+
+        except KeyError as e:
+            # Si falta algún campo esencial en los datos
+            return JsonResponse({'error': f'Campo faltante: {str(e)}'}, status=400)
+
+        except json.JSONDecodeError:
+            # Si los datos no son válidos JSON
+            return JsonResponse({'error': 'Datos mal formados. Se esperaba JSON.'}, status=400)
+
+        except Exception as e:
+            # Cualquier otro error general
+            return JsonResponse({'error': str(e)}, status=500)
+
+    return JsonResponse({'error': 'Método no permitido'}, status=405)

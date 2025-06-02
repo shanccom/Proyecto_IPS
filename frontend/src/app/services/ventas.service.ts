@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-// Interfaz unificada para productos
 export interface Producto {
-    id: number;
-    codigo: string;
-    nombre: string;
-    tipo: 'Montura' | 'Luna' | 'Accesorio';
-    precio: number;
-    stock: number;
-    activo?: boolean; // Opcional, por si el backend lo envía
+  id?: number;
+  codigo: string;
+  nombre: string; 
+  precio: number;
+  stock: number;
+  tipo_producto?: string; // Agregar tipo de producto
 }
 
 export interface BoletaRequest {
@@ -24,6 +23,7 @@ export interface BoletaRequest {
         producto_id: number;
         cantidad: number;
         valor_unitario: number;
+        tipo_producto?: string; // Agregar tipo de producto
     }[];
     subtotal: number;
     igv: number;
@@ -58,23 +58,31 @@ export class VentasService {
 
     constructor(private http: HttpClient) {}
 
-    // Buscar producto por código
     buscarProductoPorCodigo(codigo: string): Observable<Producto> {
-        return this.http.get<Producto>(`${this.apiUrl}/productos/buscar?codigo=${codigo}`);
-    }
+      return this.http.get<any>(`${this.apiUrl}/productos/buscar?codigo=${codigo}`)
+        .pipe(
+          map(data => ({
+            id: data.codigo || null,
+            codigo: data.codigo,
+            nombre: data.publico || 'Producto sin nombre',
+            precio: parseFloat(data.precio),
+            stock: data.stock
+          }))
+        );
+}
 
-    // Crear una boleta
+  // Crear una boleta
     crearBoleta(boletaData: BoletaRequest): Observable<BoletaResponse> {
-        return this.http.post<BoletaResponse>(`${this.apiUrl}/boletas`, boletaData, this.httpOptions);
+        return this.http.post<BoletaResponse>(`${this.apiUrl}/ventas/boletas/`, boletaData, this.httpOptions);
     }
 
     // Obtener todas las boletas
-    obtenerBoletas(): Observable<BoletaResponse[]> {
-        return this.http.get<BoletaResponse[]>(`${this.apiUrl}/boletas`);
+    obtenerBoletas(): Observable<{boletas: BoletaResponse[], total_boletas: number}> {
+        return this.http.get<{boletas: BoletaResponse[], total_boletas: number}>(`${this.apiUrl}/ventas/boletas/lista/`);
     }
 
     // Obtener siguiente correlativo
     obtenerSiguienteCorrelativo(serie: string): Observable<{ correlativo: string }> {
-        return this.http.get<{ correlativo: string }>(`${this.apiUrl}/boletas/siguiente-correlativo/${serie}`);
+        return this.http.get<{ correlativo: string }>(`${this.apiUrl}/ventas/boletas/siguiente-correlativo/${serie}/`);
     }
 }
