@@ -26,7 +26,6 @@ class MonturaSerializer(serializers.ModelSerializer):
 
 class AccesorioSerializer(serializers.ModelSerializer):
     codigo = serializers.CharField(source='accCod')
-    nombre = serializers.CharField(source='accNombre')
     costo = serializers.DecimalField(source='proCosto', max_digits=10, decimal_places=2)
     precio = serializers.DecimalField(source='proPrecioVenta', max_digits=10, decimal_places=2)
     descripcion = serializers.CharField(source='proDescrip', default="")

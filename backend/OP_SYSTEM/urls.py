@@ -5,6 +5,7 @@ from inventario.views import ProductosView #url
 from inventario.views import ProductosView #url products
 from inventario.views import obtener_filtros_accesorio, obtener_filtros_montura
 from inventario.views import crear_montura, crear_accesorio 
+from cliente.views import RecetaListCreateView
 
 
 urlpatterns = [
@@ -19,4 +20,6 @@ urlpatterns = [
     #path('productoslista/filtros/',obtener_opciones_filtros),
     path('monturas/', crear_montura),
     path('accesorios/', crear_accesorio),
+    path('recetas/', RecetaListCreateView.as_view(), name='recetas-list-create'),
+
 ]
