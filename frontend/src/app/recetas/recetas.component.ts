@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { RecetaService } from '../services/receta.service';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormularioRecetaComponent } from './formulario-receta/formulario-receta.component'; 
 
 @Component({
   selector: 'app-recetas',
-  imports: [FormsModule],
+  imports: [CommonModule, FormsModule, FormularioRecetaComponent],
   templateUrl: './recetas.component.html',
   styleUrl: './recetas.component.css'
 })
@@ -17,7 +19,7 @@ export class RecetasComponent implements OnInit{
   ngOnInit(): void {
     this.recetaService.getRecetas().subscribe(
       (data) => {
-        console.log(data); 
+        console.log("Data Recetas: ",data); 
         this.recetas = data;
       },
       (error) => {
@@ -26,18 +28,23 @@ export class RecetasComponent implements OnInit{
     );
 
   }
+  obtenerRecetas(): void {
+    this.recetaService.getRecetas().subscribe(
+      (data) => {
+        console.log("Recetas obtenidas: ", data); 
+        this.recetas = data;  // Asigna las recetas a la variable
+      },
+      (error) => {
+        console.error('Error al cargar las recetas', error);  // Maneja los errores
+      }
+    );
+  }
 
-
-
-  nuevaReceta: any = {
-    cliCod: null,
-    rectOpt: false,
-    recDIPLejos: null,
-    recfecha: '',
-    // agrega los demás campos necesarios aquí...
-  };
 
   abrirFormulario() {
     this.mostrarFormulario = true;
+  }
+  cerrarFormulario() {
+    this.mostrarFormulario = false;
   }
 }
