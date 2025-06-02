@@ -29,6 +29,9 @@ class LunaViewSet(viewsets.ModelViewSet):
             'materiales': Luna.MATERIALLUNA_CHOICES,
             'colores_halo': Luna.HALO_CHOICES
         })
+        
+# Recuperar
+# Eliminar ventas solo miembros de staff
 
 def buscar_producto(codigo_producto):
 
