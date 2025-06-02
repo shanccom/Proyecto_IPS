@@ -103,8 +103,15 @@ export class InventarioComponent implements OnInit {
   }
 
   eliminar(codigo: string) {
-    this.productos = this.productos.filter(p => p.codigo !== codigo);
-    this.productosFiltrados = this.productosFiltrados.filter(p => p.codigo !== codigo);
+    this.inventarioService.eliminarMontura(codigo ).subscribe(
+      (data) => {
+        this.refrescarProductos();
+      },
+      (error) => {
+        console.error('Error al eliminar productos:', error);
+      }
+    );
+    
   }
   //Metodos Boton
   seleccionarFormulario(tipo: string){

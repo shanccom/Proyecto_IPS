@@ -9,7 +9,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
-from .models import Montura, Accesorio
+from .models import Montura, Accesorio, Producto
 from .serializers import MonturaSerializer, AccesorioSerializer
 
 from rest_framework.decorators import api_view
@@ -151,3 +151,17 @@ def crear_accesorio(request):
             return JsonResponse({'error': str(e)}, status=500)
 
     return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+#Eliminar montura/accesorio
+#@permission_classes([IsAdminUser]) //Solo admin
+#@permission_classes([IsAuthenticated]
+@api_view(['DELETE'])
+def delete_montura(request):
+    try:
+        montura = Montura.objects.get(monCod=request.query_params.get("monCod"))
+        montura.delete()
+        return Response({"mensaje": "Montura eliminada correctamente"}, status=200);
+        
+    except Montura.DoesNotExist:
+        return Response({"error": "Montura no encontrada"}, status=status.HTTP_404_NOT_FOUND)
+        
