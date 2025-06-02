@@ -12,7 +12,8 @@ class MonturaSerializer(serializers.ModelSerializer):
     precio = serializers.DecimalField(source='proPrecioVenta', max_digits=10, decimal_places=2)
     vendido = serializers.BooleanField(source='monVendida')
     descripcion = serializers.CharField(source='proDescrip', default="")
-    
+    stock = serializers.IntegerField(source='proStock')
+
     # Si quieres un campo estado calculado basado en si está vendido o no
     estado = serializers.SerializerMethodField()
     
@@ -21,7 +22,7 @@ class MonturaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Montura
-        fields = ['codigo', 'marca', 'publico', 'material', 'color', 'costo', 'precio', 'vendido', 'descripcion', 'estado']
+        fields = ['codigo', 'marca', 'publico', 'material', 'color', 'costo', 'precio', 'vendido', 'descripcion', 'estado', 'stock']
 
 
 class AccesorioSerializer(serializers.ModelSerializer):
