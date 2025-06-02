@@ -31,30 +31,57 @@
 
 -->
 <div class="overflow-x-auto mt-4 ml-[80px]">
-  <table class="min-w-full divide-y divide-[#6B6B6B]border border-gray-300">
-    <thead class="bg-[#292C2D] ">
+  <table class="min-w-full divide-y divide-[#6B6B6B] ">
+    <thead class="bg-[#292C2D]">
       <tr>
         <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Código</th>
-        <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Nombre</th>
-        <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Marca</th>
-        <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Material</th>
-        <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Color</th>
-        <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Precio</th>
-        <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Estado</th>
+
+        <!-- Montura -->
+        <ng-container *ngIf="tipo === 'montura'">
+          <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Marca</th>
+          <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Material</th>
+          <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Público</th>
+          <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Color</th>
+          <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Estado</th>
+          <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Precio</th>
+        </ng-container>
+
+        <!-- Accesorio -->
+        <ng-container *ngIf="tipo === 'accesorio'">
+          <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Nombre del Accesorio</th>
+          <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Descripción</th>
+          <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Costo</th>
+          <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Precio de Venta</th>
+        </ng-container>
+
         <th class="px-4 py-2 text-center text-sm font-normal text-white-700">Acciones</th>
       </tr>
     </thead>
+
     <tbody class="bg-[#3D4142] divide-y divide-[#6B6B6B]">
       <tr *ngFor="let producto of productos">
         <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.codigo }}</td>
-        <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.nombre }}</td>
-        <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.marca }}</td>
-        <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.material }}</td>
-        <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.color }}</td>
-        <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.precio | currency:'PEN' }}</td>
-        <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.estado }}</td>
+
+        <!-- Montura -->
+        <ng-container *ngIf="tipo === 'montura'">
+          <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.marca }}</td>
+          <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.material }}</td>
+          <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.publico }}</td>
+          <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.color }}</td>
+          <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.estado }}</td>
+          <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.precio | currency:'PEN' }}</td>
+        </ng-container>
+
+        <!-- Accesorio -->
+        <ng-container *ngIf="tipo === 'accesorio'">
+          <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.nombre }}</td>
+          <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.descripcion }}</td>
+          <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.costo | currency:'PEN' }}</td>
+          <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.precio_venta | currency:'PEN' }}</td>
+        </ng-container>
+
         <td class="px-4 py-2 text-sm text-center">
-          <button (click)="onEditar(producto)" class="bg-[#A7DCFF] hover:bg-[#6C94AE]  text-black text-xs px-3 py-1 rounded mr-1">
+          <button (click)="onEditar(producto)" class="bg-[#A7DCFF] hover:bg-[#6C94AE] text-black text-xs px-3 py-1 rounded mr-1">
             Editar
           </button>
           <button (click)="onEliminar(producto.codigo)" class="bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded">
@@ -63,5 +90,6 @@
         </td>
       </tr>
     </tbody>
+
   </table>
 </div>

@@ -13,14 +13,18 @@ class RecetaSerializer(serializers.ModelSerializer):
     OI_CYL = serializers.DecimalField(source='recOI_cyl', max_digits=4,decimal_places=2)
     OI_eje = serializers.DecimalField(source='recOI_eje', max_digits=4,decimal_places=2)
     
-    DIP = serializers.DecimalField(source='recDIP', max_digits=3, decimal_places=1)
+    # Distancia Interpupilar 
+    DIP_Lejos = serializers.DecimalField(source='recDIPLejos', max_digits=3, decimal_places=1, allow_null=True)
+    DIP_Cerca = serializers.DecimalField(source='recDIPCerca', max_digits=3, decimal_places=1, allow_null=True)
     
     #Opcional si son bifocales +50 años
-    OD_adicion = serializers.DecimalField(source='recOD_adicion', max_digits=4, decimal_places=2,  allow_blank=True, required=False)
-    OI_adicion = serializers.DecimalField(source='recOI_adicion', max_digits=4, decimal_places=2,  allow_blank=True, required=False)
+    #OD_adicion = serializers.DecimalField(source='recOD_adicion', max_digits=4, decimal_places=2, allow_null=True, required=False)
+    #OI_adicion = serializers.DecimalField(source='recOI_adicion', max_digits=4, decimal_places=2, allow_null=True, required=False)
+    adicion = serializers.DecimalField(source='rec_adicion', max_digits=4, decimal_places=2, required=False, allow_null=True)
+    
     class Meta: 
         model = Receta
-        fields = ['codigo', "medicion_propia", "fecha", "OD_SPH", "OD_CYL", "OD_eje", "OI_SPH", "OI_CYL", "OI_eje", "DIP", "OD_adicion", "OI_adicion"]
+        fields = ['codigo', "medicion_propia", "fecha", "OD_SPH", "OD_CYL", "OD_eje", "OI_SPH", "OI_CYL", "OI_eje", "DIP_Lejos", "DIP_Cerca", "adicion",]
         read_only_fields = ['codigo']
         
     def validate(self, data):
