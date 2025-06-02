@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { VentasService, Producto } from '../services/ventas.service';
 import { catchError, finalize } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { of } from 'rxjs';  
 
 @Component({
   selector: 'app-venta',
@@ -31,6 +31,9 @@ export class VentaComponent implements OnInit {
   totalConIgv = 0;
   totalEnLetras = '';
   boletaGuardada = false;
+
+  productos: any[] = [];
+  total: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -60,7 +63,7 @@ export class VentaComponent implements OnInit {
 
   createItemForm(producto?: Producto): FormGroup {
     return this.fb.group({
-      producto_id: [producto?.id || null, Validators.required],
+      producto_id: [producto?.codigo || null, Validators.required],
       codigo: [producto?.codigo || '', Validators.required],
       descripcion: [producto?.nombre || '', Validators.required],
       cantidad: [1, [Validators.required, Validators.min(1)]],
@@ -139,57 +142,71 @@ export class VentaComponent implements OnInit {
     }
   }
 
-  guardarBoleta(): void {
-    if (this.ventaForm.invalid) {
-      alert('Por favor, complete todos los campos requeridos.');
-      return;
-    }
+  guardarBoleta() {
+  const cliente = this.ventaForm.get('cliente')?.value;
+  const productosForm = this.items.controls;
 
-    if (this.items.length === 0) {
-      alert('Debe agregar al menos un producto a la venta.');
-      return;
-    }
-
-    this.guardandoBoleta = true;
-
-    const boletaData = {
-      serie: this.ventaForm.get('serie')?.value,
-      cliente: this.ventaForm.get('cliente')?.value,
-      items: this.items.value.map((item: any) => ({
-        producto_id: item.producto_id,
-        cantidad: item.cantidad,
-        valor_unitario: item.valor_unitario
-      })),
-      subtotal: this.subtotalSinIgv,
-      igv: this.igv,
-      total: this.totalConIgv
-    };
-
-    this.ventaService.crearBoleta(boletaData)
-      .pipe(
-        catchError(error => {
-          console.error('Error al guardar boleta:', error);
-          alert('Error al guardar la boleta. Intente nuevamente.');
-          return of(null);
-        }),
-        finalize(() => {
-          this.guardandoBoleta = false;
-        })
-      )
-      .subscribe(boleta => {
-        if (boleta) {
-          this.boletaGuardada = true;
-          this.boletasPendientes++; 
-          alert(`Boleta ${boleta.serie}-${boleta.correlativo} guardada correctamente.`);
-          
-          setTimeout(() => {
-            this.boletaGuardada = false;
-          }, 3000);
-          
-          this.limpiarFormulario();
-        }
-      });
+  if (!cliente.tipo_doc || !cliente.num_doc || !cliente.rzn_social) {
+    alert('Por favor, complete los datos del cliente.');
+    return;
   }
+
+  if (productosForm.length === 0) {
+    alert('Debe agregar al menos un producto.');
+    return;
+  }
+
+  // Preparar datos en el formato correcto para la API
+  const itemsParaEnviar = productosForm.map(control => control.getRawValue());
+
+  // Validar que todos los productos tengan un producto_id válido
+  for (const item of itemsParaEnviar) {
+    if (!item.producto_id) {
+      alert('Error: Hay un producto sin ID válido en la lista. Por favor, revisa los productos agregados.');
+      return;
+    }
+  }
+
+  const boletaRequest = {
+    serie: this.ventaForm.get('serie')?.value,
+    cliente: {
+      tipo_doc: cliente.tipo_doc,
+      num_doc: cliente.num_doc,
+      rzn_social: cliente.rzn_social
+    },
+    items: itemsParaEnviar.map(item => ({
+      producto_id: item.producto_id,
+      cantidad: item.cantidad,
+      valor_unitario: item.valor_unitario
+    })),
+    subtotal: this.subtotalSinIgv,
+    igv: this.igv,
+    total: this.totalConIgv
+  };
+
+  this.guardandoBoleta = true;
+
+  this.ventaService.crearBoleta(boletaRequest)
+    .pipe(
+      catchError(error => {
+        console.error('Error al guardar boleta:', error);
+        alert('Error al guardar la boleta. Intente nuevamente.');
+        return of(null);
+      }),
+      finalize(() => {
+        this.guardandoBoleta = false;
+      })
+    )
+    .subscribe(response => {
+      if (response) {
+        console.log('Boleta guardada exitosamente:', response);
+        alert(`Boleta ${response.serie}-${response.correlativo} guardada exitosamente`);
+        this.boletaGuardada = true;
+        this.limpiarFormulario();
+      }
+    });
+}
+
 
   generarNuevoCorrelativo(): void {
     const serieActual = this.ventaForm.get('serie')?.value || 'B001';
