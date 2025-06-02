@@ -5,6 +5,7 @@ from django.db.models import Q
 from .models import Cliente, Luna
 from .serializers import ClienteSerializer, LunaSerializer
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 
 class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
@@ -22,15 +23,10 @@ class LunaViewSet(viewsets.ModelViewSet):
             'materiales': Luna.MATERIALLUNA_CHOICES,
             'colores_halo': Luna.HALO_CHOICES
         })
+        
+# Recuperar
+# Eliminar ventas solo miembros de staff
 
-#Comentarios = crear empleados y eliminar empleados solo a miembros del staff
-#Eliminar ventas solo miembros de staff
+# buscar ventas por fecha/nombre del cliente
 #El resto de Views
 
-class BoletaElectronicaCreateView(APIView):
-    def post(self, request):
-        serializer = BoletaElectronicaSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
