@@ -17,7 +17,6 @@ class RecetaSerializer(serializers.ModelSerializer):
     DIP_Lejos = serializers.DecimalField(source='recDIPLejos', max_digits=3, decimal_places=1, allow_null=True)
     DIP_Cerca = serializers.DecimalField(source='recDIPCerca', max_digits=3, decimal_places=1, allow_null=True)
     
-    
     #Opcional si son bifocales +50 años
     #OD_adicion = serializers.DecimalField(source='recOD_adicion', max_digits=4, decimal_places=2, allow_null=True, required=False)
     #OI_adicion = serializers.DecimalField(source='recOI_adicion', max_digits=4, decimal_places=2, allow_null=True, required=False)

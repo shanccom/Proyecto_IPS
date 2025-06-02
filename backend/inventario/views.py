@@ -106,7 +106,7 @@ def obtener_filtros_accesorio(request):
         }
     return Response(filtros)
 
-@csrf_exempt
+@api_view(["POST"])
 def crear_montura(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -123,7 +123,7 @@ def crear_montura(request):
         m.save()
         return JsonResponse({'mensaje': 'Montura guardada'})
     
-@csrf_exempt
+@api_view(["POST"])
 def crear_accesorio(request):
     if request.method == 'POST':
         try:
