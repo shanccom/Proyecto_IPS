@@ -14,10 +14,10 @@ class Producto(models.Model):  #modelo abstracto no existente
 class Montura(Producto):
     monCod = models.CharField(primary_key=True, max_length=10, unique=True)
     MATERIAL_CHOICES = [
-        ('M', 'Metal'),
-        ('P', 'Plástico'),
-        ('A', 'Acetato'),
-        ('C', 'Carey'),
+        ('Metal', 'Metal'),
+        ('Plastico', 'Plástico'),
+        ('Acetato', 'A'),
+        ('Carey', 'Carey'),
         ('TR', 'TR'),
     ]
     PUBLICO_CHOICES = [
@@ -55,16 +55,9 @@ class Montura(Producto):
 
     #Ajuste para guardar segun el material y sea un autofield
     def save(self, *args, **kwargs):
-        if not self.monCod:
-            codigo_base = self.monMate
-            ultimo = self.__class__.objects.filter(monCod__startswith=codigo_base).count() + 1
-            self.monCod = f"{codigo_base}{ultimo}"
-        super().save(*args, **kwargs)
-
-    def save(self, *args, **kwargs):
         self.proStock = 1  
         if not self.monCod:
-            codigo_base = self.monMate
+            codigo_base = self.monMate[0]
             ultimo = self.__class__.objects.filter(monCod__startswith=codigo_base).count() + 1
             self.monCod = f"{codigo_base}{ultimo}"
         super().save(*args, **kwargs)
