@@ -4,7 +4,6 @@ import { InventarioTablaComponent } from './inventario-tabla/inventario-tabla.co
 import { InventarioService } from '../services/inventario.service';
 import { CommonModule } from '@angular/common'; 
 import { FormularioAccesorioComponent } from './formulario-accesorio/formulario-accesorio.component';
-import { FormularioLunaComponent } from './formulario-luna/formulario-luna.component';
 import { FormularioMonturaComponent } from './formulario-montura/formulario-montura.component';
 
 type TipoFormulario = 'montura' | 'accesorio';

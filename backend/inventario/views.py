@@ -126,20 +126,6 @@ def crear_montura(request):
 @csrf_exempt
 def crear_accesorio(request):
     if request.method == 'POST':
-        data = json.loads(request.body) 
-        
-        accesorio = Accesorio(
-            proNombre=data['proNombre'],
-            proCosto=data['proCosto'],
-            proPrecioVenta=data['proPrecioVenta'],
-            accDescrip=data.get('accDescrip', ''),
-        )
-        accesorio.save()
-        
-        return JsonResponse({'mensaje': 'Accesorio guardado correctamente'})
-
-def crear_accesorio(request):
-    if request.method == 'POST':
         try:
             data = json.loads(request.body)
 

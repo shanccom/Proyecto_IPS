@@ -16,8 +16,9 @@ class RecetaSerializer(serializers.ModelSerializer):
     DIP = serializers.DecimalField(source='recDIP', max_digits=3, decimal_places=1)
     
     #Opcional si son bifocales +50 años
-    OD_adicion = serializers.DecimalField(source='recOD_adicion', max_digits=4, decimal_places=2,  allow_blank=True, required=False)
-    OI_adicion = serializers.DecimalField(source='recOI_adicion', max_digits=4, decimal_places=2,  allow_blank=True, required=False)
+    OD_adicion = serializers.DecimalField(source='recOD_adicion', max_digits=4, decimal_places=2, allow_null=True, required=False)
+    OI_adicion = serializers.DecimalField(source='recOI_adicion', max_digits=4, decimal_places=2, allow_null=True, required=False)
+    
     class Meta: 
         model = Receta
         fields = ['codigo', "medicion_propia", "fecha", "OD_SPH", "OD_CYL", "OD_eje", "OI_SPH", "OI_CYL", "OI_eje", "DIP", "OD_adicion", "OI_adicion"]
