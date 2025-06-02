@@ -6,7 +6,7 @@ class Producto(models.Model):  #modelo abstracto no existente
     proCosto = models.DecimalField(max_digits=10, decimal_places=2)
     proPrecioVenta = models.DecimalField(max_digits=10, decimal_places=2)
     proDescrip = models.TextField(blank=True, null=True) 
-
+    proStock = models.IntegerField(default=100)
     class Meta:
         abstract = True
 
@@ -61,6 +61,13 @@ class Montura(Producto):
             self.monCod = f"{codigo_base}{ultimo}"
         super().save(*args, **kwargs)
 
+    def save(self, *args, **kwargs):
+        self.proStock = 1  
+        if not self.monCod:
+            codigo_base = self.monMate
+            ultimo = self.__class__.objects.filter(monCod__startswith=codigo_base).count() + 1
+            self.monCod = f"{codigo_base}{ultimo}"
+        super().save(*args, **kwargs)
 
 class Accesorio(Producto):
     accCod = models.AutoField(primary_key=True)

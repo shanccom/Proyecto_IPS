@@ -10,8 +10,9 @@ from inventario.views import crear_montura, crear_accesorio
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('productos/', include('inventario.urls')),
-    path('venta/', include('ventas.urls')),
+    path('ventas/', include('ventas.urls')),
     path('usuario/', include('usuario.urls')),
+
     #Denise :v pon tus url en el product url para que este ordenado
     path('productoslista/', ProductosView.as_view(), name='productos'),
     path('productoslista/filtros/montura/', obtener_filtros_montura),
