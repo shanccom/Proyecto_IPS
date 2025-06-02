@@ -7,6 +7,7 @@ from .views import (
     crear_accesorio,
     obtener_filtros_accesorio,
     obtener_filtros_montura,
+    delete_montura
 )
 
 urlpatterns = [
@@ -16,4 +17,6 @@ urlpatterns = [
     path(r'buscar', search, name="buscar_producto"),
     path(r'filter_montura', obtener_filtros_montura, name="filtros de montura"),
     path(r'filter_accesorio', obtener_filtros_accesorio, name="filtros de accesorio"),
+    path(r'delete_montura', delete_montura, name="Eliminar montura"),
+    
 ]

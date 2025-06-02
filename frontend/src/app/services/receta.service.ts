@@ -12,6 +12,7 @@ export class RecetaService {
   getRecetas():Observable<any[]>{
     return this.http.get<any[]>(`${this.baseUrl}recetas/`);
   }
+
   crearReceta(receta: any): Observable<any> {
     return this.http.post(`${this.baseUrl}crear-recetas/`,receta);
   }

@@ -21,7 +21,7 @@ export class FormularioRecetaComponent {
     private recetaService: RecetaService
   ) {
     this.recetaForm = this.fb.group({
-      medicion_propia: [false, Validators.required],
+      /*medicion_propia: [false, Validators.required],*/
       fecha: [new Date().toISOString().split('T')[0], Validators.required],
       OD_SPH: [null, Validators.required],
       OD_CYL: [null, Validators.required],
