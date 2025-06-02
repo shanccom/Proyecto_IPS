@@ -1,30 +1,42 @@
-<!-- Selector y botón Agregar en la misma línea -->
-<div class="flex justify-between items-center mb-6 mt-20 px-20">
+<div class="pl-[50px]">
+  <!-- Selector y botón Agregar en la misma línea -->
+  <div class="flex justify-between items-center mb-6 mt-20 px-20">
 
-  <!-- Botones de tipo de producto a la izquierda -->
-  <div class="flex">
+    <!-- Botones de tipo de producto a la izquierda -->
+    <div class="flex">
+      <button
+        class="px-4 py-2 mx-2 rounded-lg transition font-medium"
+        [ngClass]="{
+          'bg-[#A7DCFF] text-black': tipoFormulario === 'montura',
+          'bg-gray-200 text-gray-700 hover:bg-gray-300': tipoFormulario !== 'montura'
+        }"
+        (click)="seleccionarFormulario('montura')"
+      >
+        Montura
+      </button>
+
+      <button
+        class="px-4 py-2 mx-2 rounded-lg transition font-medium"
+        [ngClass]="{
+          'bg-[#A7DCFF] text-black': tipoFormulario === 'accesorio',
+          'bg-gray-200 text-gray-700 hover:bg-gray-300': tipoFormulario !== 'accesorio'
+        }"
+        (click)="seleccionarFormulario('accesorio')"
+      >
+        Accesorio
+      </button>
+    </div>
+
+    <!-- Botón Agregar a la derecha -->
     <button
-      class="px-4 py-2 mx-2 rounded-lg transition font-medium"
-      [ngClass]="{
-        'bg-[#A7DCFF] text-black': tipoFormulario === 'montura',
-        'bg-gray-200 text-gray-700 hover:bg-gray-300': tipoFormulario !== 'montura'
-      }"
-      (click)="seleccionarFormulario('montura')"
+      class="bg-[#A7DCFF] text-black px-4 py-2 rounded-lg shadow hover:bg-[#79A5C3] transition"
+      (click)="abrirModal()"
     >
-      Montura
+      Agregar {{ tipoFormulario === 'montura' ? 'Montura' : 'Accesorio' }}
     </button>
 
-    <button
-      class="px-4 py-2 mx-2 rounded-lg transition font-medium"
-      [ngClass]="{
-        'bg-[#A7DCFF] text-black': tipoFormulario === 'accesorio',
-        'bg-gray-200 text-gray-700 hover:bg-gray-300': tipoFormulario !== 'accesorio'
-      }"
-      (click)="seleccionarFormulario('accesorio')"
-    >
-      Accesorio
-    </button>
   </div>
+
 
   <!-- Botón Agregar a la derecha -->
   <button
@@ -36,73 +48,73 @@
 
 </div>
 
+  <!-- Mostrar según el tipo seleccionado -->
+  <ng-container [ngSwitch]="tipoFormulario">
 
-<!-- Mostrar según el tipo seleccionado -->
-<ng-container [ngSwitch]="tipoFormulario">
+    <!-- Montura -->
+    <div *ngSwitchCase="'montura'">
 
-  <!-- Montura -->
-  <div *ngSwitchCase="'montura'">
+      <div class="inventario-container">
+        <app-inventario-filtros
+          [tipo]="tipoFormulario"
+          (filtrosAplicados)="aplicarFiltros($event)"
+          (reset)="resetFiltros()">
+        </app-inventario-filtros>
 
-    <div class="inventario-container">
-      <app-inventario-filtros
-        [tipo]="tipoFormulario"
-        (filtrosAplicados)="aplicarFiltros($event)"
-        (reset)="resetFiltros()">
-      </app-inventario-filtros>
-
-      <app-inventario-tabla
-        [tipo]="tipoFormulario"
-        [productos]="productosFiltrados"
-        (editar)="editar($event)"
-        (eliminar)="eliminar($event)">
-      </app-inventario-tabla>
+        <app-inventario-tabla
+          [tipo]="tipoFormulario"
+          [productos]="productosFiltrados"
+          (editar)="editar($event)"
+          (eliminar)="eliminar($event)">
+        </app-inventario-tabla>
+      </div>
     </div>
-  </div>
 
-  <!-- Accesorio -->
-  <div *ngSwitchCase="'accesorio'">
+    <!-- Accesorio -->
+    <div *ngSwitchCase="'accesorio'">
 
-    <div class="inventario-container">
-      <app-inventario-filtros
-        [tipo]="tipoFormulario"
-        (filtrosAplicados)="aplicarFiltros($event)"
-        (reset)="resetFiltros()">
-      </app-inventario-filtros>
+      <div class="inventario-container">
+        <app-inventario-filtros
+          [tipo]="tipoFormulario"
+          (filtrosAplicados)="aplicarFiltros($event)"
+          (reset)="resetFiltros()">
+        </app-inventario-filtros>
 
-      <app-inventario-tabla
-        [tipo]="tipoFormulario"
-        [productos]="productosFiltrados"
-        (editar)="editar($event)"
-        (eliminar)="eliminar($event)">
-      </app-inventario-tabla>
+        <app-inventario-tabla
+          [tipo]="tipoFormulario"
+          [productos]="productosFiltrados"
+          (editar)="editar($event)"
+          (eliminar)="eliminar($event)">
+        </app-inventario-tabla>
+      </div>
     </div>
-  </div>
 
-</ng-container>
+  </ng-container>
 
-<!-- Modal de formulario dinámico -->
-<div
-  *ngIf="modalVisible"
-  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
->
-  <div class="bg-[#292C2D] rounded-xl shadow-lg p-6 w-full max-w-2xl">
+  <!-- Modal de formulario dinámico -->
+  <div
+    *ngIf="modalVisible"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+  >
+    <div class="bg-[#292C2D] rounded-xl shadow-lg p-6 w-full max-w-2xl">
 
-    <h3 class="text-xl font-bold text-white font-medium">Agregar Producto</h3>
-    <hr class="border-t-2 border-[#5E5E5E] my-4">
+      <h3 class="text-xl font-bold text-white font-medium">Agregar Producto</h3>
+      <hr class="border-t-2 border-[#5E5E5E] my-4">
 
-    <ng-container [ngSwitch]="tipoFormulario">
-      <app-formulario-montura
-        *ngSwitchCase="'montura'"
-        (cerrar)="cerrarModal()"
-        (guardado)="refrescarProductos()"
-      ></app-formulario-montura>
+      <ng-container [ngSwitch]="tipoFormulario">
+        <app-formulario-montura
+          *ngSwitchCase="'montura'"
+          (cerrar)="cerrarModal()"
+          (guardado)="refrescarProductos()"
+        ></app-formulario-montura>
 
-      <app-formulario-accesorio
-        *ngSwitchCase="'accesorio'"
-        (cerrar)="cerrarModal()"
-        (guardado)="refrescarProductos()"
-      ></app-formulario-accesorio>
-    </ng-container>
+        <app-formulario-accesorio
+          *ngSwitchCase="'accesorio'"
+          (cerrar)="cerrarModal()"
+          (guardado)="refrescarProductos()"
+        ></app-formulario-accesorio>
+      </ng-container>
 
+    </div>
   </div>
 </div>
