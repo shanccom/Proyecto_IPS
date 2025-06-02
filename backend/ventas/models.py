@@ -61,3 +61,22 @@ class Luna(models.Model):
     lunaColorHalo = models.CharField(max_length=20, choices=HALO_CHOICES)
     lunaCosto = models.DecimalField(max_digits= 10,decimal_places= 2)
     lunaPrecioVenta = models.DecimalField(max_digits= 10,decimal_places= 2)
+
+class Boleta(models.Model):
+    serie = models.CharField(max_length=4)
+    correlativo = models.CharField(max_length=10)
+    cliente = models.ForeignKey(Cliente, on_delete=models.PROTECT)
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2)
+    igv = models.DecimalField(max_digits=10, decimal_places=2)
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    fecha = models.DateTimeField(auto_now_add=True)
+    estado = models.CharField(max_length=20, default='pendiente')
+
+class ItemBoleta(models.Model):
+    boleta = models.ForeignKey(Boleta, related_name='items', on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.CharField(max_length=100) 
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    cantidad = models.PositiveIntegerField()
+    valor_unitario = models.DecimalField(max_digits=10, decimal_places=2)
