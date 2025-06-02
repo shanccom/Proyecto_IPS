@@ -1,1 +1,62 @@
-<p>recetas works!</p>
+<div class="flex justify-between items-center mb-6  mt-4 ml-[80px]">
+  <h2 class="text-2xl font-medium text-white">Recetas</h2>
+  <button class="bg-[#A7DCFF] text-black px-4 py-2 rounded-lg shadow hover:bg-[#79A5C3] transition" (click)="abrirFormulario()">
+    + Agregar Receta
+  </button>
+</div>
+
+<!-- Tabla -->
+<div class="overflow-x-auto ml-[80px]">
+  <table class="w-full text-sm bg-[#2A2A2A] text-white rounded shadow-lg">
+    <thead>
+      <tr class="bg-[#1F1F1F] text-white text-left font-medium ">
+        <th class="px-4 py-2 border-b border-gray-600 font-normal ">Código</th>
+        <th class="px-4 py-2 border-b border-gray-600 font-normal ">Cliente</th>
+        <th class="px-4 py-2 border-b border-gray-600 font-normal ">Fecha</th>
+        <th class="px-4 py-2 border-b border-gray-600 font-normal ">Medición Propia</th>
+        <th class="px-4 py-2 border-b border-gray-600 font-normal ">DIP Lejos</th>
+        <th class="px-4 py-2 border-b border-gray-600 font-normal ">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let receta of recetas" class="hover:bg-[#3A3A3A] transition">
+        <td class="px-4 py-2 border-b border-gray-600">{{ receta.codigo }}</td>
+        <td class="px-4 py-2 border-b border-gray-600">{{ receta.cliente?.nombre_completo || '-' }}</td>
+        <td class="px-4 py-2 border-b border-gray-600">{{ receta.fecha }}</td>
+        <td class="px-4 py-2 border-b border-gray-600">{{ receta.medicion_propia ? 'Sí' : 'No' }}</td>
+        <td class="px-4 py-2 border-b border-gray-600">{{ receta.DIP }}</td>
+        <td class="px-4 py-2 border-b border-gray-600">
+          <button class="text-[#A7DCFF] hover:underline font-medium">Editar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Formulario para agregar receta -->
+<div *ngIf="mostrarFormulario" class="mt-8 bg-[#2A2A2A] text-white p-6 rounded shadow-md ml-[100px]">
+  <h3 class="text-xl font-semibold mb-4">Agregar Nueva Receta</h3>
+
+  <div class="grid md:grid-cols-2 gap-4">
+    <label class="block">
+      Cliente ID:
+      <input type="number" [(ngModel)]="nuevaReceta.cliCod" class="w-full mt-1 px-3 py-2 bg-[#1F1F1F] border border-gray-600 rounded text-white" />
+    </label>
+
+    <label class="block">
+      Fecha:
+      <input type="date" [(ngModel)]="nuevaReceta.recfecha" class="w-full mt-1 px-3 py-2 bg-[#1F1F1F] border border-gray-600 rounded text-white" />
+    </label>
+
+    <label class="flex items-center space-x-2 mt-2">
+      <input type="checkbox" [(ngModel)]="nuevaReceta.rectOpt" class="form-checkbox accent-[#A7DCFF]" />
+      <span>¿Medición Propia?</span>
+    </label>
+
+    <!-- Agrega aquí más campos si necesitas -->
+  </div>
+
+  <button class="mt-6 bg-[#A7DCFF] text-black font-semibold px-4 py-2 rounded shadow hover:brightness-90 transition">
+    Guardar Receta
+  </button>
+</div>
