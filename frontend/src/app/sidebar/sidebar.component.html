@@ -1,11 +1,11 @@
 <nav class="fixed top-0 left-0 w-[180px] bg-[#292C2D] text-white h-screen pt-5 pb-5 rounded-tr-[25px] rounded-br-[25px]">
-  <ul class="list-none p-5 space-y-4 pt-[60px]">
+  <ul class="list-none p-5 space-y-4 pt-[10px]">
 
-    <p class="flex justify-center items-center font-poppins font-bold text-[#A7DCFF] pb-[20px]">VISION IDEAL</p>
+    <p class="flex justify-center items-center font-poppins font-bold text-[#A7DCFF] pb-[10px]">VISION IDEAL</p>
     
     <!---->
     <li
-      class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[90px]"
+      class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer  h-[70px] "
       routerLinkActive="active"
       [ngClass]="{'bg-[#A7DCFF] text-black': isActive('/dashboard')}"
     >
@@ -27,7 +27,7 @@
 
     <!---->
     <li
-      class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[90px]"
+      class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[70px] "
       routerLinkActive="active"
       [ngClass]="{'bg-[#A7DCFF] text-black': isActive('/inventario')}"
     >
@@ -52,7 +52,7 @@
 
     <!---->
     <li
-      class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[90px]"
+      class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[70px] "
       routerLinkActive="active"
       [ngClass]="{'bg-[#A7DCFF] text-black': isActive('/venta')}"
     >
@@ -76,12 +76,12 @@
 
     <!-- OTROS TODAVIA NS CUALES SERAN-->
     <li
-      class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[90px]"
+      class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[70px] "
       routerLinkActive="active"
       [ngClass]="{'bg-[#A7DCFF] text-black': isActive('/')}"
     >
       <a
-        routerLink="/login"
+        routerLink="/listaVentas"
         routerLinkActive="active"
         class="flex flex-col items-center justify-center text-sm text-center gap-1"
       >
@@ -103,7 +103,7 @@
 
     <!---->
     <li
-      class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[90px]"
+      class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[70px] "
       routerLinkActive="active"
       [ngClass]="{'bg-[#A7DCFF] text-black': isActive('/')}"
     >
@@ -144,8 +144,50 @@
     </li>
 
     <!---->
+
     <li
-      class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[90px]"
+      class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[70px] "
+      routerLinkActive="active"
+      [ngClass]="{'bg-[#A7DCFF] text-black': isActive('/recetas')}"
+    >
+      <a
+        routerLink="/recetas"
+        routerLinkActive="active"
+        class="flex flex-col items-center justify-center text-sm text-center gap-1"
+      >
+        <div class="bg-white rounded-full w-8 h-8 flex items-center justify-center">
+          
+          <svg 
+            xmlns="http://www.w3.org/2000/svg"  
+            width="24"  
+            height="24"  
+            viewBox="0 0 24 24"  
+            fill="none"  
+            stroke="currentColor"  
+            stroke-width="2"  
+            stroke-linecap="round"  
+            stroke-linejoin="round"  
+            class="w-5 h-5 text-black"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <path d="M4 7v-1c0 -.552 .224 -1.052 .586 -1.414" />
+            <path d="M4 17v1a2 2 0 0 0 2 2h2" />
+            <path d="M16 4h2a2 2 0 0 1 2 2v1" />
+            <path d="M16 20h2c.551 0 1.05 -.223 1.412 -.584" />
+            <path d="M5 11h1v2h-1z" />
+            <path d="M10 11v2" />
+            <path d="M15 11v.01" />
+            <path d="M19 11v2" />
+            <path d="M3 3l18 18" />
+          </svg>
+          
+        </div>
+        Recetas
+      </a>
+    </li>
+    <!---->
+    <li
+      class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[70px]"
       routerLinkActive="active"
       [ngClass]="{'bg-[#A7DCFF] text-black': isActive('/')}"
     >

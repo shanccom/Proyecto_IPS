@@ -1,0 +1,28 @@
+<!-- src/app/pages/boletas/boletas.component.html -->
+<div class="p-4">
+  <h2 class="text-xl font-bold mb-4">Lista de Boletas</h2>
+
+  <div *ngIf="loading">Cargando boletas...</div>
+  <div *ngIf="error" class="text-red-500">{{ error }}</div>
+
+  <div *ngIf="boletas.length > 0" class="space-y-4">
+    <div *ngFor="let boleta of boletas" class="p-4 border rounded shadow-md">
+      <div><strong>Boleta:</strong> {{ boleta.serie }} - {{ boleta.correlativo }}</div>
+      <div><strong>Cliente:</strong> {{ boleta.cliente.rzn_social }} ({{ boleta.cliente.num_doc }})</div>
+      <div><strong>Fecha:</strong> {{ boleta.fecha_emision }}</div>
+      <div><strong>Total:</strong> S/ {{ boleta.total }}</div>
+
+      <div class="mt-2">
+        <strong>Items:</strong>
+        <ul class="list-disc pl-5">
+          <li *ngFor="let item of boleta.items">
+            {{ item.producto_info.tipo }} - {{ item.producto_info.codigo }}:
+            {{ item.cantidad }} x S/ {{ item.valor_unitario }} = S/ {{ item.subtotal }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && boletas.length === 0" class="text-gray-500">No hay boletas registradas.</div>
+</div>
