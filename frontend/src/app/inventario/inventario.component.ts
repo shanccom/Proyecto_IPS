@@ -113,9 +113,9 @@ export class InventarioComponent implements OnInit {
   }
 
 
-  abrirModal() {
-    this.modalVisible = true;
-    this.tipoFormulario = 'montura'; // Reset al abrir
+  abrirModal(tipo: string) {
+    this.modalVisible = true; 
+    this.tipoFormulario = tipo as any;
   }
 
   cerrarModal() {
