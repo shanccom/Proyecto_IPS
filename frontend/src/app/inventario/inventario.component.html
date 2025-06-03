@@ -26,26 +26,18 @@
         Accesorio
       </button>
     </div>
-
     <!-- Botón Agregar a la derecha -->
     <button
       class="bg-[#A7DCFF] text-black px-4 py-2 rounded-lg shadow hover:bg-[#79A5C3] transition"
-      (click)="abrirModal()"
+      (click)="abrirModal(tipoFormulario)"
     >
       Agregar {{ tipoFormulario === 'montura' ? 'Montura' : 'Accesorio' }}
     </button>
 
+
   </div>
 
-
-  <!-- Botón Agregar a la derecha -->
-  <button
-    class="bg-[#A7DCFF] text-black px-4 py-2 rounded-lg shadow hover:bg-[#79A5C3] transition"
-    (click)="abrirModal(tipoFormulario)"
-  >
-    Agregar {{ tipoFormulario === 'montura' ? 'Montura' : 'Accesorio' }}
-  </button>
-
+  
 </div>
 
   <!-- Mostrar según el tipo seleccionado -->
@@ -117,4 +109,4 @@
 
     </div>
   </div>
-</div>
+
