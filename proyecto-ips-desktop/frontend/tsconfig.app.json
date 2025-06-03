@@ -8,13 +8,22 @@
       "node"
     ]
   },
-  "files": [
-    "src/main.ts",
-    "src/main.server.ts",
-    "src/server.ts",
-    "src/typings.d.ts"
-  ],
+  //"files": [
+  //  "src/main.ts",
+  //  "src/main.server.ts",
+  //  "src/server.ts",
+  //  "src/typings.d.ts"
+  //],
   "include": [
-    "src/**/*.d.ts"
+    "src/**/*.ts",  
+    "src/**/*.d.ts" 
+  ],
+  "exclude": [
+    "src/**/*.server.ts",
+    "src/server.ts",
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts",
+    "src/app/services/comprobante.service.ts", 
+    "src/app/shared/shared.module.ts"
   ]
 }

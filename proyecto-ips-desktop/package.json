@@ -35,7 +35,10 @@
       {
         "from": "backend",
         "to": "backend",
-        "filter": ["!venv/**/*", "!**/__pycache__/**/*"]
+        "filter": [
+          "!venv/**/*",
+          "!**/__pycache__/**/*"
+        ]
       }
     ],
     "win": {
@@ -50,5 +53,11 @@
       "target": "AppImage",
       "icon": "electron/assets/icon.png"
     }
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "electron": "^36.3.2",
+    "electron-is-dev": "^2.0.0",
+    "wait-on": "^8.0.3"
   }
 }

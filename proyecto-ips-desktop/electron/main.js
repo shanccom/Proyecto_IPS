@@ -12,15 +12,15 @@ process.env.DJANGO_SETTINGS_MODULE = 'OP_SYSTEM.settings';
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: 1800,
+    height: 1200,
     minWidth: 800,
     minHeight: 600,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
-      webSecurity: true
+      webSecurity: true,
     },
     icon: path.join(__dirname, 'assets/icon.png'),
     show: false,
