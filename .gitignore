@@ -1,22 +1,27 @@
 # === PYTHON / DJANGO ===
-**/__pycache__/
-*.py[cod]
-*.sqlite3
-*.log
-*.pot
-*.pyc
-*.pyo
-*.pyd
-backend/.env
-db.sqlite3
+proyecto-ips-desktop/backend/**/__pycache__/
+proyecto-ips-desktop/backend/*.py[cod]
+proyecto-ips-desktop/backend/*.sqlite3
+proyecto-ips-desktop/backend/*.log
+proyecto-ips-desktop/backend/*.pot
+proyecto-ips-desktop/backend/*.pyc
+proyecto-ips-desktop/backend/*.pyo
+proyecto-ips-desktop/backend/*.pyd
+proyecto-ips-desktop/backend/.env
+proyecto-ips-desktop/backend/db.sqlite3
 
 # === NODE / ANGULAR ===
-frontend/node_modules/
-frontend/dist/
-frontend/.env
-frontend/.angular/
-frontend/.angular/cache/
-frontend/.angular/config.json
+proyecto-ips-desktop/frontend/node_modules/
+proyecto-ips-desktop/frontend/dist/
+proyecto-ips-desktop/frontend/.env
+proyecto-ips-desktop/frontend/.angular/
+proyecto-ips-desktop/frontend/.angular/cache/
+proyecto-ips-desktop/frontend/.angular/config.json
+
+# === ELECTRON / DESKTOP APP ===
+proyecto-ips-desktop/node_modules/
+proyecto-ips-desktop/dist/
+proyecto-ips-desktop/.env
 
 # === EDITORES / SISTEMA ===
 .env
@@ -24,6 +29,3 @@ frontend/.angular/config.json
 .idea/
 .DS_Store
 Thumbs.db
-node_modules/
-dist/
-.env
