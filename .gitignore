@@ -24,3 +24,4 @@ frontend/.angular/config.json
 .idea/
 .DS_Store
 Thumbs.db
+proyecto-ips-desktop/node_modules/electron/dist/resources/default_app.asar

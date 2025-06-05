@@ -9,29 +9,29 @@
       <input type="date" formControlName="fecha" class="bg-[#3D4142] text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
     </div>
 
-    <table class="tabla-receta col-span-2 w-full table-auto border-collapse">
-    <thead>
-        <tr>
-        <th class="px-4 py-2 text-left w-[150px]">Esfera</th> <!-- Ancho fijo en píxeles -->
-        <th class="px-4 py-2 text-left w-[150px]">Cilindro</th> <!-- Ancho fijo en píxeles -->
-        <th class="px-4 py-2 text-left w-[150px]">Eje</th> <!-- Ancho fijo en píxeles -->
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-        <td><strong>OD</strong></td>
-        <td><input type="number" step="0.01" formControlName="OD_SPH" class="input-field w-full" /></td>
-        <td><input type="number" step="0.01" formControlName="OD_CYL" class="input-field w-full" /></td>
-        <td><input type="number" step="0.01" formControlName="OD_eje" class="input-field w-full" /></td>
-        </tr>
-        <tr>
-        <td><strong>OI</strong></td>
-        <td><input type="number" step="0.01" formControlName="OI_SPH" class="input-field w-full" /></td>
-        <td><input type="number" step="0.01" formControlName="OI_CYL" class="input-field w-full" /></td>
-        <td><input type="number" step="0.01" formControlName="OI_eje" class="input-field w-full" /></td>
-        </tr>
-    </tbody>
-    </table>
+  <table class="tabla-receta col-span-2 w-full table-auto border-collapse">
+      <tbody>
+          <tr>
+              <td></td>
+              <td class="text-center font-normal">Esfera</td>
+              <td class="text-center font-normal">Cilindro</td>
+              <td class="text-center font-normal">Eje</td>
+
+          </tr>
+          <tr>
+              <td><strong>OD</strong> <span style="margin-left: 10px;">&nbsp;</span></td>
+              <td><input type="number" step="0.01" formControlName="OD_SPH" class="input-field w-full" /></td>
+              <td><input type="number" step="0.01" formControlName="OD_CYL" class="input-field w-full" /></td>
+              <td><input type="number" step="0.01" formControlName="OD_eje" class="input-field w-full" /></td>
+          </tr>
+          <tr>
+              <td><strong>OI</strong></td>
+              <td><input type="number" step="0.01" formControlName="OI_SPH" class="input-field w-full" /></td>
+              <td><input type="number" step="0.01" formControlName="OI_CYL" class="input-field w-full" /></td>
+              <td><input type="number" step="0.01" formControlName="OI_eje" class="input-field w-full" /></td>
+          </tr>
+      </tbody>
+  </table>
 
 
 
