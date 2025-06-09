@@ -1,0 +1,28 @@
+
+<div class=" pl-[150px]">
+    <button [routerLink]="['/login']" class="text-white text-2xl font-poppins ">Dashboard</button>
+    
+    <div class="dashboard">
+
+    <div class="stats-cards">
+      <app-stats-card
+        icon="bx bx-bar-chart"
+        title="Ventas de la Semana"
+        [value]="ventasSemana">
+      </app-stats-card>
+
+      <app-stats-card
+        icon="bx bx-calendar"
+        title="Ventas del Mes"
+        [value]="ventasMes">
+      </app-stats-card>
+
+      <app-stats-card
+        icon="bx bx-dollar"
+        title="Ganancia del Día"
+        [value]="gananciaDia">
+      </app-stats-card>
+    </div>
+
+  </div>
+</div>

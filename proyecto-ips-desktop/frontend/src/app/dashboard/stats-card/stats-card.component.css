@@ -1,0 +1,38 @@
+.card {
+  background-color: #292C2D;
+  padding: 15px;
+  border-radius: 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 250px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header i {
+  font-size: 14px;
+  color: #292C2D;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  padding: 8px;
+}
+
+.card-header h4 {
+  margin: 0;
+  font-size: 14px;
+  color: #fff;
+  font-weight: normal; 
+}
+
+.stats-value {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+  color: #fff;
+}

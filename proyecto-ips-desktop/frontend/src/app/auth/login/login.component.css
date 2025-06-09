@@ -1,0 +1,84 @@
+body, html {
+  height: 100%;
+  margin: 0;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 500px;  
+  margin: 0 auto; 
+  padding: 60px;
+  border-radius: 20px;
+  background-color: #292C2D;
+  box-sizing: border-box;
+  position: absolute; 
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Lo centra realmente */
+  box-shadow: 0 4px 6px rgba(0, 191, 255, 0.1), 0 1px 3px rgba(255, 251, 251, 0.08);
+}
+.login-container h2 {
+  text-align: center;
+  font-weight: 400;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+
+}
+
+.login-container input {
+  width: 100%; 
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border: 1px solid #444;
+  background-color: #333; 
+  color: white; 
+  font-size: 16px;
+}
+.login-container button {
+  width: 50%;              
+  padding: 10px;           
+  font-size: 16px;         
+  background-color: var(--primary-color); 
+  color: rgb(0, 0, 0);            
+  border: none;            
+  border-radius: 5px;      
+  cursor: pointer;        
+  transition: background-color 0.3s ease; 
+  display: block; 
+  margin: 20px auto;  
+  box-shadow: 0 4px 6px rgba(0, 191, 255, 0.1), 0 1px 3px rgba(255, 251, 251, 0.08);
+}
+
+.login-container button:hover {
+  background-color: #9eacb6; 
+}
+.error {
+  color: red;
+  text-align: center;
+}
+.login-container label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  font-size: medium;
+}
+
+.password-container {
+  position: relative;
+}
+
+.password-container input {
+  width: 100%; 
+  padding: 10px;
+}
+.password-container i {
+  position: absolute;
+  right: 5px;
+  top: 45%;
+  transform: translateY(-50%); 
+  font-size: 1.2rem;
+  color: #888;
+}
+

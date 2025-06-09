@@ -1,0 +1,70 @@
+<div class="flex flex-wrap items-start gap-3 p-3 bg-[#292C2D] rounded-xl shadow" style="margin-left: 80px; font-size: 13px;">
+  
+    <!-- Filtros dinámicos -->
+    <div *ngFor="let campo of campos" class="relative">
+        <div class="mb-2 font-medium text-white text-[15px]">
+            {{ campo | titlecase }}
+        </div>
+        <button
+            class="w-36 bg-[#3D4142] border border-[#313131] rounded-lg px-3 py-1.5 shadow-sm hover:bg-[#313131] focus:outline-none text-left text-[#B1B1B1] font-medium text-[13px]"
+            (click)="toggleDesplegable(campo)">
+            <span>Selecciona</span>
+        </button>
+
+        <div
+            *ngIf="desplegar[campo]"
+            class="absolute z-10 mt-1 w-36 bg-[#373737] border border-[#313131] rounded-lg shadow-lg p-2 max-h-48 overflow-y-auto"
+            >
+            <label
+                *ngFor="let opcion of opcionesFiltros[campo]"
+                class="flex items-center space-x-2 py-1 text-[13px] text-white"
+            >
+                <input
+                type="checkbox"
+                class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                [checked]="seleccionados[campo].includes(opcion)"
+                (change)="toggleSeleccion(campo, opcion)"
+                />
+                <span>{{ opcion }}</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Filtro precio -->
+    <div class="filtro-precio flex flex-col justify-start gap-2 text-white text-[13px]">
+        <div class="flex items-center gap-2">
+            <label for="precio-min">Mín:</label>
+            <input
+                id="precio-min"
+                type="number"
+                [(ngModel)]="seleccionados.precio.min"
+                min="0"
+                class="w-24 rounded px-2 py-1 bg-[#3D4142] border border-[#313131] text-white text-[13px]"
+            />
+        </div>
+
+        <div class="flex items-center gap-2">
+            <label for="precio-max">Máx:</label>
+            <input
+                id="precio-max"
+                type="number"
+                [(ngModel)]="seleccionados.precio.max"
+                min="0"
+                class="w-24 rounded px-2 py-1 bg-[#3D4142] border border-[#313131] text-white text-[13px]"
+            />
+        </div>
+    </div>
+
+    <div class="flex flex-col gap-2 mt-3 ml-auto text-[13px]">
+        <button
+            class="bg-[#A7DCFF] text-black px-4 py-1.5 rounded-lg hover:bg-[#79A5C3] transition"
+            (click)="aplicar()">
+            Aplicar
+        </button>
+        <button
+            class="bg-gray-300 text-gray-800 px-4 py-1.5 rounded-lg hover:bg-gray-400 transition"
+            (click)="limpiar()">
+            Limpiar
+        </button>
+    </div>
+</div>

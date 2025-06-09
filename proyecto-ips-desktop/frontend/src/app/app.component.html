@@ -1,0 +1,14 @@
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+
+<div class="app-container">
+  <app-sidebar *ngIf="showLayout"></app-sidebar>
+
+  <main class="main-content">
+    <div class="top">
+      <app-topbar [ngClass]="{'hidden': !showLayout}"></app-topbar>
+    </div>
+    <div class="down">
+      <router-outlet/>
+    </div>
+  </main>
+</div>

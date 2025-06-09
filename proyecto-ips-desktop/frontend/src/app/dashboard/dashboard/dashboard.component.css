@@ -1,0 +1,10 @@
+.dashboard {
+  padding: 20px;
+}
+
+.stats-cards {
+  display: flex;
+  gap: 50px;
+  margin-bottom: 30px;
+  justify-content: center; 
+}

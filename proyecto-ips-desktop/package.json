@@ -1,0 +1,63 @@
+{
+  "name": "proyecto-ips-desktop",
+  "version": "1.0.0",
+  "description": "Sistema IPS - Aplicación de Escritorio",
+  "main": "electron/main.js",
+  "scripts": {
+    "electron": "electron .",
+    "electron-dev": "concurrently \"npm run backend\" \"npm run frontend\" \"wait-on http://localhost:4200 http://localhost:8000/health && electron .",
+    "backend": "cd backend && python manage.py runserver",
+    "frontend": "cd frontend && ng serve",
+    "build": "npm run build-frontend && npm run build-backend",
+    "build-frontend": "cd frontend && ng build --configuration production",
+    "build-backend": "echo 'Backend ya está listo'",
+    "dist": "npm run build && electron-builder",
+    "dist-win": "npm run build && electron-builder --win",
+    "dist-mac": "npm run build && electron-builder --mac",
+    "dist-linux": "npm run build && electron-builder --linux"
+  },
+  "build": {
+    "appId": "com.tuempresa.proyecto-ips",
+    "productName": "Sistema IPS",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "frontend/dist/**/*",
+      "backend/**/*",
+      "!backend/venv/**/*",
+      "!backend/__pycache__/**/*",
+      "!backend/**/__pycache__/**/*",
+      "node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "backend",
+        "to": "backend",
+        "filter": [
+          "!venv/**/*",
+          "!**/__pycache__/**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "electron/assets/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "electron/assets/icon.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "electron/assets/icon.png"
+    }
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "electron": "^36.3.2",
+    "electron-is-dev": "^2.0.0",
+    "wait-on": "^8.0.3"
+  }
+}
