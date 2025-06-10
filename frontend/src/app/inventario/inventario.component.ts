@@ -94,7 +94,8 @@ export class InventarioComponent implements OnInit {
 
   
   resetFiltros() {
-    this.productosFiltrados = [...this.productos];
+    //this.productosFiltrados = [...this.productos];
+    this.filtrarPorTipoActual();
   }
 
     
@@ -116,6 +117,7 @@ export class InventarioComponent implements OnInit {
   //Metodos Boton
   seleccionarFormulario(tipo: string){
     this.tipoFormulario = tipo as any;
+    this.filtrarPorTipoActual();
   }
 
 
@@ -132,7 +134,8 @@ export class InventarioComponent implements OnInit {
     this.inventarioService.obtenerProductos().subscribe(
       (data) => {
         this.productos = data; 
-        this.productosFiltrados = [...this.productos];
+        //this.productosFiltrados = [...this.productos];
+        this.filtrarPorTipoActual();
 
       },
       (error) => {
@@ -140,6 +143,14 @@ export class InventarioComponent implements OnInit {
       }
     );
     
+  }
+  filtrarPorTipoActual(){
+    
+    this.productosFiltrados = this.productos.filter(
+      producto => (producto.tipo ||  '').toLowerCase() === this.tipoFormulario 
+    );
+    console.log(`Filtrando por tipo: ${this.tipoFormulario}`);
+    console.log('Productos filtrados:', this.productosFiltrados);
   }
 
 }

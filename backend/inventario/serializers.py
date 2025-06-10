@@ -13,19 +13,23 @@ class MonturaSerializer(serializers.ModelSerializer):
     vendido = serializers.BooleanField(source='monVendida')
     descripcion = serializers.CharField(source='proDescrip', default="")
     stock = serializers.IntegerField(source='proStock')
+    tipo = serializers.SerializerMethodField() 
 
     # Si quieres un campo estado calculado basado en si está vendido o no
     estado = serializers.SerializerMethodField()
+
+    def get_tipo(self, obj):                    # Aquí
+        return "montura"
     
     def get_estado(self, obj):
         return "Vendido" if obj.monVendida else "Disponible"
 
     class Meta:
         model = Montura
-        fields = ['codigo', 'marca', 'publico', 'material', 'color', 'costo', 'precio', 'vendido', 'descripcion', 'estado', 'stock']
+        fields = ['codigo', 'marca', 'publico', 'material', 'color', 'costo', 'precio', 'vendido', 'descripcion', 'estado', 'stock', 'tipo']
 
 
-class AccesorioSerializer(serializers.ModelSerializer):
+class AccesorioSerializer(serializers.ModelSerializer): 
     codigo = serializers.CharField(source='accCod')
     nombre = serializers.CharField(source='accNombre')
     costo = serializers.DecimalField(source='proCosto', max_digits=10, decimal_places=2)
@@ -36,7 +40,11 @@ class AccesorioSerializer(serializers.ModelSerializer):
     material = serializers.CharField(default="--")
     color = serializers.CharField(default="--")
     estado = serializers.CharField(default="Disponible")
+    tipo = serializers.SerializerMethodField() 
+
+    def get_tipo(self, obj):                  
+        return "accesorio"
 
     class Meta:
         model = Accesorio
-        fields = ['codigo', 'nombre', 'material', 'color', 'costo', 'precio', 'descripcion', 'estado']
+        fields = ['codigo', 'nombre', 'material', 'color', 'costo', 'precio', 'descripcion', 'estado', 'tipo']
