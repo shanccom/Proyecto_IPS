@@ -5,7 +5,7 @@ from django.db.models import Q, Max
 from django.contrib.contenttypes.models import ContentType
 from .models import Cliente, Luna, Boleta, ItemBoleta
 from inventario.models import Montura, Accesorio
-from .serializers import ClienteSerializer, LunaSerializer
+from .serializers import ClienteSerializer, LunaSerializer, EmpleadoSerializer
 from rest_framework.views import APIView
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -13,6 +13,7 @@ from django.views.decorators.http import require_http_methods
 import json
 from datetime import datetime
 from decimal import Decimal
+from rest_framework.decorators import api_view
 
 class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
@@ -31,8 +32,8 @@ class LunaViewSet(viewsets.ModelViewSet):
         })
         
 # Recuperar
-# Eliminar ventas solo miembros de staff
-
+# Verificaciones 
+# añadir empleado
 def buscar_producto(codigo_producto):
 
     if str(codigo_producto).isdigit():
@@ -299,3 +300,31 @@ def listar_boletas(request):
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+# Empleados
+# Añadir empleados
+@api_view(['POST'])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
+# Editar condicion de empleado
+def new_empleado(request):
+    emplCod = request.data.get('emplCod')
+    emplNom = request.data.get('emplNom')
+    emplCarg = request.data.get('emplCarg')
+    emplCond = request.data.get('emplCond')
+    
+    if not emplCod or not emplNom:
+        return Response({"error": "emplCod y emplNom son obligatorios"}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        Empleado = Empleado.objects.create(
+            emplCod = emplCod,
+            emplNom = emplNom,
+            emplCarg = emplCarg,
+            emplCond = emplCond,
+        )
+        serializer = EmpleadoSerializer(Empleado)
+        return Response(serializer.data, status= status.HTTP_201_CREATED)
+    except Exception as e:
+        return Response({"error":str(e)})
+        
+

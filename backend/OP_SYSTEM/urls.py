@@ -13,16 +13,6 @@ urlpatterns = [
     path('productos/', include('inventario.urls')),
     path('ventas/', include('ventas.urls')),
     path('usuario/', include('usuario.urls')),
-    
-    path('recetas/', RecetaListCreateView.as_view(), name='recetas-list-create'),
+    path('cliente/', include('cliente.urls')),
 
 ]
-"""
-    #Denise :v pon tus url en el product url para que este ordenado
-    path('productoslista/', ProductosView.as_view(), name='productos'),
-    path('productoslista/filtros/montura/', obtener_filtros_montura),
-    path('productoslista/filtros/accesorio/', obtener_filtros_accesorio),
-    #path('productoslista/filtros/',obtener_opciones_filtros),
-    path('monturas/', crear_montura),
-    path('accesorios/', crear_accesorio),
-"""

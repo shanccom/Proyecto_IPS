@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Cliente, Luna, ItemBoleta, Boleta
+from .models import Cliente, Luna, ItemBoleta, Boleta, Empleado
 
 class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -7,6 +7,11 @@ class ClienteSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('id', 'created_at', 'updated_at')
 
+class EmpleadoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Empleado
+        fields = ['emplCod', 'emplNom', 'emplCarg', 'emplCond']
+        
 class LunaSerializer(serializers.ModelSerializer):
     # Campos para mostrar las opciones legibles
     lunaProp_display = serializers.CharField(source='get_lunaProp_display', read_only=True)
