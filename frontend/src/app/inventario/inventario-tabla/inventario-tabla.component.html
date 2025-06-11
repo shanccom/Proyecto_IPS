@@ -81,12 +81,17 @@
         </ng-container>
 
         <td class="px-4 py-2 text-sm text-center">
-          <button (click)="onEditar(producto)" class="bg-[#A7DCFF] hover:bg-[#6C94AE] text-black text-xs px-3 py-1 rounded mr-1">
+          <button (click)="onEditar(producto)" class="bg-[#A7DCFF] text-black text-xs px-3 py-1 rounded mr-2">
             Editar
           </button>
-          <button (click)="onEliminar(producto.codigo)" class="bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded">
+          <button (click)="onEliminar(producto.codigo)" class="bg-red-500 text-white text-xs px-3 py-1 rounded mr-2">
             Eliminar
           </button>
+          <!--  CODIGO DE BARRAS -->
+          <button (click)="mostrarCodigo(producto)" class="bg-[#A7DCFF] text-black text-xs px-3 py-1 rounded">
+            Ver Código
+          </button>
+          <!-- -->
         </td>
       </tr>
     </tbody>

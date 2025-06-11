@@ -6,6 +6,10 @@ import { CommonModule } from '@angular/common';
 import { FormularioAccesorioComponent } from './formulario-accesorio/formulario-accesorio.component';
 import { FormularioMonturaComponent } from './formulario-montura/formulario-montura.component';
 
+import jsPDF from 'jspdf';
+import { svg2pdf } from 'svg2pdf.js';
+import { BarcodeComponent } from '../shared/barcode/barcode.component';
+
 type TipoFormulario = 'montura' | 'accesorio';
 
 @Component({
@@ -15,7 +19,8 @@ type TipoFormulario = 'montura' | 'accesorio';
     InventarioTablaComponent, 
     CommonModule,
     FormularioAccesorioComponent,
-    FormularioMonturaComponent
+    FormularioMonturaComponent,
+    BarcodeComponent
     ],
   templateUrl: './inventario.component.html',
   styleUrl: './inventario.component.css'
@@ -30,6 +35,9 @@ export class InventarioComponent implements OnInit {
   productos: any[] = [];
   productosFiltrados: any[] = [];
   
+  //
+  modalCodigoVisible: boolean = false; 
+  codigoProducto: string = '';       
   constructor(private inventarioService: InventarioService) {}
 
   ngOnInit(): void {
@@ -153,4 +161,89 @@ export class InventarioComponent implements OnInit {
     console.log('Productos filtrados:', this.productosFiltrados);
   }
 
+  // PARTE DE CODIGO DE BARRAS
+   mostrarCodigoBarras(producto: any): void {
+    console.log('Producto recibido:', producto); // Debug
+    this.codigoProducto = producto.codigo; // o producto.codigo_barras
+    this.modalCodigoVisible = true;
+  }
+
+  
+  downloadPDF() {
+    const doc = new jsPDF();
+    const barcodeComponent = document.querySelector('app-barcode');
+    const svg = barcodeComponent?.querySelector('svg');
+    
+    if (svg) {
+      // Obtener dimensiones de la página PDF (formato A4 por defecto)
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      
+      // Configurar para que ocupe la mitad de la hoja
+      const targetWidth = pageWidth / 2;  // Mitad del ancho de la página
+      const targetHeight = pageHeight / 4; // Un cuarto de la altura
+      
+      // Centrar horizontalmente
+      const xPosition = (pageWidth - targetWidth) / 2;
+      const yPosition = 30; // Margen desde arriba
+      
+      svg2pdf(svg as SVGElement, doc, {
+        x: xPosition,
+        y: yPosition,
+        width: targetWidth,
+        height: targetHeight
+      }).then(() => {
+        doc.save("codigo-barras.pdf");
+      }).catch(error => {
+        console.error("Error al insertar SVG en el PDF:", error);
+        doc.save("codigo-barras.pdf");
+      });
+    } else {
+      console.error("No se encontró el SVG del código de barras.");
+      doc.save("codigo-barras.pdf");
+    }
+  }
+
+  generatePDFConTodosLosCodigos() {
+    const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
+
+    const barcodeDivs = document.querySelectorAll('#barcodes-hidden > div');
+
+    const anchoPagina = doc.internal.pageSize.getWidth();
+    const anchoCodigo = 300; // ancho del código de barras
+    const altoCodigo = 120;   // alto del código de barras
+
+    const xCentrado = (anchoPagina - anchoCodigo) / 2;
+    const margenSuperior = 80;
+    const espacioEntreCodigos = 130;
+
+    const renderizarCodigo = async (div: Element, posY: number) => {
+      const svg = div.querySelector('svg') as SVGSVGElement | null;
+      if (svg) {
+        svg.setAttribute("width", `${anchoCodigo}`);
+        svg.setAttribute("height", `${altoCodigo}`);
+
+        await svg2pdf(svg, doc, {
+          x: xCentrado,
+          y: margenSuperior + posY * espacioEntreCodigos,
+        });
+      }
+    };
+
+    const renderTodos = async () => {
+      for (let i = 0; i < barcodeDivs.length; i++) {
+        const posY = i % 4;
+
+        await renderizarCodigo(barcodeDivs[i], posY);
+
+        if ((i + 1) % 4 === 0 && i < barcodeDivs.length - 1) {
+          doc.addPage();
+        }
+      }
+
+      doc.save("TodosLosCodigos.pdf");
+    };
+
+    renderTodos();
+  }
 }
