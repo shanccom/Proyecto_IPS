@@ -69,3 +69,13 @@ def recetas_cliente(request):
         return Response(serializer)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def obtener_clientes(request):
+    try:
+        clientes = Cliente.objects.all()
+        serializer = ClienteSerializer(clientes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
