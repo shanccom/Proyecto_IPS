@@ -6,6 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from datetime import datetime
 
 
 class ClienteListCreateView(generics.ListCreateAPIView):
@@ -29,6 +30,16 @@ def create_receta(request):
     recCod = request.data.get('recCod')
     cliCod = request.data.get('cliCod')
     
+    rectOpt = request.data.get('rectOpt', False) 
+    fecha_str = request.data.get('recfecha')  # Asumiendo que 'recfecha' es la fecha en formato 'YYYY-MM-DD'
+    if fecha_str:
+        try:
+            recfecha = datetime.strptime(fecha_str, "%Y-%m-%d").date()  # Convertir a un objeto `date`
+        except ValueError:
+            return Response({"error": "Fecha no válida"}, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        recfecha = None  # O asigna una fecha por defecto si es necesario.
+
     if not cliCod:
         return Response({"error": "Debe proporcionar un cliCod válido"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -38,8 +49,8 @@ def create_receta(request):
         receta = Receta.objects.create(
             recCod=recCod,
             cliCod=cliente,
-            rectOpt=request.data.get('rectOpt'),
-            recFecha=request.data.get('recFecha'),
+            rectOpt = rectOpt, 
+            recfecha=recfecha,
             recOD_sph=request.data.get('recOD_sph'),
             recOD_cyl=request.data.get('recOD_cyl'),
             recOD_eje=request.data.get('recOD_eje'),
@@ -56,6 +67,7 @@ def create_receta(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 #RECUPERARR recetas de un cliente
 @api_view(['GET'])
 def recetas_cliente(request):

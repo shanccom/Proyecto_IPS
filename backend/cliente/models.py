@@ -39,10 +39,10 @@ class Receta(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.recCod:
-            año = self.recFecha.year
-            total_ese_año = Receta.objects.filter(fecha_emision__year=año).count() + 1
-            self.codigo_receta = f"{año}-{total_ese_año:04d}"  # Ej: 2025-0001
+            año = self.recfecha.year
+            total_ese_año = Receta.objects.filter(recfecha__year=año).count() + 1
+            self.recCod = f"{año}-{total_ese_año:04d}"  # Ej: 2025-0001
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Receta {self.recCod} - {self.cliente.cliNombComp}"
+        return f"Receta {self.recCod} - {self.cliCod.cliNombComp}"

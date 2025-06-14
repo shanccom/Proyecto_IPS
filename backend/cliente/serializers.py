@@ -3,8 +3,8 @@ from .models import Cliente, Receta
 
 class RecetaSerializer(serializers.ModelSerializer):
     codigo = serializers.CharField(source='recCod')
-    medicion_propia = serializers.BooleanField(source='rectOpt')
-    fecha = serializers.DateField(source = 'rectFech')
+    medicion_propia = serializers.BooleanField(source='rectOpt', default=False)  
+    fecha = serializers.DateField(source = 'recfecha')
     OD_SPH = serializers.DecimalField(source='recOD_sph', max_digits=4,decimal_places=2)
     OD_CYL = serializers.DecimalField(source='recOD_cyl', max_digits=4,decimal_places=2)
     OD_eje = serializers.DecimalField(source='recOD_eje', max_digits=4,decimal_places=2)
