@@ -38,8 +38,8 @@ export class TopbarComponent implements OnInit, OnDestroy {
           this.pageTitleService.setTitle('Códigos de Barras');
         } else if (path.includes('ventas')) {
           this.pageTitleService.setTitle('Ventas');
-        } else if (path.includes('recetas')) {
-          this.pageTitleService.setTitle('Recetas');
+        } else if (path.includes('clientes')) {
+          this.pageTitleService.setTitle('Clientes');
         } else if (path.includes('informe')) {
           this.pageTitleService.setTitle('Informes');
         } else {
