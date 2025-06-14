@@ -10,13 +10,13 @@
     <h3 class="text-xl font-bold text-white font-medium mb-4">Agregar Cliente</h3>
     <hr class="border-t-2 border-[#5E5E5E] my-4">
 
-    <!-- Aquí se carga el formulario de cliente
+    <!--Aquí se carga el formulario de cliente-->
     <app-formulario-cliente 
       *ngIf="mostrarFormulario" 
       (cerrar)="cerrarFormulario()" 
-      (recetaGuardada)="obtenerRecetas()">
+      (clienteGuardado)="obtenerClientes()">
     </app-formulario-cliente>
-    -->
+    
   </div>
 </div>
 
@@ -26,7 +26,6 @@
     <thead class="bg-[#292C2D]">
       <!-- Fila de agrupación -->
       <tr class=" text-white text-left font-normal">
-        <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Marca</th>
 
         <th class="px-4 py-2 text-left text-sm font-normal text-white-700 ">Código</th>
         <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Nombre</th>
@@ -34,34 +33,22 @@
         <th class="px-4 py-2 text-left text-sm font-normal text-white-700">N° Documento</th>
         <th class="px-4 py-2 text-left text-sm font-normal text-white-700">N° Celular</th>
         <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Edad</th>
-        <th rowspan="2" class="px-4 py-2 text-left text-sm font-normal text-white-700">Acciones</th>
+        <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Acciones</th>
       </tr>
 
     </thead>
     <tbody>
-        <!--
-      <tr *ngFor="let receta of recetas" class="hover:bg-[#3A3A3A] transition">
-        <td class="px-4 py-2 border-b border-gray-600">{{ receta.codigo }}</td>
-        <td class="px-4 py-2 border-b border-gray-600">{{ receta.fecha }}</td>
-        <td class="px-4 py-2 border-b border-gray-600">{{ receta.medicion_propia ? 'Sí' : 'No' }}</td>
-
-        <td class="px-4 py-2 border-b border-gray-600">{{ receta.OD_SPH }}</td>
-        <td class="px-4 py-2 border-b border-gray-600">{{ receta.OD_CYL }}</td>
-        <td class="px-4 py-2 border-b border-gray-600">{{ receta.OD_eje }}</td>
-
-        <td class="px-4 py-2 border-b border-gray-600">{{ receta.OI_SPH }}</td>
-        <td class="px-4 py-2 border-b border-gray-600">{{ receta.OI_CYL }}</td>
-        <td class="px-4 py-2 border-b border-gray-600">{{ receta.OI_eje }}</td>
-
-        <td class="px-4 py-2 border-b border-gray-600">{{ receta.DIP }}</td>
-        <td class="px-4 py-2 border-b border-gray-600">{{ receta.OD_adicion || '-' }}</td>
-        <td class="px-4 py-2 border-b border-gray-600">{{ receta.OI_adicion || '-' }}</td>
-
-        <td class="px-4 py-2 border-b border-gray-600">
-          <button class="bg-[#A7DCFF] text-black px-3 py-1 rounded hover:brightness-90 font-medium">Editar</button>
-        </td>
-      </tr>
-      -->
+        <tr *ngFor="let cliente of clientes" class="hover:bg-[#3A3A3A] transition">
+            <td class="px-4 py-2 border-b border-gray-600">{{ cliente.codigo }}</td>
+            <td class="px-4 py-2 border-b border-gray-600">{{ cliente.nombre_completo }}</td>
+            <td class="px-4 py-2 border-b border-gray-600">{{ cliente.tipo_documento }}</td>
+            <td class="px-4 py-2 border-b border-gray-600">{{ cliente.numero_documento }}</td>
+            <td class="px-4 py-2 border-b border-gray-600">{{ cliente.numero_celular }}</td>
+            <td class="px-4 py-2 border-b border-gray-600">{{ cliente.edad }}</td>
+            <td class="px-4 py-2 border-b border-gray-600">
+                <button class="bg-[#A7DCFF] text-black px-3 py-1 rounded hover:brightness-90 font-medium">Editar</button>
+            </td>
+        </tr>
     </tbody>
   </table>
 </div>
