@@ -27,6 +27,8 @@ class RecetaDetailView(generics.RetrieveUpdateDestroyAPIView):
     
 @api_view(['POST'])
 def create_receta(request):
+
+    print(request.data)
     recCod = request.data.get('recCod')
     cliCod = request.data.get('cliCod')
     
@@ -84,6 +86,7 @@ def recetas_cliente(request):
 
 @api_view(['GET'])
 def obtener_clientes(request):
+    
     try:
         clientes = Cliente.objects.all()
         serializer = ClienteSerializer(clientes, many=True)
