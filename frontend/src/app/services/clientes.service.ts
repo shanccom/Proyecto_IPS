@@ -14,4 +14,8 @@ export class ClientesService {
   getClientes(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}obtener_clientes`);
   }
+  // Metodo para craer un cliente
+  agregarCliente(cliente: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}crear_cliente/`, cliente);
+  }
 }
