@@ -89,7 +89,4 @@ def crear_cliente(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            # Imprime los detalles del error en la consola del servidor
-            print('Errores del serializador:', serializer.errors)
-            # Devuelve los errores como respuesta
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
