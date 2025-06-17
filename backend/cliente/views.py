@@ -86,7 +86,6 @@ def recetas_cliente(request):
 
 @api_view(['GET'])
 def obtener_clientes(request):
-    
     try:
         clientes = Cliente.objects.all()
         serializer = ClienteSerializer(clientes, many=True)
