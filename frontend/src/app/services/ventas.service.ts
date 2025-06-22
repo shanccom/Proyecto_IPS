@@ -13,22 +13,24 @@ export interface Producto {
 }
 
 export interface BoletaRequest {
-    serie: string;
-    cliente: {
-        tipo_doc: string;
-        num_doc: string;
-        rzn_social: string;
-    };
-    items: {
-        producto_id: number;
-        cantidad: number;
-        valor_unitario: number;
-        tipo_producto?: string; // Agregar tipo de producto
-    }[];
-    subtotal: number;
-    igv: number;
-    total: number;
+  serie: string;
+  cliente: {
+    tipo_doc: string;
+    num_doc: string;
+    rzn_social: string;
+  };
+  items: {
+    producto_id?: number; // opcional, solo para productos del catálogo
+    descripcion?: string; // requerido si no hay producto_id
+    cantidad: number;
+    valor_unitario: number;
+    tipo_producto?: string; // opcional si lo necesitas para clasificar
+  }[];
+  subtotal: number;
+  igv: number;
+  total: number;
 }
+
 
 export interface BoletaResponse {
     id: number;

@@ -17,6 +17,7 @@ import { of } from 'rxjs';
 
 export class VentaComponent implements OnInit {
   ventaForm: FormGroup;
+  formularioLunaPersonalizada: FormGroup;
   mostrarScanner = false;
   
   cargandoProducto = false;
@@ -35,11 +36,13 @@ export class VentaComponent implements OnInit {
   productos: any[] = [];
   total: number = 0;
 
+
   constructor(
     private fb: FormBuilder,
     private ventaService: VentasService
   ) {
     this.ventaForm = this.createForm();
+    this.formularioLunaPersonalizada = this.createFormularioLuna();
   }
 
   ngOnInit(): void {
@@ -61,6 +64,8 @@ export class VentaComponent implements OnInit {
     });
   }
 
+  
+
   createItemForm(producto?: Producto): FormGroup {
     return this.fb.group({
       producto_id: [producto?.codigo || null, Validators.required],
@@ -73,6 +78,14 @@ export class VentaComponent implements OnInit {
     });
   }
 
+  createFormularioLuna(): FormGroup {
+    return this.fb.group({
+      descripcion: ['', Validators.required],
+      cantidad: [1, [Validators.required, Validators.min(1)]],
+      valor_unitario: [0, [Validators.required, Validators.min(0.01)]]
+    });
+  }
+  
   get items(): FormArray {
     return this.ventaForm.get('items') as FormArray;
   }
@@ -142,71 +155,114 @@ export class VentaComponent implements OnInit {
     }
   }
 
-  guardarBoleta() {
-  const cliente = this.ventaForm.get('cliente')?.value;
-  const productosForm = this.items.controls;
+  // AGREGAR LUNA PERSONALIZADA
+  agregarLunaPersonalizada() {
+    if (this.formularioLunaPersonalizada.valid) {
+      const formValue = this.formularioLunaPersonalizada.value;
+      
+      // Crear FormGroup para producto personalizado
+      const itemPersonalizado = this.fb.group({
+        producto_id: [null], // Sin producto_id para productos personalizados
+        codigo: ['Producto personalizado'],
+        descripcion: [formValue.descripcion, Validators.required],
+        cantidad: [formValue.cantidad, [Validators.required, Validators.min(1)]],
+        valor_unitario: [formValue.valor_unitario, [Validators.required, Validators.min(0.01)]],
+        subtotal: [{ value: formValue.cantidad * formValue.valor_unitario, disabled: true }],
+        stock_disponible: [{ value: 999, disabled: true }] // Stock alto para personalizados
+      });
 
-  if (!cliente.tipo_doc || !cliente.num_doc || !cliente.rzn_social) {
-    alert('Por favor, complete los datos del cliente.');
-    return;
-  }
-
-  if (productosForm.length === 0) {
-    alert('Debe agregar al menos un producto.');
-    return;
-  }
-
-  // Preparar datos en el formato correcto para la API
-  const itemsParaEnviar = productosForm.map(control => control.getRawValue());
-
-  // Validar que todos los productos tengan un producto_id válido
-  for (const item of itemsParaEnviar) {
-    if (!item.producto_id) {
-      alert('Error: Hay un producto sin ID válido en la lista. Por favor, revisa los productos agregados.');
-      return;
+      this.items.push(itemPersonalizado);
+      this.calcularSubtotal(this.items.length - 1);
+      this.formularioLunaPersonalizada.reset({ cantidad: 1, valor_unitario: 0 });
+      
+      console.log('Luna personalizada agregada:', formValue.descripcion);
+    } else {
+      alert('Completa todos los campos para agregar una luna personalizada.');
     }
   }
 
-  const boletaRequest = {
-    serie: this.ventaForm.get('serie')?.value,
-    cliente: {
-      tipo_doc: cliente.tipo_doc,
-      num_doc: cliente.num_doc,
-      rzn_social: cliente.rzn_social
-    },
-    items: itemsParaEnviar.map(item => ({
-      producto_id: item.producto_id,
-      cantidad: item.cantidad,
-      valor_unitario: item.valor_unitario
-    })),
-    subtotal: this.subtotalSinIgv,
-    igv: this.igv,
-    total: this.totalConIgv
-  };
+  guardarBoleta() {
+    const cliente = this.ventaForm.get('cliente')?.value;
+    const productosForm = this.items.controls;
 
-  this.guardandoBoleta = true;
+    if (!cliente.tipo_doc || !cliente.num_doc || !cliente.rzn_social) {
+      alert('Por favor, complete los datos del cliente.');
+      return;
+    }
 
-  this.ventaService.crearBoleta(boletaRequest)
-    .pipe(
-      catchError(error => {
-        console.error('Error al guardar boleta:', error);
-        alert('Error al guardar la boleta. Intente nuevamente.');
-        return of(null);
+    if (productosForm.length === 0) {
+      alert('Debe agregar al menos un producto.');
+      return;
+    }
+
+    // Preparar datos en el formato correcto para la API
+    const itemsParaEnviar = productosForm.map(control => control.getRawValue());
+
+    const boletaRequest = {
+      serie: this.ventaForm.get('serie')?.value,
+      cliente: {
+        tipo_doc: cliente.tipo_doc,
+        num_doc: cliente.num_doc,
+        rzn_social: cliente.rzn_social
+      },
+      items: itemsParaEnviar.map(item => {
+        if (!item.producto_id || item.producto_id === 0) {
+          // Producto personalizado (como una luna)
+          return {
+            producto_id: null, // Agregamos producto_id como null
+            codigo: item.codigo || 'LUNA-CUSTOM',
+            descripcion: item.descripcion || item.nombre || 'Producto personalizado',
+            cantidad: item.cantidad,
+            valor_unitario: item.valor_unitario
+          };
+        } else {
+          // Producto normal
+          return {
+            producto_id: item.producto_id,
+            codigo: item.codigo,
+            descripcion: item.descripcion, // Agregamos descripción también
+            cantidad: item.cantidad,
+            valor_unitario: item.valor_unitario
+          };
+        }
       }),
-      finalize(() => {
-        this.guardandoBoleta = false;
-      })
-    )
-    .subscribe(response => {
-      if (response) {
-        console.log('Boleta guardada exitosamente:', response);
-        alert(`Boleta ${response.serie}-${response.correlativo} guardada exitosamente`);
-        this.boletaGuardada = true;
-        this.limpiarFormulario();
-      }
-    });
-}
+      subtotal: this.subtotalSinIgv,
+      igv: this.igv,
+      total: this.totalConIgv
+    };
 
+    // DEBUG: Verificar qué se está enviando
+    console.log('=== DEBUG BOLETA REQUEST ===');
+    console.log('Items enviados:', JSON.stringify(boletaRequest.items, null, 2));
+    console.log('Productos form raw:', itemsParaEnviar.map(item => ({
+      producto_id: item.producto_id,
+      codigo: item.codigo,
+      descripcion: item.descripcion
+    })));
+    console.log('===============================');
+
+    this.guardandoBoleta = true;
+
+    this.ventaService.crearBoleta(boletaRequest)
+      .pipe(
+        catchError(error => {
+          console.error('Error al guardar boleta:', error);
+          alert('Error al guardar la boleta. Intente nuevamente.');
+          return of(null);
+        }),
+        finalize(() => {
+          this.guardandoBoleta = false;
+        })
+      )
+      .subscribe(response => {
+        if (response) {
+          console.log('Boleta guardada exitosamente:', response);
+          alert(`Boleta ${response.serie}-${response.correlativo} guardada exitosamente`);
+          this.boletaGuardada = true;
+          this.limpiarFormulario();
+        }
+      });
+  }
 
   generarNuevoCorrelativo(): void {
     const serieActual = this.ventaForm.get('serie')?.value || 'B001';
@@ -236,7 +292,9 @@ export class VentaComponent implements OnInit {
     const valorUnitario = item.get('valor_unitario')?.value || 0;
     const stockDisponible = item.get('stock_disponible')?.value || 0;
     
-    if (cantidad > stockDisponible) {
+    // Solo validar stock para productos normales (con producto_id)
+    const tieneProductoId = item.get('producto_id')?.value;
+    if (tieneProductoId && cantidad > stockDisponible) {
       item.patchValue({ cantidad: stockDisponible });
       alert(`No puede exceder el stock disponible (${stockDisponible} unidades)`);
       return;

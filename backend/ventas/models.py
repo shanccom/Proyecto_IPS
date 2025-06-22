@@ -72,11 +72,47 @@ class Boleta(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=20, default='pendiente')
 
+from django.db import models
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
+
 class ItemBoleta(models.Model):
     boleta = models.ForeignKey(Boleta, related_name='items', on_delete=models.CASCADE)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.CharField(max_length=100) 
+    
+    # Hacer content_type opcional para productos personalizados
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
+    object_id = models.CharField(max_length=100, null=True, blank=True)
     content_object = GenericForeignKey('content_type', 'object_id')
-
+    
+    # Campo para productos personalizados
+    descripcion_personalizada = models.CharField(max_length=255, null=True, blank=True)
+    
     cantidad = models.PositiveIntegerField()
     valor_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    class Meta:
+        db_table = 'ventas_itemboleta'
+    
+    def __str__(self):
+        if self.descripcion_personalizada:
+            return f"{self.descripcion_personalizada} (Personalizado)"
+        elif self.content_object:
+            return str(self.content_object)
+        else:
+            return f"Item {self.id}"
+    
+    @property
+    def descripcion(self):
+        """Devuelve la descripción del item, ya sea personalizada o del producto"""
+        if self.descripcion_personalizada:
+            return self.descripcion_personalizada
+        elif self.content_object:
+            # Asumiendo que tus modelos de producto tienen un campo 'nombre'
+            return getattr(self.content_object, 'nombre', str(self.content_object))
+        else:
+            return "Producto sin descripción"
+    
+    @property
+    def subtotal(self):
+        """Calcula el subtotal del item"""
+        return self.cantidad * self.valor_unitario

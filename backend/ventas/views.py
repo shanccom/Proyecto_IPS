@@ -127,58 +127,126 @@ def crear_boleta(request):
             try:
                 print(f"Procesando item: {item_data}")  # Debug
                 
-                # Buscar el producto por código
-                codigo_producto = item_data.get('producto_id')
-                if not codigo_producto:
-                    boleta.delete()
-                    return JsonResponse({
-                        'error': 'Código de producto es requerido para cada item'
-                    }, status=400)
-                
-                # Buscar producto en todos los modelos disponibles
-                producto, content_type, precio = buscar_producto(codigo_producto)
-                
-                if not producto:
-                    boleta.delete()
-                    return JsonResponse({
-                        'error': f'Producto con código {codigo_producto} no encontrado en ningún modelo'
-                    }, status=404)
-                
-                # Validar cantidad
+                # Obtener valores básicos
                 cantidad = item_data.get('cantidad', 1)
+                valor_unitario = item_data.get('valor_unitario')
+                producto_id = item_data.get('producto_id')
+                codigo_producto = item_data.get('codigo', '')
+                descripcion = item_data.get('descripcion', '')
+                
+                # Validaciones básicas
                 if cantidad <= 0:
                     boleta.delete()
                     return JsonResponse({
                         'error': 'La cantidad debe ser mayor a 0'
                     }, status=400)
                 
-                # Validar valor unitario
-                valor_unitario = item_data.get('valor_unitario')
                 if not valor_unitario or valor_unitario <= 0:
                     boleta.delete()
                     return JsonResponse({
                         'error': 'El valor unitario debe ser mayor a 0'
                     }, status=400)
                 
-                # Crear item de boleta usando el ID primario del producto encontrado
-                ItemBoleta.objects.create(
-                    boleta=boleta,
-                    content_type=content_type,
-                    object_id=producto.pk,  # Usar el ID primario del producto
-                    cantidad=cantidad,
-                    valor_unitario=Decimal(str(valor_unitario))
+                # Determinar si es producto personalizado o normal
+                es_producto_personalizado = (
+                    not producto_id or 
+                    producto_id is None or 
+                    producto_id == 'null' or
+                    str(producto_id).lower() == 'null'
                 )
                 
-                print(f"Item creado para producto: {producto} (Tipo: {content_type.model})")  # Debug
+                if es_producto_personalizado:
+                    print(f"Procesando producto personalizado: {codigo_producto}")  # Debug
+                    
+                    if not descripcion:
+                        boleta.delete()
+                        return JsonResponse({
+                            'error': 'Descripción es requerida para productos personalizados'
+                        }, status=400)
+                    
+                    # Crear item para producto personalizado
+                    ItemBoleta.objects.create(
+                        boleta=boleta,
+                        content_type=None,  # Sin content_type para productos personalizados
+                        object_id=None,     # Sin object_id para productos personalizados
+                        cantidad=cantidad,
+                        valor_unitario=Decimal(str(valor_unitario)),
+                        descripcion_personalizada=descripcion
+                    )
+                    
+                    print(f"Item personalizado creado: {descripcion}")  # Debug
+                    
+                else:
+                    # Producto normal - lógica existente
+                    print(f"Procesando producto normal: {producto_id}")  # Debug
+                    
+                    # Buscar producto en todos los modelos disponibles
+                    producto, content_type, precio = buscar_producto(producto_id)
+                    
+                    if not producto:
+                        boleta.delete()
+                        return JsonResponse({
+                            'error': f'Producto con código {producto_id} no encontrado en ningún modelo'
+                        }, status=404)
+                    
+                    # Crear item de boleta usando el ID primario del producto encontrado
+                    ItemBoleta.objects.create(
+                        boleta=boleta,
+                        content_type=content_type,
+                        object_id=str(producto.pk),  # Asegurar que sea string
+                        cantidad=cantidad,
+                        valor_unitario=Decimal(str(valor_unitario)),
+                        descripcion_personalizada=None  # No usar descripción personalizada para productos normales
+                    )
+                    
+                    print(f"Item creado para producto: {producto} (Tipo: {content_type.model})")  # Debug
                 
             except Exception as e:
                 print(f"Error al procesar item: {str(e)}")  # Debug
+                import traceback
+                traceback.print_exc()
                 boleta.delete()
                 return JsonResponse({
                     'error': f'Error al procesar item: {str(e)}'
                 }, status=500)
         
-        # Respuesta exitosa
+        # Preparar los items para la respuesta
+        items_response = []
+        for item in boleta.items.all():
+            item_data = {
+                'cantidad': item.cantidad,
+                'valor_unitario': float(item.valor_unitario),
+                'subtotal': float(item.subtotal)
+            }
+            
+            # Agregar información específica según el tipo de item
+            if item.descripcion_personalizada:
+                # Producto personalizado
+                item_data.update({
+                    'codigo': 'PERSONALIZADO',
+                    'descripcion': item.descripcion_personalizada,
+                    'tipo': 'personalizado'
+                })
+            elif item.content_object:
+                # Producto del inventario
+                producto = item.content_object
+                item_data.update({
+                    'codigo': getattr(producto, 'codigo', ''),
+                    'descripcion': getattr(producto, 'nombre', str(producto)),
+                    'tipo': 'inventario',
+                    'producto_id': producto.pk
+                })
+            else:
+                # Fallback
+                item_data.update({
+                    'codigo': 'DESCONOCIDO',
+                    'descripcion': 'Producto sin descripción',
+                    'tipo': 'desconocido'
+                })
+            
+            items_response.append(item_data)
+        
+        # Respuesta exitosa con items incluidos
         response_data = {
             'id': boleta.id,
             'serie': boleta.serie,
@@ -189,6 +257,7 @@ def crear_boleta(request):
                 'num_doc': boleta.cliente.cliNumDoc,
                 'rzn_social': boleta.cliente.cliNom
             },
+            'items': items_response,  # ✅ Items incluidos para SUNAT
             'subtotal': float(boleta.subtotal),
             'igv': float(boleta.igv),
             'total': float(boleta.total),
