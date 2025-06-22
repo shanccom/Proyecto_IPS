@@ -23,11 +23,12 @@ class Receta(models.Model):
     #Medidas de ojo Derecho
     recOD_sph = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
     recOD_cyl = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
-    recOD_eje = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
+    recOD_eje = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
    # Medidas de ojo Izquierdo
     recOI_sph = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
     recOI_cyl = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
-    recOI_eje = models.DecimalField(max_digits=3,decimal_places=3, null=True, blank=True)
+    #acepta 170
+    recOI_eje = models.DecimalField(max_digits=5,decimal_places=1, null=True, blank=True)
     # Distancia Interpupilar para campo de visión correcta
     recDIPLejos = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
     recDIPCerca = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)

@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from datetime import datetime
-
+from decimal import Decimal, InvalidOperation
 
 class ClienteListCreateView(generics.ListCreateAPIView):
     queryset = Cliente.objects.all()
@@ -47,28 +47,68 @@ def create_receta(request):
 
     cliente = get_object_or_404(Cliente, cliCod=cliCod)  # Verifica si el cliente existe
 
+    print("Datos crudos:")
+    for campo in ['recOD_sph', 'recOD_cyl', 'recOD_eje',
+                'recOI_sph', 'recOI_cyl', 'recOI_eje',
+                'recDIPLejos', 'recDIPCerca', 'rec_adicion']:
+        print(f"{campo}: {request.data.get(campo)!r} ({type(request.data.get(campo))})")
+
+
+    recOD_sph = safe_decimal(request.data.get('recOD_sph'))
+    recOD_cyl = safe_decimal(request.data.get('recOD_cyl'))
+    recOD_eje = safe_decimal(request.data.get('recOD_eje'))
+
+    recOI_sph = safe_decimal(request.data.get('recOI_sph'))
+    recOI_cyl = safe_decimal(request.data.get('recOI_cyl'))
+    recOI_eje = safe_decimal(request.data.get('recOI_eje'))
+
+    recDIPLejos = safe_decimal(request.data.get('recDIPLejos'))
+    recDIPCerca = safe_decimal(request.data.get('recDIPCerca'))
+    rec_adicion = safe_decimal(request.data.get('rec_adicion'))
+
+    recObsAdic = request.data.get('recObsAdic')
+    if recObsAdic is not None:
+        recObsAdic = str(recObsAdic)
+
+
     try:
         receta = Receta.objects.create(
-            recCod=recCod,
             cliCod=cliente,
-            rectOpt = rectOpt, 
+            rectOpt=rectOpt,
             recfecha=recfecha,
-            recOD_sph=request.data.get('recOD_sph'),
-            recOD_cyl=request.data.get('recOD_cyl'),
-            recOD_eje=request.data.get('recOD_eje'),
-            recOI_sph=request.data.get('recOI_sph'),
-            recOI_cyl=request.data.get('recOI_cyl'),
-            recOI_eje=request.data.get('recOI_eje'),
-            recDIPLejos=request.data.get('recDIPLejos'),
-            recDIPCerca=request.data.get('recDIPCerca'),
-            rec_adicion=request.data.get('rec_adicion'),
-            recObsAdic=request.data.get('recObsAdic'),
+
+            recOD_sph=recOD_sph,
+            recOD_cyl=recOD_cyl,
+            recOD_eje=recOD_eje,
+
+            recOI_sph=recOI_sph,
+            recOI_cyl=recOI_cyl,
+            recOI_eje=recOI_eje,
+
+            recDIPLejos=recDIPLejos,
+            recDIPCerca=recDIPCerca,
+            rec_adicion=rec_adicion,
+
+            recObsAdic=recObsAdic,
         )
+        receta.save() 
 
         serializer = RecetaSerializer(receta)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+def safe_decimal(value):
+    try:
+        if value is not None and value != '':
+            return Decimal(str(value))
+    except InvalidOperation:
+        print(f"❌ Valor inválido para Decimal: {value!r}")
+        raise
+    return None
+
 
 #RECUPERARR recetas de un cliente
 @api_view(['GET'])

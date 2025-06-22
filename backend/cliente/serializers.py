@@ -2,39 +2,39 @@ from rest_framework import serializers
 from .models import Cliente, Receta
 
 class RecetaSerializer(serializers.ModelSerializer):
-    codigo = serializers.CharField(source='recCod')
+    codigo = serializers.CharField(source='recCod', read_only=True)
     medicion_propia = serializers.BooleanField(source='rectOpt', default=False)  
-    fecha = serializers.DateField(source = 'recfecha')
-    OD_SPH = serializers.DecimalField(source='recOD_sph', max_digits=4,decimal_places=2)
-    OD_CYL = serializers.DecimalField(source='recOD_cyl', max_digits=4,decimal_places=2)
-    OD_eje = serializers.DecimalField(source='recOD_eje', max_digits=4,decimal_places=2)
+    fecha = serializers.DateField(source='recfecha')
     
-    OI_SPH = serializers.DecimalField(source='recOI_sph', max_digits=4,decimal_places=2)
-    OI_CYL = serializers.DecimalField(source='recOI_cyl', max_digits=4,decimal_places=2)
-    OI_eje = serializers.DecimalField(source='recOI_eje', max_digits=4,decimal_places=2)
+    OD_SPH = serializers.DecimalField(source='recOD_sph', max_digits=4, decimal_places=2)
+    OD_CYL = serializers.DecimalField(source='recOD_cyl', max_digits=4, decimal_places=2)
+    OD_eje = serializers.DecimalField(source='recOD_eje', max_digits=5, decimal_places=1)
     
-    # Distancia Interpupilar 
+    OI_SPH = serializers.DecimalField(source='recOI_sph', max_digits=4, decimal_places=2)
+    OI_CYL = serializers.DecimalField(source='recOI_cyl', max_digits=4, decimal_places=2)
+    OI_eje = serializers.DecimalField(source='recOI_eje', max_digits=5, decimal_places=1)
+    
     DIP_Lejos = serializers.DecimalField(source='recDIPLejos', max_digits=3, decimal_places=1, allow_null=True)
     DIP_Cerca = serializers.DecimalField(source='recDIPCerca', max_digits=3, decimal_places=1, allow_null=True)
     
-    #Opcional si son bifocales +50 años
-    #OD_adicion = serializers.DecimalField(source='recOD_adicion', max_digits=4, decimal_places=2, allow_null=True, required=False)
-    #OI_adicion = serializers.DecimalField(source='recOI_adicion', max_digits=4, decimal_places=2, allow_null=True, required=False)
     adicion = serializers.DecimalField(source='rec_adicion', max_digits=4, decimal_places=2, required=False, allow_null=True)
     
     class Meta: 
         model = Receta
-        fields = ['codigo', "medicion_propia", "fecha", "OD_SPH", "OD_CYL", "OD_eje", "OI_SPH", "OI_CYL", "OI_eje", "DIP_Lejos", "DIP_Cerca", "adicion",]
-        read_only_fields = ['codigo']
-        
+        fields = [
+            'codigo',
+            'medicion_propia',
+            'fecha',
+            'OD_SPH', 'OD_CYL', 'OD_eje',
+            'OI_SPH', 'OI_CYL', 'OI_eje',
+            'DIP_Lejos', 'DIP_Cerca',
+            'adicion',
+        ]
+
     def validate(self, data):
-        if data.get('OD_adicion') and data.get('OI_adicion'):
-            if data.get('OD_adicion') < 0 or data.get('OI_adicion') < 0:
-                raise serializers.ValidationError("Las adiciones deben ser valores positivos.")
-        
-        if data.get('DIP') and not (45 <= data.get('DIP') <= 75):
-            raise serializers.ValidationError("El valor de DIP debe estar entre 45 y 75 mm.")
-        
+        adicion = data.get('rec_adicion')
+        if adicion is not None and adicion < 0:
+            raise serializers.ValidationError("La adición debe ser positiva.")
         return data
 
     def create(self, validated_data):
