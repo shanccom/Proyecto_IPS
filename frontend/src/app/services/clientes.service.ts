@@ -23,4 +23,9 @@ export class ClientesService {
   agregarReceta(receta: any): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}create_receta/`, receta);
   }
+
+  getRecetasCliente(codigoCliente: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}recetas_cliente/?nombre_cliente=${codigoCliente}`);
+  }
+
 }

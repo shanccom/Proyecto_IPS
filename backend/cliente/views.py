@@ -113,16 +113,21 @@ def safe_decimal(value):
 #RECUPERARR recetas de un cliente
 @api_view(['GET'])
 def recetas_cliente(request):
-    nombre_cliente = request.query_params.get('nombre_cliente', None)
-    try:
-        cliente = Cliente.objects.filter(nombre__icontains=nombre_cliente).first()
-        if not cliente:
-            return Response({"error": "Cliente no encontrado"}, status=status.HTTP_404_NOT_FOUND)
-        recetas = Receta.objects.filter(cliCod=cliente.cliCod)
-        serializer = RecetaSerializer(recetas,many=True).data
-        return Response(serializer)
-    except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    codigo_cliente = request.query_params.get('nombre_cliente', None)  
+    if codigo_cliente:
+
+        try:
+            cliente = Cliente.objects.filter(cliCod=codigo_cliente).first()
+            if not cliente:
+                return Response({"error": "Cliente no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+            
+            recetas = Receta.objects.filter(cliCod=cliente.cliCod)
+            serializer = RecetaSerializer(recetas, many=True)
+            return Response(serializer.data)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response({"error": "Debe proporcionar el codigo del cliente"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def obtener_clientes(request):

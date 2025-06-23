@@ -5,10 +5,11 @@ import { FormularioClienteComponent } from './formulario-cliente/formulario-clie
 import { ClientesService } from '../services/clientes.service';
 import { error } from 'console';
 import { FormularioRecetaComponent } from '../recetas/formulario-receta/formulario-receta.component';
+import { RecetasComponent } from '../recetas/recetas.component';
 
 @Component({
   selector: 'app-clientes',
-  imports: [FormularioClienteComponent,FormularioRecetaComponent, FormsModule, CommonModule ],
+  imports: [FormularioClienteComponent,FormularioRecetaComponent, FormsModule, CommonModule, RecetasComponent ],
   templateUrl: './clientes.component.html',
   styleUrl: './clientes.component.css'
 })
@@ -16,7 +17,10 @@ export class ClientesComponent implements OnInit {
   cliSeleccionado: any; 
   mostrarFormulario: boolean = false;
   clientes: any[] = [];
+  recetasCliente: any[] = []; 
   mostrarFormularioReceta: boolean = false;
+  mostrarRecetasModal: boolean = false;
+  nombreClienteSeleccionado: string = ''; 
   
   constructor( private clientesService: ClientesService){};
   ngOnInit(): void {
@@ -30,6 +34,18 @@ export class ClientesComponent implements OnInit {
       },
       error => {
         console.error('Error al obtener los clientes:', error);
+      }
+    );
+  }
+
+  obtenerRecetas(codigoCliente: string){
+    this.clientesService.getRecetasCliente(this.cliSeleccionado).subscribe(
+      data => {
+        this.recetasCliente = data;
+        console.log('Recetas del cliente:', this.recetasCliente);
+      },
+      error => {
+        console.error('Error al obtener las recetas del cliente:', error);
       }
     );
   }
@@ -52,4 +68,20 @@ export class ClientesComponent implements OnInit {
   cerrarAgregarReceta() {
     this.mostrarFormularioReceta = false;
   }
+
+  abrirVerReceta(clicodigo: string, nombre: string): void {
+    this.cliSeleccionado = clicodigo;
+    this.nombreClienteSeleccionado = nombre;
+    console.log("nmbre");
+    console.log(this.nombreClienteSeleccionado);
+    this.obtenerRecetas(clicodigo);
+    this.mostrarRecetasModal = true;
+  }
+
+  // Cerrar modal de recetas
+  cerrarVerRecetas(): void {
+    this.mostrarRecetasModal = false; 
+    this.recetasCliente = [];
+  }
+  
 }

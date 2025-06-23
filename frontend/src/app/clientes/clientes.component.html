@@ -46,7 +46,7 @@
             <td class="px-4 py-2 border-b border-gray-600">{{ cliente.numero_celular }}</td>
             <td class="px-4 py-2 border-b border-gray-600">{{ cliente.edad }}</td>
             <td class="px-4 py-2 border-b border-gray-600 text-center">
-                <button class="bg-[#A7DCFF] text-black text-xs px-3 py-1 rounded mr-2">
+                <button (click)="abrirVerReceta(cliente.codigo, cliente.nombre_completo)" class="bg-[#A7DCFF] text-black text-xs px-3 py-1 rounded mr-2">
                     Ver Recetas
                 </button>
                 <button (click)="abrirAgregarReceta(cliente.codigo)"  class="bg-[#A7DCFF] text-black text-xs px-3 py-1 rounded mr-2">
@@ -61,6 +61,21 @@
         </tr>
     </tbody>
   </table>
+</div>
+
+<!-- Modal de Recetas -->
+<div *ngIf="mostrarRecetasModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-[#292C2D] rounded-xl shadow-lg p-6 w-full max-w-5xl h-[80%] flex flex-col justify-between overflow-auto px-4 sm:px-8">
+    <div>
+      <h3 class="text-xl font-bold text-white font-medium mb-4">Recetas de {{ nombreClienteSeleccionado }}</h3>
+      <hr class="border-t-2 border-[#5E5E5E] my-4">
+      <app-recetas *ngIf="recetasCliente.length > 0" [recetas]="recetasCliente"></app-recetas>
+    </div>
+    <!-- Botón en la parte inferior derecha -->
+    <button (click)="cerrarVerRecetas()" class="bg-red-500 text-white text-xs px-3 py-1 rounded mt-4 ml-auto">
+      Cerrar
+    </button>
+  </div>
 </div>
 
 <!-- Modal (Formulario)Agregar Receta -->
@@ -78,4 +93,5 @@
     </app-formulario-receta>
     
   </div>
+
 </div>
