@@ -15,6 +15,11 @@ from datetime import datetime
 from decimal import Decimal
 from rest_framework.decorators import api_view
 
+from services.microservicio_service import MicroservicioSunatService
+
+import requests
+from django.conf import settings
+
 class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
@@ -246,6 +251,9 @@ def crear_boleta(request):
             
             items_response.append(item_data)
         
+        microservicio_service = MicroservicioSunatService()
+        resultado_sunat = microservicio_service.enviar_boleta_sunat(boleta)
+
         # Respuesta exitosa con items incluidos
         response_data = {
             'id': boleta.id,
@@ -261,7 +269,9 @@ def crear_boleta(request):
             'subtotal': float(boleta.subtotal),
             'igv': float(boleta.igv),
             'total': float(boleta.total),
-            'estado': 'pendiente'
+            'estado': 'pendiente',
+            'enviado_sunat': boleta.enviado_sunat,
+            'sunat_resultado': resultado_sunat
         }
         
         print(f"Boleta creada exitosamente: {response_data}")  # Debug
@@ -271,6 +281,7 @@ def crear_boleta(request):
         return JsonResponse({
             'error': 'Datos JSON inválidos'
         }, status=400)
+    
     except Exception as e:
         print(f"Error general: {str(e)}")  # Debug
         import traceback
@@ -369,6 +380,78 @@ def listar_boletas(request):
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+    
+@csrf_exempt
+@require_http_methods(["POST"])
+def reenviar_boleta_sunat(request, boleta_id):
+    """
+    Reenvía una boleta específica a SUNAT
+    """
+    try:
+        boleta = Boleta.objects.get(id=boleta_id)
+        
+        microservicio_service = MicroservicioSunatService()
+        resultado = microservicio_service.enviar_boleta_sunat(boleta)
+        
+        return JsonResponse({
+            'success': resultado['success'],
+            'mensaje': resultado.get('mensaje', ''),
+            'error': resultado.get('error', ''),
+            'boleta_id': boleta_id
+        })
+        
+    except Boleta.DoesNotExist:
+        return JsonResponse({
+            'error': 'Boleta no encontrada'
+        }, status=404)
+    except Exception as e:
+        return JsonResponse({
+            'error': f'Error al reenviar: {str(e)}'
+        }, status=500)
+
+@require_http_methods(["GET"])
+def descargar_cdr(request, boleta_id):
+    """
+    Descarga el CDR de una boleta desde el microservicio
+    """
+    try:
+        boleta = Boleta.objects.get(id=boleta_id)
+        
+        if not boleta.nombre_cdr:
+            return JsonResponse({
+                'error': 'Esta boleta no tiene CDR disponible'
+            }, status=404)
+        
+        # Obtener CDR del microservicio
+        microservicio_url = getattr(settings, 'MICROSERVICIO_SUNAT_URL', 'http://localhost/microservicio-comprobantes/public')
+        cdr_url = f'{microservicio_url}/cdr/{boleta.nombre_cdr}'
+        
+        response = requests.get(cdr_url, timeout=30)
+        
+        if response.status_code == 200:
+            # Retornar el archivo CDR
+            from django.http import HttpResponse
+            http_response = HttpResponse(
+                response.content,
+                content_type='application/zip'
+            )
+            http_response['Content-Disposition'] = f'attachment; filename="{boleta.nombre_cdr}"'
+            return http_response
+        else:
+            return JsonResponse({
+                'error': 'CDR no encontrado en el microservicio'
+            }, status=404)
+            
+    except Boleta.DoesNotExist:
+        return JsonResponse({
+            'error': 'Boleta no encontrada'
+        }, status=404)
+    except Exception as e:
+        return JsonResponse({
+            'error': f'Error al descargar CDR: {str(e)}'
+        }, status=500)
+
+
 # Empleados
 # Añadir empleados
 @api_view(['POST'])
