@@ -1,5 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { RecetaService } from '../services/receta.service';
+import { Component, OnInit, Input , Output, EventEmitter} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormularioRecetaComponent } from './formulario-receta/formulario-receta.component'; 
@@ -12,10 +11,14 @@ import { FormularioRecetaComponent } from './formulario-receta/formulario-receta
 })
 export class RecetasComponent implements OnInit{
   @Input() recetas: any[] = []; 
+  @Output() editarReceta = new EventEmitter<any>();
   
-  constructor(private recetaService:RecetaService){}
 
   ngOnInit(): void {
     console.log('Recetas del cliente en RecetasComponent:', this.recetas);
+  }
+
+  onEditar(receta: any) {
+    this.editarReceta.emit(receta);
   }
 }

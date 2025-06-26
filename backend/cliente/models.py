@@ -24,7 +24,7 @@ class Receta(models.Model):
     recOD_sph = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
     recOD_cyl = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
     recOD_eje = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
-   # Medidas de ojo Izquierdo
+    # Medidas de ojo Izquierdo
     recOI_sph = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
     recOI_cyl = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
     #acepta 170

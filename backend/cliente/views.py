@@ -33,7 +33,7 @@ def create_receta(request):
     cliCod = request.data.get('cliCod')
     
     rectOpt = request.data.get('rectOpt', False) 
-    fecha_str = request.data.get('recfecha')  # Asumiendo que 'recfecha' es la fecha en formato 'YYYY-MM-DD'
+    fecha_str = request.data.get('recfecha')  
     if fecha_str:
         try:
             recfecha = datetime.strptime(fecha_str, "%Y-%m-%d").date()  # Convertir a un objeto `date`

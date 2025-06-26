@@ -69,7 +69,12 @@
     <div>
       <h3 class="text-xl font-bold text-white font-medium mb-4">Recetas de {{ nombreClienteSeleccionado }}</h3>
       <hr class="border-t-2 border-[#5E5E5E] my-4">
-      <app-recetas *ngIf="recetasCliente.length > 0" [recetas]="recetasCliente"></app-recetas>
+      <app-recetas 
+        *ngIf="recetasCliente.length > 0" 
+        [recetas]="recetasCliente"
+        (editarReceta)="abrirEditarReceta($event)">
+      </app-recetas>
+
     </div>
     <!-- Botón en la parte inferior derecha -->
     <button (click)="cerrarVerRecetas()" class="bg-red-500 text-white text-xs px-3 py-1 rounded mt-4 ml-auto">

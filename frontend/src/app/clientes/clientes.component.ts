@@ -21,6 +21,7 @@ export class ClientesComponent implements OnInit {
   mostrarFormularioReceta: boolean = false;
   mostrarRecetasModal: boolean = false;
   nombreClienteSeleccionado: string = ''; 
+  recetaSeleccionadaParaEditar: any = null;
   
   constructor( private clientesService: ClientesService){};
   ngOnInit(): void {
@@ -82,6 +83,12 @@ export class ClientesComponent implements OnInit {
   cerrarVerRecetas(): void {
     this.mostrarRecetasModal = false; 
     this.recetasCliente = [];
+  }
+
+  abrirEditarReceta(receta: any): void{
+    this.mostrarFormularioReceta= true;
+    this.recetaSeleccionadaParaEditar= receta;
+    console.log("Editando receta:", receta);
   }
   
 }
