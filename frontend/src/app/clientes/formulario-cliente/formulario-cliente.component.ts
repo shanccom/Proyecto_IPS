@@ -1,29 +1,49 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup,  Validators } from '@angular/forms';
 import { ClientesService } from '../../services/clientes.service';
 import { ReactiveFormsModule } from '@angular/forms'; 
+import { NotificationService } from '../../services/notification.service'; 
+import { CommonModule } from '@angular/common';
 
 @Component({
+  standalone: true,
   selector: 'app-formulario-cliente',
-  imports: [ReactiveFormsModule],
   templateUrl: './formulario-cliente.component.html',
-  styleUrl: './formulario-cliente.component.css'
+  styleUrls: ['./formulario-cliente.component.css'],
+  imports: [CommonModule, ReactiveFormsModule] // 👈 Asegúrate de tener CommonModule aquí
 })
+
 export class FormularioClienteComponent {
   @Output() cerrar = new EventEmitter<void>();
   @Output() guardado = new EventEmitter<void>();
 
   form:FormGroup;
+  mensajeError: string | null = null
+  mensajeExito: string | null = null;
 
-  constructor(private fb: FormBuilder, private clienteService: ClientesService) {
+
+  constructor(private fb: FormBuilder, private clienteService: ClientesService,private notificationService: NotificationService
+  ) {
     this.form = this.fb.group({
-      nombre_completo: [''],
-      tipo_documento: [''],  
-      numero_documento: [''],
-      numero_celular: [''],
-      edad: ['']
-
+      nombre_completo: ['', Validators.required],
+      tipo_documento: ['', Validators.required],
+      numero_documento: ['', Validators.required],
+      numero_celular: ['', Validators.required],
+      edad: [null, [Validators.required, Validators.min(0)]]
     });
+
+    this.notificationService.registerHandler((msg: string, tipo: 'error' | 'success') => {
+  console.log('Recibido mensaje:', msg, 'Tipo:', tipo); // 👈 debería verse en consola
+  if (tipo === 'error') {
+    this.mensajeError = msg;
+    setTimeout(() => this.mensajeError = null, 4000);
+  } else {
+    this.mensajeExito = msg;
+    setTimeout(() => this.mensajeExito = null, 4000);
+  }
+});
+
+
   }
   // Funcion para cerrar el formulario
   cerrarFormulario() {
@@ -31,6 +51,8 @@ export class FormularioClienteComponent {
   }
   guardarCliente() {
     if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.notificationService.showError('Por favor completa correctamente todos los campos del formulario.');
       return;
     }
     const clienteData = this.form.value;
@@ -48,6 +70,8 @@ export class FormularioClienteComponent {
         }
       }
     );
+    this.notificationService.showSuccess('Cliente guardado exitosamente.');
+
   }
 
 }
