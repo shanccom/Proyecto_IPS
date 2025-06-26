@@ -1,9 +1,7 @@
 <form [formGroup]="form" (ngSubmit)="guardarCliente()" class="grid grid-cols-2 gap-4 p-6 rounded-lg text-white">
-
-  <!-- Notificación personalizada -->
-  <div *ngIf="mensajeError" class="custom-snackbar">
-    {{ mensajeError }}
-  </div>
+  <!-- Notificaciones -->
+  <div *ngIf="mensajeError" class="custom-snackbar error">{{ mensajeError }}</div>
+  <div *ngIf="mensajeExito" class="custom-snackbar success">{{ mensajeExito }}</div>
 
   <!-- Nombre Completo -->
   <div class="flex flex-col">
@@ -50,20 +48,8 @@
       Guardar
     </button>
     <button type="button" (click)="cerrarFormulario()"
-      class="bg-gray-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-gray-500 transition">
+      class="bg-gray-600 text-white px-3 py-2 rounded-lg font-semibold hover:bg-gray-500 transition">
       Cancelar
     </button>
   </div>
-
-  <!-- Notificación de error -->
-  <div *ngIf="mensajeError" class="custom-snackbar error">
-    {{ mensajeError }}
-  </div>
-
-  <!-- Notificación de éxito -->
-  <div *ngIf="mensajeExito" class="custom-snackbar success">
-    {{ mensajeExito }}
-  </div>
-
-
 </form>

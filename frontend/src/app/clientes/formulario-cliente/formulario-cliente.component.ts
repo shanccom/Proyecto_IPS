@@ -1,29 +1,40 @@
-import { Component, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup,  Validators } from '@angular/forms';
-import { ClientesService } from '../../services/clientes.service';
-import { ReactiveFormsModule } from '@angular/forms'; 
-import { NotificationService } from '../../services/notification.service'; 
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ClientesService } from '../../services/clientes.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   standalone: true,
   selector: 'app-formulario-cliente',
   templateUrl: './formulario-cliente.component.html',
   styleUrls: ['./formulario-cliente.component.css'],
-  imports: [CommonModule, ReactiveFormsModule] // 👈 Asegúrate de tener CommonModule aquí
+  imports: [CommonModule, ReactiveFormsModule]
 })
-
-export class FormularioClienteComponent {
-  @Output() cerrar = new EventEmitter<void>();
-  @Output() guardado = new EventEmitter<void>();
-
-  form:FormGroup;
-  mensajeError: string | null = null
+export class FormularioClienteComponent implements OnInit {
+  @Output() cerrarFormularioEvent = new EventEmitter<void>();
+  form!: FormGroup;
+  mensajeError: string | null = null;
   mensajeExito: string | null = null;
 
-
-  constructor(private fb: FormBuilder, private clienteService: ClientesService,private notificationService: NotificationService
+  constructor(
+    private fb: FormBuilder,
+    private clienteService: ClientesService,
+    private notificationService: NotificationService
   ) {
+    // Registrar handler para mostrar notificaciones
+    this.notificationService.registerHandler((msg: string, tipo: 'error' | 'success') => {
+      if (tipo === 'error') {
+        this.mensajeError = msg;
+        setTimeout(() => this.mensajeError = null, 4000);
+      } else {
+        this.mensajeExito = msg;
+        setTimeout(() => this.mensajeExito = null, 4000);
+      }
+    });
+  }
+
+  ngOnInit(): void {
     this.form = this.fb.group({
       nombre_completo: ['', Validators.required],
       tipo_documento: ['', Validators.required],
@@ -31,47 +42,47 @@ export class FormularioClienteComponent {
       numero_celular: ['', Validators.required],
       edad: [null, [Validators.required, Validators.min(0)]]
     });
-
-    this.notificationService.registerHandler((msg: string, tipo: 'error' | 'success') => {
-  console.log('Recibido mensaje:', msg, 'Tipo:', tipo); // 👈 debería verse en consola
-  if (tipo === 'error') {
-    this.mensajeError = msg;
-    setTimeout(() => this.mensajeError = null, 4000);
-  } else {
-    this.mensajeExito = msg;
-    setTimeout(() => this.mensajeExito = null, 4000);
   }
-});
 
-
-  }
-  // Funcion para cerrar el formulario
-  cerrarFormulario() {
-    this.cerrar.emit();
-  }
-  guardarCliente() {
+  guardarCliente(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.notificationService.showError('Por favor completa correctamente todos los campos del formulario.');
       return;
     }
-    const clienteData = this.form.value;
-    console.log('Datos enviados al backend:', clienteData);
 
-    this.clienteService.agregarCliente(clienteData).subscribe(
-      () => {
-        this.guardado.emit();
-        this.cerrarFormulario();
+    this.clienteService.agregarCliente(this.form.value).subscribe({
+      next: () => {
+        this.notificationService.showSuccess('Cliente guardado exitosamente.');
+        this.form.reset();
       },
-      (error) => {
-        console.error('Error al guardar cliente:', error);
-        if (error.error) {
-          console.error('Detalles del error:', error.error); // Ver más detalles si los hay
+      error: (error) => {
+        if (error.status === 400 && error.error) {
+          const mensajes = this.procesarErrores(error.error);
+          mensajes.forEach(msg => this.notificationService.showError(msg));
+        } else {
+          this.notificationService.showError('Error inesperado al guardar el cliente.');
         }
       }
-    );
-    this.notificationService.showSuccess('Cliente guardado exitosamente.');
-
+    });
   }
 
+  private procesarErrores(errores: any): string[] {
+    const mensajes: string[] = [];
+    for (const campo in errores) {
+      if (errores.hasOwnProperty(campo)) {
+        const detalle = errores[campo];
+        if (Array.isArray(detalle)) {
+          detalle.forEach((msg: string) => mensajes.push(`${campo}: ${msg}`));
+        } else {
+          mensajes.push(`${campo}: ${detalle}`);
+        }
+      }
+    }
+    return mensajes;
+  }
+
+  cerrarFormulario(): void {
+    this.cerrarFormularioEvent.emit();
+  }
 }
