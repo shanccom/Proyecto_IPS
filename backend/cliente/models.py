@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
- 
+
 # Create your models here.
 # Aca ira modelo de cliente, receta 
 class Cliente(models.Model):

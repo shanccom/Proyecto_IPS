@@ -31,7 +31,6 @@ export class FormularioRecetaComponent implements OnInit, OnChanges{
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['recetaEditar'] && this.recetaEditar) {
-      console.log('Cambios en recetaEditar detectados', this.recetaEditar);
 
       this.modoEdicion = true;
 
@@ -61,10 +60,6 @@ export class FormularioRecetaComponent implements OnInit, OnChanges{
   }
 
   llenarFormulario(receta: any): void {
-    console.log('--- DEBUG LLENAR FORMULARIO ---');
-    console.log('¿Formulario creado?', !!this.recetaForm);
-    console.log('Receta recibida:', receta);
-    console.log('Valores actuales del form antes de patchValue:', this.recetaForm?.value);
     this.recetaForm.patchValue({
       fecha: receta.fecha,
       medicion_propia: receta.medicion_propia,
@@ -78,13 +73,10 @@ export class FormularioRecetaComponent implements OnInit, OnChanges{
       DIP_Cerca: receta.DIP_Cerca,
       adicion: receta.adicion
     });
-    console.log('Valores luego de patchValue:', this.recetaForm?.value);
   }
 
 
   enviarReceta() {
-    console.log('Formulario de receta:', this.recetaForm.value);
-    console.log('Errores en el formulario:', this.recetaForm.errors);
 
     if (this.recetaForm.invalid) {
       alert("Por favor completa todos los campos obligatorios.");

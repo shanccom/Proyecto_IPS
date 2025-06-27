@@ -40,19 +40,12 @@ def create_receta(request):
         except ValueError:
             return Response({"error": "Fecha no válida"}, status=status.HTTP_400_BAD_REQUEST)
     else:
-        recfecha = None  # O asigna una fecha por defecto si es necesario.
+        recfecha = datetime.now().date()
 
     if not cliCod:
         return Response({"error": "Debe proporcionar un cliCod válido"}, status=status.HTTP_400_BAD_REQUEST)
 
     cliente = get_object_or_404(Cliente, cliCod=cliCod)  # Verifica si el cliente existe
-
-    print("Datos crudos:")
-    for campo in ['recOD_sph', 'recOD_cyl', 'recOD_eje',
-                'recOI_sph', 'recOI_cyl', 'recOI_eje',
-                'recDIPLejos', 'recDIPCerca', 'rec_adicion']:
-        print(f"{campo}: {request.data.get(campo)!r} ({type(request.data.get(campo))})")
-
 
     recOD_sph = safe_decimal(request.data.get('recOD_sph'))
     recOD_cyl = safe_decimal(request.data.get('recOD_cyl'))
@@ -70,25 +63,20 @@ def create_receta(request):
     if recObsAdic is not None:
         recObsAdic = str(recObsAdic)
 
-
     try:
         receta = Receta.objects.create(
             cliCod=cliente,
             rectOpt=rectOpt,
             recfecha=recfecha,
-
             recOD_sph=recOD_sph,
             recOD_cyl=recOD_cyl,
             recOD_eje=recOD_eje,
-
             recOI_sph=recOI_sph,
             recOI_cyl=recOI_cyl,
             recOI_eje=recOI_eje,
-
             recDIPLejos=recDIPLejos,
             recDIPCerca=recDIPCerca,
             rec_adicion=rec_adicion,
-
             recObsAdic=recObsAdic,
         )
         receta.save() 
@@ -105,10 +93,48 @@ def safe_decimal(value):
         if value is not None and value != '':
             return Decimal(str(value))
     except InvalidOperation:
-        print(f"❌ Valor inválido para Decimal: {value!r}")
+        print(f"Valor inválido para Decimal: {value!r}")
         raise
     return None
 
+@api_view(['PUT'])
+def update_receta(request, codigo):
+    
+    try:
+        receta = Receta.objects.get(recCod=codigo)
+        print("Instancia a actualizar:", receta)
+        print("Datos nuevos:", request.data)
+
+    except Receta.DoesNotExist:
+        return Response({"error": "Receta no encontrada"}, status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        # Asignar manualmente los valores
+        receta.rectOpt = request.data.get('rectOpt', receta.rectOpt)
+        receta.recfecha = request.data.get('recfecha', receta.recfecha)
+
+        receta.recOD_sph = safe_decimal(request.data.get('recOD_sph'))
+        receta.recOD_cyl = safe_decimal(request.data.get('recOD_cyl'))
+        receta.recOD_eje = safe_decimal(request.data.get('recOD_eje'))
+
+        receta.recOI_sph = safe_decimal(request.data.get('recOI_sph'))
+        receta.recOI_cyl = safe_decimal(request.data.get('recOI_cyl'))
+        receta.recOI_eje = safe_decimal(request.data.get('recOI_eje'))
+
+        receta.recDIPLejos = safe_decimal(request.data.get('recDIPLejos'))
+        receta.recDIPCerca = safe_decimal(request.data.get('recDIPCerca'))
+        receta.rec_adicion = safe_decimal(request.data.get('rec_adicion'))
+        
+        receta.save()
+
+        serializer = RecetaSerializer(receta)
+        print("Receta actualizada:", serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return Response({"error": f"Error al actualizar la receta: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
 #RECUPERARR recetas de un cliente
 @api_view(['GET'])
