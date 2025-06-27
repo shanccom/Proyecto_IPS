@@ -1,8 +1,17 @@
-<div class="flex justify-end items-center mb-6 mt-7 ml-[80px]">
+<div class="flex justify-between items-center mb-6 mt-7 ml-[80px] ">
+  
+  <input type="text" 
+        [(ngModel)]="nombreBuscado"
+        (input)="filtrarClientes()"
+        placeholder="Buscar cliente por nombre"
+        class="bg-[#292C2D] text-white px-4 py-2 rounded-lg shadow w-80">
+
+
   <button class="bg-[#A7DCFF] text-black px-4 py-2 rounded-lg shadow hover:bg-[#79A5C3] transition" (click)="abrirFormulario()">
     + Agregar Cliente
   </button>
 </div>
+
 
 <!-- Modal (Formulario) -->
 <div *ngIf="mostrarFormulario" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -38,7 +47,7 @@
 
     </thead>
     <tbody>
-        <tr *ngFor="let cliente of clientes" class="hover:bg-[#3A3A3A] transition">
+        <tr *ngFor="let cliente of clientesFiltrados" class="hover:bg-[#3A3A3A] transition">
             <td class="px-4 py-2 border-b border-gray-600">{{ cliente.codigo }}</td>
             <td class="px-4 py-2 border-b border-gray-600">{{ cliente.nombre_completo }}</td>
             <td class="px-4 py-2 border-b border-gray-600">{{ cliente.tipo_documento }}</td>
@@ -60,6 +69,12 @@
             </td>
         </tr>
     </tbody>
+    <tr *ngIf="clientesFiltrados.length === 0 && nombreBuscado.length > 0">
+      <td colspan="7" class="text-center text-gray-300 py-4">
+        No se encontraron clientes con el nombre "{{ nombreBuscado }}".
+      </td>
+    </tr>
+
   </table>
 </div>
 

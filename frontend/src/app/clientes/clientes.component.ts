@@ -22,6 +22,8 @@ export class ClientesComponent implements OnInit {
   mostrarRecetasModal: boolean = false;
   nombreClienteSeleccionado: string = ''; 
   recetaSeleccionadaParaEditar: any = null;
+  nombreBuscado: string ='';
+  clientesFiltrados: any[] = [];
   
   constructor( private clientesService: ClientesService){};
   ngOnInit(): void {
@@ -31,6 +33,7 @@ export class ClientesComponent implements OnInit {
     this.clientesService.getClientes().subscribe(
       data => {
         this.clientes = data; 
+        this.clientesFiltrados = data;
         console.log('Clientes obtenidos:', this.clientes); 
       },
       error => {
@@ -69,6 +72,8 @@ export class ClientesComponent implements OnInit {
   cerrarAgregarReceta() {
     this.mostrarFormularioReceta = false;
     this.recetaSeleccionadaParaEditar = null;
+    this.nombreBuscado = ''; 
+    this.filtrarClientes();
   }
 
   abrirVerReceta(clicodigo: string, nombre: string): void {
@@ -90,6 +95,14 @@ export class ClientesComponent implements OnInit {
     this.mostrarFormularioReceta= true;
     this.recetaSeleccionadaParaEditar= receta;
     console.log("Editando receta:", receta);
+  }
+
+  //filtrar clientes por nombre
+  filtrarClientes() {
+    const nombre = this.nombreBuscado.toLowerCase();
+    this.clientesFiltrados = this.clientes.filter(cliente =>
+      cliente.nombre_completo.toLowerCase().includes(nombre)
+    );
   }
   
 }
