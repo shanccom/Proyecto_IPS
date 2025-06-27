@@ -93,6 +93,7 @@
     <app-formulario-receta 
       *ngIf="mostrarFormularioReceta"
       [cliCod]="cliSeleccionado"
+      [recetaEditar]="recetaSeleccionadaParaEditar"
       (cerrar)="cerrarAgregarReceta()" 
       (recetaGuardada)="obtenerClientes()">
     </app-formulario-receta>

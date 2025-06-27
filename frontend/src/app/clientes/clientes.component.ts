@@ -68,6 +68,7 @@ export class ClientesComponent implements OnInit {
   }
   cerrarAgregarReceta() {
     this.mostrarFormularioReceta = false;
+    this.recetaSeleccionadaParaEditar = null;
   }
 
   abrirVerReceta(clicodigo: string, nombre: string): void {
