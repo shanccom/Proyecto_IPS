@@ -72,6 +72,15 @@ class Boleta(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=20, default='pendiente')
 
+    #NUEVOS CAMPOS PARA SUNAT
+    enviado_sunat = models.BooleanField(default=False)
+    hash_sunat = models.CharField(max_length=255, blank=True, null=True)
+    mensaje_sunat = models.TextField(blank=True, null=True)
+    codigo_sunat = models.CharField(max_length=10, blank=True, null=True)
+    nombre_cdr = models.CharField(max_length=255, blank=True, null=True)
+    fecha_envio_sunat = models.DateTimeField(blank=True, null=True)
+
+
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey

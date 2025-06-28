@@ -59,8 +59,8 @@ def new_product_montura(request):
     
 #Get product with de code
 @api_view(["GET"])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
 def search(request):
     codigo = request.query_params.get("codigo")
         

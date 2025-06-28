@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AuthService } from './auth.service';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 export interface Producto {
   id?: number;
@@ -10,7 +11,7 @@ export interface Producto {
   nombre: string; 
   precio: number;
   stock: number;
-  tipo_producto?: string; // Agregar tipo de producto
+  tipo_producto?: string;
 }
 
 export interface BoletaRequest {
@@ -21,15 +22,16 @@ export interface BoletaRequest {
     rzn_social: string;
   };
   items: {
-    producto_id?: number; // opcional, solo para productos del catálogo
-    descripcion?: string; // requerido si no hay producto_id
+    producto_id?: number; 
+    descripcion?: string; 
     cantidad: number;
     valor_unitario: number;
-    tipo_producto?: string; // opcional si lo necesitas para clasificar
+    tipo_producto?: string; 
   }[];
   subtotal: number;
   igv: number;
   total: number;
+  enviar_sunat?: boolean; // Flag para enviar a SUNAT
 }
 
 
@@ -44,13 +46,20 @@ export interface BoletaResponse {
     igv: number;
     total: number;
     estado: 'pendiente' | 'enviada' | 'anulada';
-    hash_sunat?: string;
     url_pdf?: string;
+
+    // PARA SUNAT
+    enviado_sunat?: boolean;
+    sunat_resultado?: any;
+    hash_sunat?: string;
+    nombre_cdr?: string;
 }
+
 
 @Injectable({
     providedIn: 'root'
 })
+
 export class VentasService {
     private apiUrl = 'http://localhost:8000';
     private httpOptions = {
@@ -59,11 +68,10 @@ export class VentasService {
         })
     };
 
-    constructor(private http: HttpClient, private authService:AuthService) {}
+    constructor(private http: HttpClient) {}
 
     buscarProductoPorCodigo(codigo: string): Observable<Producto> {
-      const headers = this.authService.getAuthHeaders();
-      return this.http.get<any>(`${this.apiUrl}/productos/buscar?codigo=${codigo}`, {headers})
+      return this.http.get<any>(`${this.apiUrl}/productos/buscar?codigo=${codigo}`)
         .pipe(
           map(data => ({
             id: data.codigo || null,
@@ -74,23 +82,30 @@ export class VentasService {
           }))
         );
 }
-
-  // Crear una boleta
+    
+    // Crear una boleta
     crearBoleta(boletaData: BoletaRequest): Observable<BoletaResponse> {
-      const headers = this.authService.getAuthHeaders();
-      const options = { ...this.httpOptions, headers };
-      return this.http.post<BoletaResponse>(`${this.apiUrl}/ventas/boletas/`, boletaData, options);
+        return this.http.post<BoletaResponse>(`${this.apiUrl}/ventas/boletas/`, boletaData, this.httpOptions);
     }
 
     // Obtener todas las boletas
     obtenerBoletas(): Observable<{boletas: BoletaResponse[], total_boletas: number}> {
-      const headers = this.authService.getAuthHeaders();  
-      return this.http.get<{boletas: BoletaResponse[], total_boletas: number}>(`${this.apiUrl}/ventas/boletas/lista/` , {headers});
+        return this.http.get<{boletas: BoletaResponse[], total_boletas: number}>(`${this.apiUrl}/ventas/boletas/lista/`);
     }
 
     // Obtener siguiente correlativo
     obtenerSiguienteCorrelativo(serie: string): Observable<{ correlativo: string }> {
-      const headers = this.authService.getAuthHeaders();  
-      return this.http.get<{ correlativo: string }>(`${this.apiUrl}/ventas/boletas/siguiente-correlativo/${serie}/`, {headers});
+        return this.http.get<{ correlativo: string }>(`${this.apiUrl}/ventas/boletas/siguiente-correlativo/${serie}/`);
+    }
+
+    //NUEVOS MÉTODOS PARA SUNAT
+    reenviarBoletaSunat(boletaId: number): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/ventas/boletas/${boletaId}/reenviar-sunat/`, {});
+    }
+
+    descargarCDR(boletaId: number): Observable<Blob> {
+        return this.http.get(`${this.apiUrl}/ventas/boletas/${boletaId}/descargar-cdr/`, {
+            responseType: 'blob'
+        });
     }
 }

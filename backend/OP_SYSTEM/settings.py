@@ -146,3 +146,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'usuario.Usuario'
+
+#SERVICIO SUNAT 
+MICROSERVICIO_SUNAT_URL = 'http://localhost:8010'
