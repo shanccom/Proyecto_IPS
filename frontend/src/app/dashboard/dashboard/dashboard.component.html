@@ -1,10 +1,8 @@
+<!-- src/app/dashboard/dashboard.component.html -->
+<div class="pl-[120px] pr-6 py-6 min-h-screen bg-background text-text font-poppins">
+  <div class="dashboard">
 
-<div class=" pl-[150px]">
-    <button [routerLink]="['/login']" class="text-white text-2xl font-poppins ">Dashboard</button>
-    
-    <div class="dashboard">
-
-    <div class="stats-cards">
+    <div class="stats-cards grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       <app-stats-card
         icon="bx bx-bar-chart"
         title="Ventas de la Semana"

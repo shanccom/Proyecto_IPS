@@ -35,18 +35,18 @@ export class TopbarComponent implements OnInit, OnDestroy {
         const path = this.router.url;
 
         // Actualizar el título en el servicio según la ruta
-        if (path.includes('Dashboard')) {
+        if (path.includes('dashboard')) {
           this.pageTitleService.setTitle('Dashboard');
         } else if (path.includes('inventario')) {
           this.pageTitleService.setTitle('Inventario');
-        } else if (path.includes('codBarras')) {
-          this.pageTitleService.setTitle('Códigos de Barras');
-        } else if (path.includes('ventas')) {
-          this.pageTitleService.setTitle('Ventas');
+        } else if (path.includes('venta')) {
+          this.pageTitleService.setTitle('Nueva Venta');
+        } else if (path.includes('listaVentas')) {
+          this.pageTitleService.setTitle('Lista Ventas');
         } else if (path.includes('clientes')) {
           this.pageTitleService.setTitle('Clientes');
-        } else if (path.includes('informe')) {
-          this.pageTitleService.setTitle('Informes');
+        } else if (path.includes('reportes')) {
+          this.pageTitleService.setTitle('Reportes');
         } else {
           this.pageTitleService.setTitle('');
         }

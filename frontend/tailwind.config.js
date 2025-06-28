@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-  "./src/**/*.{html,ts}"
+    "./src/**/*.{html,ts}",
   ],
   theme: {
     extend: {
@@ -10,33 +10,18 @@ module.exports = {
       },
       colors: {
         primary: {
-          DEFAULT: '#7DCFF', // Celeste base
-          light: '#AEEBFF',
-          dark: '#3BAEDF',
+          DEFAULT: 'rgb(var(--primary-color) / <alpha-value>)',
+          light: 'rgb(var(--primary-color-light) / <alpha-value>)',
+          dark: 'rgb(var(--primary-color-dark) / <alpha-value>)',
         },
-        rose: {
-          DEFAULT: '#FF8BB3', // Rosado base
-          light: '#FFC6DA',
-          dark: '#DB5F8E',
+        background: {
+          DEFAULT: 'rgb(var(--background-color) / <alpha-value>)',
         },
-        emerald: {
-          DEFAULT: '#4CAF50', // Verde base
-          light: '#81C784',
-          dark: '#388E3C',
-        },
-        amber: {
-          DEFAULT: '#FFB74D', // Naranja base
-          light: '#FFD08A',
-          dark: '#F57C00',
-        },
-        crimson: {
-          DEFAULT: '#F44336', // Rojo base
-          light: '#E57373',
-          dark: '#C62828',
+        text: {
+          DEFAULT: 'rgb(var(--text-color) / <alpha-value>)',
         },
       },
     },
   },
   plugins: [],
 }
-

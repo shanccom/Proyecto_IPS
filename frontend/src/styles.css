@@ -2,22 +2,104 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===================
+   Variables base
+=================== */
 :root {
-    color-scheme: dark light;
-    --background-color: #121212; /* Fondo oscuro */
-    --text-color: #ffffff; /* Texto blanco */
-    --primary-color: #A7DCFF; /* Color primario para enlaces, botones, etc */
-
+  color-scheme: light dark;
+  --background-color: #1a1919;
+  --text-color: #ffffff;
+  --primary-color: #60b7dc;           /* Default modo oscuro por defecto */
 }
 
-/* Aplica los colores globales al tema oscuro */
+/* ===================
+   Temas por modo
+=================== */
+
+.theme-dark {
+  color-scheme: dark;
+  --background-color: #121212;
+  --text-color: #ffffff;
+}
+
+.theme-light {
+  color-scheme: light;
+  --background-color: #ffffff;
+  --text-color: #121212;
+}
+
+/* ===================
+   Paletas temáticas (adaptadas a modo)
+=================== */
+
+/* 🔵 AZUL */
+.theme-light.theme-colors-blue {
+  --primary-color: #3BAEDF;
+  --primary-color-light: #7DCFFF;
+  --primary-color-dark: #3BAEDF;
+}
+.theme-dark.theme-colors-blue {
+  --primary-color: #AEEBFF;
+  --primary-color-light: #AEEBFF;
+  --primary-color-dark: #3BAEDF;
+}
+
+/* 🌸 ROSADO */
+.theme-light.theme-rose {
+  --primary-color: #DB5F8E;
+  --primary-color-light: #FF8BB3;
+  --primary-color-dark: #DB5F8E;
+}
+.theme-dark.theme-rose {
+  --primary-color: #FFC6DA;
+  --primary-color-light: #FFC6DA;
+  --primary-color-dark: #DB5F8E;
+}
+
+/* 🍃 VERDE */
+.theme-light.theme-emerald {
+  --primary-color: #388E3C;
+  --primary-color-light: #4CAF50;
+  --primary-color-dark: #388E3C;
+}
+.theme-dark.theme-emerald {
+  --primary-color: #81C784;
+  --primary-color-light: #81C784;
+  --primary-color-dark: #388E3C;
+}
+
+/* 🧡 NARANJA */
+.theme-light.theme-amber {
+  --primary-color: #F57C00;
+  --primary-color-light: #FFB74D;
+  --primary-color-dark: #F57C00;
+}
+.theme-dark.theme-amber {
+  --primary-color: #FFD08A;
+  --primary-color-light: #FFD08A;
+  --primary-color-dark: #F57C00;
+}
+
+/* ❤️ CARMESÍ */
+.theme-light.theme-crimson {
+  --primary-color: #C62828;
+  --primary-color-light: #F44336;
+  --primary-color-dark: #C62828;
+}
+.theme-dark.theme-crimson {
+  --primary-color: #E57373;
+  --primary-color-light: #E57373;
+  --primary-color-dark: #C62828;
+}
+
 body {
-    background-color: var(--background-color);
-    color: var(--text-color);
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 0;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
 }
+
 h1, h2, h3, h4, h5, h6 {
-    color: var(--text-color);
+  color: var(--text-color);
 }
