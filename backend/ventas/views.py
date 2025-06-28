@@ -14,6 +14,10 @@ import json
 from datetime import datetime
 from decimal import Decimal
 from rest_framework.decorators import api_view
+from rest_framework.views import APIView
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
 class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
@@ -65,8 +69,11 @@ def buscar_producto(codigo_producto):
     
     return None, None, None
 
-@csrf_exempt
-@require_http_methods(["POST"])
+
+@api_view(['POST'])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
+
 def crear_boleta(request):
     try:
         data = json.loads(request.body)
@@ -279,7 +286,9 @@ def crear_boleta(request):
             'error': f'Error interno: {str(e)}'
         }, status=500)
 
-@require_http_methods(["GET"])
+@api_view(['GET'])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
 def obtener_siguiente_correlativo(request, serie):
     try:
         ultima_boleta = Boleta.objects.filter(serie=serie).aggregate(
@@ -304,7 +313,9 @@ def obtener_siguiente_correlativo(request, serie):
             'error': str(e)
         }, status=500)
 
-@require_http_methods(["GET"])
+@api_view(['GET'])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
 def listar_boletas(request):
     try:
         boletas = Boleta.objects.all().prefetch_related('items__content_object').order_by('-fecha')

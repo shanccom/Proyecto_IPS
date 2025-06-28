@@ -1,23 +1,39 @@
+from django.forms import ValidationError
 from rest_framework import serializers
 from .models import Usuario
+from ventas.models import Empleado
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.password_validation import validate_password
 
 class UsuarioSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False)
+    emplCod = serializers.PrimaryKeyRelatedField(
+        queryset=Empleado.objects.all(), 
+        required=False, 
+        allow_null=True
+    )
+    # Campos adicionales para mostrar información del empleado
+    empleado_nombre = serializers.CharField(source='emplCod.emplNom', read_only=True)
+    empleado_cargo = serializers.CharField(source='emplCod.emplCarg', read_only=True)
     
     class Meta:
         model = Usuario
-        fields = ['id', 'usuarioNom', 'emplCod', 'is_active', 'is_staff', 'is_superuser', 'password']
+        fields = [
+            'id', 'usuarioNom', 'emplCod', 'empleado_nombre', 'empleado_cargo',
+            'is_active', 'is_staff', 'is_superuser', 'password'
+        ]
         extra_kwargs = {
             'password': {'write_only': True},
-            'is_superuser': {'read_only': True},  # Solo superusers pueden modificar esto
+            'is_superuser': {'read_only': True},
+            'emplCod': {'required': False}, 
         }
 
     def validate_password(self, value):
-        """Validar contraseña usando validadores de Django"""
         if value:
-            validate_password(value)
+            try:
+                validate_password(value)
+            except ValidationError as e:
+                raise serializers.ValidationError(e.messages)
         return value
 
     def create(self, validated_data):

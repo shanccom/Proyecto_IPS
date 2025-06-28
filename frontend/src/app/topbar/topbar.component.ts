@@ -1,12 +1,16 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { AuthService } from '../services/auth.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { PageTitleService } from '../services/page-title.service';  // Importar el servicio
 import { Subscription } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-topbar',
   templateUrl: './topbar.component.html',
-  styleUrls: ['./topbar.component.css']
+  styleUrls: ['./topbar.component.css'],
+  imports: [CommonModule, FormsModule],
 })
 export class TopbarComponent implements OnInit, OnDestroy {
   pageTitle: string = ''; 
@@ -15,6 +19,7 @@ export class TopbarComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
+    private authService: AuthService,
     private pageTitleService: PageTitleService  // Inyectar el servicio
   ) {}
 
@@ -48,6 +53,19 @@ export class TopbarComponent implements OnInit, OnDestroy {
 
         // Actualizar la propiedad local `pageTitle` con el valor del servicio
         this.pageTitle = this.pageTitleService.getTitle();
+      }
+    });
+  }
+  logout() {
+    this.authService.logout().subscribe({
+      next: (response) => {
+        console.log('Logout exitoso:', response);
+        this.authService.clearAuth(); // Limpia token y usuario (si tienes este método)
+        this.router.navigate(['/login']); // Redirige al login
+      },
+      error: (error) => {
+        console.error('Error durante logout:', error);
+        // Podrías mostrar un mensaje opcional al usuario
       }
     });
   }

@@ -18,7 +18,7 @@ from usuario.serializers import UsuarioSerializer
 import logging
 
 logger = logging.getLogger(__name__)
-# Primer usuario automaticamnete superusuario STAFF 
+
 # REGISTER
 @api_view(['POST'])
 def register(request):
@@ -26,11 +26,20 @@ def register(request):
         serializer = UsuarioSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            token, created = Token.objects.get_or_create(user=user)
+            # Crear token manualmente para evitar problemas
+            try:
+                token = Token.objects.create(user=user)
+            except Exception as token_error:
+                logger.error(f"Error creando token: {token_error}")
+                # Si falla el token, al menos el usuario se creó
+                token = None
+            
             user_data = {
                 'id': user.id,
                 'usuarioNom': user.usuarioNom,
-                'emplCod': user.emplCod.id if user.emplCod else None,
+                'emplCod': user.emplCod.emplCod if user.emplCod else None,  # CAMBIO: usar .emplCod en lugar del objeto
+                'empleado_nombre': user.emplCod.emplNom if user.emplCod else None,
+                'empleado_cargo': user.emplCod.emplCarg if user.emplCod else None,
                 'is_active': user.is_active,
                 'is_staff': user.is_staff,
                 'is_superuser': user.is_superuser
@@ -38,7 +47,7 @@ def register(request):
             
             return Response({
                 "message": "Usuario registrado exitosamente",
-                "token": token.key,
+                "token": token.key if token else None,
                 "user": user_data,
             }, status=status.HTTP_201_CREATED)
         else:
@@ -72,10 +81,13 @@ def login(request):
         if user is not None:
             if user.is_active:
                 token, created = Token.objects.get_or_create(user=user)
+                
                 user_data = {
                     'id': user.id,
                     'usuarioNom': user.usuarioNom,
-                    'emplCod': user.emplCod.id if user.emplCod else None,
+                    'emplCod': user.emplCod.emplCod if user.emplCod else None,  # CAMBIO: usar .emplCod en lugar del objeto
+                    'empleado_nombre': user.emplCod.emplNom if user.emplCod else None,
+                    'empleado_cargo': user.emplCod.emplCarg if user.emplCod else None,
                     'is_active': user.is_active,
                     'is_staff': user.is_staff,
                     'is_superuser': user.is_superuser
@@ -122,7 +134,6 @@ def logout(request):
             "error": "Error al hacer logout", 
             "details": str(e)
         }, status=status.HTTP_400_BAD_REQUEST)
-
 
 # CHANGE PASSWORD - Cambiar contraseña
 @api_view(['PUT'])
@@ -171,7 +182,8 @@ def change_password(request):
             "error": "Error al cambiar contraseña", 
             "details": str(e)
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-#---------------ADMINistracion de usuarios
+
+#---------------Administracion de usuarios
 #Usuarios creados
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])

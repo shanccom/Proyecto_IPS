@@ -6,10 +6,12 @@ import { VentaComponent } from './venta/venta.component';
 import { InventarioComponent } from './inventario/inventario.component'
 import { ClientesComponent } from './clientes/clientes.component';
 import { ListaVentasComponent } from './lista-ventas/lista-ventas.component';
+import { RegisterComponent } from './auth/register/register.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'inventario', component: InventarioComponent },
   { path: 'factura', component: ComprobanteComponent },

@@ -10,14 +10,14 @@ from .views import (
 )
 
 urlpatterns = [
-    path(r'register', register, name = 'register_user'),
-    path(r'login', login, name = 'login'),
-    path(r'logout', logout, name='logout'),
+    path('register/', register, name = 'register_user'),
+    path('login/', login, name = 'login'),
+    path('logout/', logout, name='logout'),
     
-    path(r'change-password', change_password, name='change_password'),
-    path(r'verify-token', verify_token, name='verify_token'),
+    path('change-password/', change_password, name='change_password'),
+    path('verify-token/', verify_token, name='verify_token'),
     
     # Administración (solo staff)
-    path(r'admin/users', list_users, name='list_users'),
-    path(r'admin/users/<int:user_id>/status/', update_user_status, name='update_user_status'),
+    path('admin/users/', list_users, name='list_users'),
+    path('admin/users/<int:user_id>/status/', update_user_status, name='update_user_status'),
 ]

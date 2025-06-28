@@ -1,6 +1,6 @@
 from django.db import models
 from ventas.models import Empleado
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from rest_framework.authtoken.models import Token
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -10,7 +10,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Falta asignar que el primer usuario creado sea superusuario y sea el gerente
 # Create your models here.
 class CustomUserManager(BaseUserManager):
     def create_user(self, usuarioNom, password=None, emplCod=None, **extra_fields):
@@ -22,19 +21,17 @@ class CustomUserManager(BaseUserManager):
         
         if is_first_user and not emplCod:
             emplCod = self._get_or_create_default_admin()
+            extra_fields.setdefault('is_staff', True)
+            extra_fields.setdefault('is_superuser', True)
+            logger.info(f"Primer usuario creado como gerente y superusuario: {usuarioNom}")
+        elif not emplCod:
+            raise ValueError("Se requiere emplCod para usuarios que no sean el primero")
         
         user = self.model(usuarioNom=usuarioNom, emplCod=emplCod, **extra_fields)
         user.set_password(password)
-        
-        if is_first_user:
-            user.is_staff = True
-            user.is_superuser = True
-            logger.info(f"Primer usuario creado como superusuario: {usuarioNom}")
-        
         user.save(using=self._db)
         return user
 
-        
     
     def create_superuser(self, usuarioNom, password=None, emplCod=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
@@ -51,47 +48,43 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(usuarioNom, password, emplCod, **extra_fields)
     
     def _get_or_create_default_admin(self):
+        """
+        Crea un empleado gerente por defecto para el primer usuario del sistema
+        """
         try:
-            # Buscar empleado gerente existente
+            # Verificar si ya existe un empleado gerente
             empleado_gerente = Empleado.objects.filter(
-                models.Q(emplNom__icontains='gerente') |
-                models.Q(emplNom__icontains='admin') |
-                models.Q(emplCargo__icontains='gerente')
+                emplCarg='gerente',
+                empCond='activo'
             ).first()
-
-            if not empleado_gerente:
-                # Crear empleado gerente por defecto
-                empleado_gerente = Empleado.objects.create(
-                    emplNom='Gerente',
-                    emplApellido='Sistema',
-                    emplCargo='Gerente General',
-                    emplEmail='gerente@sistema.com',
-                    emplTelefono='999999999',
-                    # Agregar otros campos requeridos según tu modelo Empleado
-                )
-                logger.info(f"Empleado Gerente por defecto creado: {empleado_gerente}")
-
+            
+            if empleado_gerente:
+                logger.info(f"Empleado gerente existente encontrado: {empleado_gerente}")
+                return empleado_gerente
+            
+            # Crear nuevo empleado gerente
+            empleado_gerente = Empleado.objects.create(
+                emplNom='Gerente Principal',
+                emplCarg='gerente',
+                empCond='activo'
+            )
+            
+            logger.info(f"Empleado gerente creado automáticamente: {empleado_gerente}")
             return empleado_gerente
-
+            
         except Exception as e:
-            logger.error(f"Error creando empleado por defecto: {e}")
-            # Si falla, intentar obtener cualquier empleado existente
-            return Empleado.objects.first()
+            logger.error(f"Error creando empleado gerente por defecto: {e}")
+            raise ValueError(f"No se pudo crear el empleado gerente por defecto: {e}")
 
-class Usuario(AbstractBaseUser):
-    usuarioNom = models.CharField(unique= True, max_length = 10)
+class Usuario(AbstractBaseUser, PermissionsMixin):
+    usuarioNom = models.CharField(unique= True, max_length =20)
     emplCod = models.OneToOneField(Empleado, related_name='usuario', on_delete=models.CASCADE)
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     objects = CustomUserManager()
     is_active = models.BooleanField(default=True)
     USERNAME_FIELD = "usuarioNom"
-    REQUIRED_FIELDS = ["emplCod"]
+    REQUIRED_FIELDS = []
 
     def __str__(self):
         return str( self.usuarioNom)
-# Señal para crear token automáticamente
-@receiver(post_save, sender=Usuario)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
-    if created:
-        Token.objects.create(user=instance)

@@ -76,6 +76,8 @@ def search(request):
 
 
 @api_view(['GET'])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
 def obtener_filtros_montura(request):
     montura_min = Montura.objects.all().order_by('proPrecioVenta').first()
     montura_max = Montura.objects.all().order_by('-proPrecioVenta').first()
@@ -92,6 +94,8 @@ def obtener_filtros_montura(request):
     return Response(filtros)
 
 @api_view(['GET'])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
 def obtener_filtros_accesorio(request):
     queryset = Accesorio.objects.all()
     if queryset.exists():
@@ -107,6 +111,8 @@ def obtener_filtros_accesorio(request):
     return Response(filtros)
 
 @api_view(["POST"])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
 def crear_montura(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -124,6 +130,8 @@ def crear_montura(request):
         return JsonResponse({'mensaje': 'Montura guardada'})
     
 @api_view(["POST"])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
 def crear_accesorio(request):
     if request.method == 'POST':
         try:
@@ -153,8 +161,9 @@ def crear_accesorio(request):
     return JsonResponse({'error': 'Método no permitido'}, status=405)
 
 #Eliminar montura/accesorio
-#@permission_classes([IsAdminUser]) //Solo admin
-#@permission_classes([IsAuthenticated]
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
+#@permission_classes([IsAdminUser])  //Solo admin
 @api_view(['DELETE'])
 def delete_montura(request):
     try:

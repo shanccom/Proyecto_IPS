@@ -23,6 +23,9 @@ export class AppComponent {
   constructor(public router: Router) {}
 
   get showLayout() {
-    return this.router.url !== '/login';
+    if (this.router.url == '/login' || this.router.url == '/register'){
+      return false;
+    }
+    return true;
   }
 }

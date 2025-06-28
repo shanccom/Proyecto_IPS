@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AuthService } from '../../services/auth.service';
 
 import { DashboardComponent } from './dashboard.component';
 
@@ -20,4 +21,5 @@ describe('DashboardComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+  
 });
