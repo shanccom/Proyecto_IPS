@@ -1,5 +1,18 @@
+<div class="flex justify-start gap-4 mb-4">
+  <div>
+    <label for="desde" class="text-white text-sm block mb-1">Desde:</label>
+    <input id="desde" type="date" [(ngModel)]="filtroFechaInicio" (change)="aplicarFiltroFechas()"
+          class="px-2 py-1 rounded bg-[#292C2D] text-white border border-gray-500">
+  </div>
+  <div>
+    <label for="hasta" class="text-white text-sm block mb-1">Hasta:</label>
+    <input id="hasta" type="date" [(ngModel)]="filtroFechaFin" (change)="aplicarFiltroFechas()"
+          class="px-2 py-1 rounded bg-[#292C2D] text-white border border-gray-500">
+  </div>
+</div>
+
 <!-- Tabla de Recetas -->
-<div class="overflow-x-auto">
+<div class="overflow-x-auto w-full mx-auto">
   <table class="w-full text-sm text-white rounded shadow-lg  divide-y divide-[#6B6B6B] ">
     <thead class="bg-[#3D4142]">
       <!-- Fila de agrupación -->
@@ -34,7 +47,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let receta of recetas" class="hover:bg-[#3A3A3A] transition">
+      <tr *ngFor="let receta of recetasFiltradas" class="hover:bg-[#3A3A3A] transition">
         <td class="px-4 py-2 border-b border-gray-600">{{ receta.codigo }}</td>
         <td class="px-4 py-2 border-b border-gray-600">{{ receta.fecha }}</td>
         <td class="px-4 py-2 border-b border-gray-600">{{ receta.medicion_propia ? 'Sí' : 'No' }}</td>

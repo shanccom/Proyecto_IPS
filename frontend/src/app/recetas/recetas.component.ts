@@ -12,13 +12,37 @@ import { FormularioRecetaComponent } from './formulario-receta/formulario-receta
 export class RecetasComponent implements OnInit{
   @Input() recetas: any[] = []; 
   @Output() editarReceta = new EventEmitter<any>();
+  filtroFechaInicio: string = '';
+  filtroFechaFin: string = '';
+  recetasFiltradas: any[] = [];
   
 
   ngOnInit(): void {
     console.log('Recetas del cliente en RecetasComponent:', this.recetas);
+    this.recetasFiltradas = [...this.recetas];
+  }
+  ngOnChanges(): void {
+    this.recetasFiltradas = [...this.recetas];
+    this.aplicarFiltroFechas(); 
   }
 
   onEditar(receta: any) {
     this.editarReceta.emit(receta);
   }
+
+  aplicarFiltroFechas() {
+    if (!this.filtroFechaInicio && !this.filtroFechaFin) {
+      this.recetasFiltradas = [...this.recetas];
+      return;
+    }
+
+    this.recetasFiltradas = this.recetas.filter(receta => {
+      const fechaReceta = new Date(receta.fecha);
+      const desde = this.filtroFechaInicio ? new Date(this.filtroFechaInicio) : null;
+      const hasta = this.filtroFechaFin ? new Date(this.filtroFechaFin) : null;
+
+      return (!desde || fechaReceta >= desde) && (!hasta || fechaReceta <= hasta);
+    });
+  }
+
 }
