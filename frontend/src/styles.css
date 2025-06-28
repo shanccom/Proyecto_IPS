@@ -23,6 +23,7 @@
     /* Bordes y elementos UI */
     --border: 229 229 229;
     --input: 229 229 229;
+    --input-secondary: 44 47 48;
     --ring: 96 183 220;
     
     /* Estados */
@@ -39,11 +40,12 @@
     color-scheme: dark;
     --background: 18 18 18; /* #121212 */
     --foreground: 255 255 255;
-    --secondary: 41 44 45;
+    --secondary: 46 44 45;
     --muted: 23 23 23;
     --muted-foreground: 163 163 163;
     --border: 39 39 42;
     --input: 39 39 42;
+    --input-secondary: 44 47 48;
   }
 
   .theme-light {
@@ -55,6 +57,7 @@
     --muted-foreground: 115 115 115;
     --border: 229 229 229;
     --input: 229 229 229;
+    --input-secondary: 191 191 191;
   }
 }
 
