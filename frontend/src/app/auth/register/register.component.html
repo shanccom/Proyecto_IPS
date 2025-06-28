@@ -35,14 +35,14 @@
           ></i>
         </div>
       </div>
-      <div class ="redirect-login">
-        <div class="login-container">
-            <label> ¿Tienes una cuenta? </label>
-            <a (click)="goToLogin()" style="cursor: pointer; color: blue; text-decoration: underline;"> Ingresar </a>
-        </div>
-      </div>
       <button type="submit">Registrarse</button>
     </form>
+    <div class ="redirect-login">
+        <div class="login-container">
+            <label> ¿Tienes una cuenta? </label>
+            <a (click)="goToLogin()" style="cursor: pointer; color: rgb(118, 118, 228)"> Ingresar </a>
+        </div>
+      </div>
     <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
   </div>
   

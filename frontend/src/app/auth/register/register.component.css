@@ -82,3 +82,27 @@ body, html {
   color: #888;
 }
 
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  gap: 8px; 
+  flex-wrap: wrap; /* Evita desbordes si es responsivo */
+}
+.login-container label{
+  margin: 0px;
+}
+
+.login-container a {
+  color: rgb(124, 124, 239);
+  cursor: pointer;
+  text-decoration: none;
+  transition: text-decoration 0.2s ease;
+  margin: 0; /* Elimina márgenes innecesarios */
+  padding: 4px 6px; 
+  border-radius: 4px;
+}
+
+.login-container a:hover {
+  text-decoration: underline;
+}

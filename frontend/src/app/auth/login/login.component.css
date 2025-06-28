@@ -81,4 +81,27 @@ body, html {
   font-size: 1.2rem;
   color: #888;
 }
+.register-container {
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  gap: 8px; 
+  flex-wrap: wrap; /* Evita desbordes si es responsivo */
+}
+.register-container label{
+  margin: 0px;
+}
 
+.register-container a {
+  color: rgb(124, 124, 239);
+  cursor: pointer;
+  text-decoration: none;
+  transition: text-decoration 0.2s ease;
+  margin: 0; /* Elimina márgenes innecesarios */
+  padding: 4px 6px; 
+  border-radius: 4px;
+}
+
+.register-container a:hover {
+  text-decoration: underline;
+}
