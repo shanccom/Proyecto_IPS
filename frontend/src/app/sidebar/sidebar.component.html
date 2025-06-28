@@ -5,7 +5,7 @@
     
     <!---->
     <li
-      class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[90px]"
+      class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[90px] hover:bg-primary-translucent"
       routerLinkActive="active"
       [ngClass]="{'bg-[#A7DCFF] text-black': isActive('/dashboard')}"
     >
@@ -65,16 +65,15 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
             class="w-5 h-5 text-black"
           >
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-            <path d="M16.7 8a3 3 0 0 0 -2.7 -2h-4a3 3 0 0 0 0 6h4a3 3 0 0 1 0 6h-4a3 3 0 0 1 -2.7 -2"/>
-            <path d="M12 3v3m0 12v3"/>
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 9a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-9z" />
+            <path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2" />
           </svg>
         </div>
-        Vender
+        Nueva Venta
       </a>
     </li>
 
-    <!-- OTROS TODAVIA NS CUALES SERAN-->
     <li
       class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[90px]"
       routerLinkActive="active"
@@ -97,7 +96,7 @@
               <path d="M9 12h2" />
             </svg>
         </div>
-        Lista de Ventas
+        Ventas
       </a>
     </li>
 
@@ -179,30 +178,5 @@
         Reportes
       </a>
     </li>
-
-    <!---->
-    <p class="flex justify-center items-center font-poppins font-bold text-[#A7DCFF] pt-[120px] gap-2">
-      <svg 
-        xmlns="http://www.w3.org/2000/svg"  
-        width="24"  
-        height="24"  
-        viewBox="0 0 24 24"  
-        fill="none"  
-        stroke="currentColor"  
-        stroke-width="2"  
-        stroke-linecap="round"  
-        stroke-linejoin="round"  
-        class="w-6 h-6"
-      >
-        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-        <path d="M5 5v16" />
-        <path d="M19 5v9" />
-        <path d="M7.641 3.645a5 5 0 0 1 4.359 1.355a5 5 0 0 0 7 0" />
-        <path d="M5 14a5 5 0 0 1 7 0a4.984 4.984 0 0 0 3.437 1.429m3.019 -.966c.19 -.14 .371 -.294 .544 -.463" />
-        <path d="M3 3l18 18" />
-      </svg>
-      CERRAR SESIÓN
-    </p>
-
   </ul>
 </nav>
