@@ -18,7 +18,10 @@ from usuario.serializers import UsuarioSerializer
 import logging
 
 logger = logging.getLogger(__name__)
-
+# Pendientes 
+# Informacion de la cuenta: Cambiar Nombre Nombre de Usuario 
+# Configuracion: Cambiar Nombre de Empresa, Subir logo de empresa, Tema claro/oscuro, Tema de color, RUC, Dirección, Telefono, Agregar lema
+# Usuarios: Agregar empleado(datos)/Editar estado registro empleado/ver Datos empleado
 # REGISTER
 @api_view(['POST'])
 def register(request):
