@@ -1,22 +1,24 @@
-<nav class="fixed top-0 left-0 w-[220px] bg-[#292C2D] text-white h-screen pt-5 pb-5 rounded-tr-[25px] rounded-br-[25px]">
+<nav class="fixed top-0 left-0 w-[220px] bg-secondary text-foreground h-screen pt-5 pb-5 rounded-tr-[25px] rounded-br-[25px]">
   <ul class="list-none p-5 space-y-4 pt-[60px]">
 
-    <p class="flex justify-center items-center font-poppins font-bold text-primary-light pb-[70px]">VISION IDEAL</p>
+    <p class="flex justify-center items-center font-poppins font-bold pb-[70px]">VISION IDEAL</p>
     
     <!---->
     <li
-      class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[90px] hover:bg-primary-translucent"
+      class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[90px]"
       routerLinkActive="active"
-      [ngClass]="{'bg-[#A7DCFF] text-black': isActive('/dashboard')}"
+      [ngClass]="{'bg-accent text-background': isActive('/dashboard'),
+                  'hover:bg-primary-translucent': !isActive('/dashboard')
+      }"
     >
       <a
         routerLink="/dashboard"
         routerLinkActive="active"
         class="flex flex-col items-center justify-center text-sm text-center gap-1"
       >
-        <div class="bg-white rounded-full w-8 h-8 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
-            class="w-4 h-4 text-black"
+        <div class="bg-foreground rounded-full w-8 h-8 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="background" 
+            class="w-4 h-4 text-foreground"
           >
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/>
           </svg>
@@ -29,7 +31,9 @@
     <li
       class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[90px]"
       routerLinkActive="active"
-      [ngClass]="{'bg-[#A7DCFF] text-black': isActive('/inventario')}"
+      [ngClass]="{'bg-accent text-background': isActive('/inventario'),
+                  'hover:bg-primary-translucent': !isActive('/inventario')
+      }"
     >
       <a
         routerLink="/inventario"
@@ -37,8 +41,8 @@
         class="flex flex-col items-center justify-center text-sm text-center gap-1"
       >
         
-        <div class="bg-white rounded-full w-8 h-8 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#000" class="bi bi-eyeglasses" viewBox="0 0 16 16">
+        <div class="bg-foreground rounded-full w-8 h-8 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="background" class="bi bi-eyeglasses text-foreground" viewBox="0 0 16 16">
             <path d="M4 6a2 2 0 1 1 0 4 2 2 0 0 1 0-4m2.625.547a3 3 0 0 0-5.584.953H.5a.5.5 0 0 0 0 1h.541A3 3 0 0 0 7 8a1 1 0 0 1 2 0 3 3 0 0 0 5.959.5h.541a.5.5 0 0 0 0-1h-.541a3 3 0 0 0-5.584-.953A2 2 0 0 0 8 6c-.532 0-1.016.208-1.375.547M14 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0"/>
           </svg>
         </div>
@@ -48,18 +52,20 @@
 
     <!---->
     <li
-      class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[90px]"
+      class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[90px] "
       routerLinkActive="active"
-      [ngClass]="{'bg-[#A7DCFF] text-black': isActive('/venta')}"
+      [ngClass]="{'bg-accent text-background': isActive('/venta'),
+                  'hover:bg-primary-translucent': !isActive('/venta')
+      }"
     >
       <a
         routerLink="/venta"
         routerLinkActive="active"
         class="flex flex-col items-center justify-center text-sm text-center gap-1"
       >
-        <div class="bg-white rounded-full w-8 h-8 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-            class="w-5 h-5 text-black"
+        <div class="bg-foreground rounded-full w-8 h-8 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="background" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="w-5 h-5 text-foreground"
           >
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
             <path d="M3 9a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-9z" />
@@ -73,17 +79,19 @@
     <li
       class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[90px]"
       routerLinkActive="active"
-      [ngClass]="{'bg-[#A7DCFF] text-black': isActive('/')}"
+      [ngClass]="{'bg-accent text-background': isActive('/listaVentas'),
+                  'hover:bg-primary-translucent': !isActive('/listaVentas')
+      }"
     >
       <a
         routerLink="/listaVentas"
         routerLinkActive="active"
         class="flex flex-col items-center justify-center text-sm text-center gap-1"
       >
-        <div class="bg-white rounded-full w-8 h-8 flex items-center justify-center">
+        <div class="bg-foreground rounded-full w-8 h-8 flex items-center justify-center">
           
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"  
-              class="w-5 h-5 text-black"
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"  viewBox="0 0 24 24"  fill="none"  stroke="background"  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"  
+              class="w-5 h-5 text-foreground"
             >
               <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
               <path d="M9.615 20h-2.615a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8" />
@@ -99,18 +107,20 @@
     <!---->
 
     <li
-      class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[70px] "
+      class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[70px]"
       routerLinkActive="active"
-      [ngClass]="{'bg-[#A7DCFF] text-black': isActive('/clientes')}"
+      [ngClass]="{'bg-accent text-background': isActive('/clientes'),
+                  'hover:bg-primary-translucent': !isActive('/clientes')
+      }"
     >
       <a
         routerLink="/clientes"
         routerLinkActive="active"
         class="flex flex-col items-center justify-center text-sm text-center gap-1"
       >
-        <div class="bg-white rounded-full w-8 h-8 flex items-center justify-center">
+        <div class="bg-foreground rounded-full w-8 h-8 flex items-center justify-center">
           
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#000" class="bi bi-person-circle" viewBox="0 0 16 16">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="background" class="bi bi-person-circle text-foreground" viewBox="0 0 16 16">
             <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
             <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
           </svg>
@@ -124,16 +134,18 @@
     <li
       class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[90px]"
       routerLinkActive="active"
-      [ngClass]="{'bg-[#A7DCFF] text-black': isActive('/')}"
+      [ngClass]="{'bg-accent text-background': isActive('/reportes'),
+                  'hover:bg-primary-translucent': !isActive('/reportes')
+      }"
     >
       <a
-        routerLink="/login"
+        routerLink="/reportes"
         routerLinkActive="active"
         class="flex flex-col items-center justify-center text-sm text-center gap-1"
       >
-        <div class="bg-white rounded-full w-8 h-8 flex items-center justify-center">
+        <div class="bg-foreground rounded-full w-8 h-8 flex items-center justify-center">
           
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#000" class="bi bi-bar-chart-line" viewBox="0 0 16 16">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="background" class="bi bi-bar-chart-line text-foreground" viewBox="0 0 16 16">
             <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1zm1 12h2V2h-2zm-3 0V7H7v7zm-5 0v-3H2v3z"/>
           </svg>
 

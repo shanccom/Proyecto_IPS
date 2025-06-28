@@ -2,104 +2,150 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ===================
-   Variables base
-=================== */
-:root {
-  color-scheme: light dark;
-  --background-color: #1a1919;
-  --text-color: #ffffff;
-  --primary-color: #60b7dc;           /* Default modo oscuro por defecto */
+/* ===================    Variables globales base =================== */
+@layer base {
+  :root {
+    color-scheme: light dark;
+    
+    /* Colores base */
+    --background: 26 25 25; /* #1a1919 */
+    --foreground: 255 255 255; /* #ffffff */
+    
+    /* Colores primarios por defecto (azul) */
+    --primary: 96 183 220; /* #60b7dc */
+    --primary-light: 174 235 255; /* #AEEBFF */
+    --primary-dark: 59 174 223; /* #3BAEDF */
+    
+    /* Colores secundarios */
+    --secondary: 41 44 45; /* #292C2D */
+    --accent: 167 220 255; /* #A7DCFF */
+    
+    /* Bordes y elementos UI */
+    --border: 229 229 229;
+    --input: 229 229 229;
+    --ring: 96 183 220;
+    
+    /* Estados */
+    --muted: 245 245 245;
+    --muted-foreground: 115 115 115;
+    --destructive: 220 38 38;
+    --destructive-foreground: 248 250 252;
+  }
 }
 
-/* ===================
-   Temas por modo
-=================== */
+/* ===================    Temas por modo =================== */
+@layer base {
+  .theme-dark {
+    color-scheme: dark;
+    --background: 18 18 18; /* #121212 */
+    --foreground: 255 255 255;
+    --secondary: 41 44 45;
+    --muted: 23 23 23;
+    --muted-foreground: 163 163 163;
+    --border: 39 39 42;
+    --input: 39 39 42;
+  }
 
-.theme-dark {
-  color-scheme: dark;
-  --background-color: #121212;
-  --text-color: #ffffff;
-}
-
-.theme-light {
-  color-scheme: light;
-  --background-color: #ffffff;
-  --text-color: #121212;
-}
-
-/* ===================
-   Paletas temáticas (adaptadas a modo)
-=================== */
-
-/* 🔵 AZUL */
-.theme-light.theme-colors-blue {
-  --primary-color: #3BAEDF;
-  --primary-color-light: #7DCFFF;
-  --primary-color-dark: #3BAEDF;
-}
-.theme-dark.theme-colors-blue {
-  --primary-color: #AEEBFF;
-  --primary-color-light: #AEEBFF;
-  --primary-color-dark: #3BAEDF;
+  .theme-light {
+    color-scheme: light;
+    --background: 255 255 255; /* #ffffff */
+    --foreground: 18 18 18; /* #121212 */
+    --secondary: 245 245 245;
+    --muted: 245 245 245;
+    --muted-foreground: 115 115 115;
+    --border: 229 229 229;
+    --input: 229 229 229;
+  }
 }
 
-/* 🌸 ROSADO */
-.theme-light.theme-rose {
-  --primary-color: #DB5F8E;
-  --primary-color-light: #FF8BB3;
-  --primary-color-dark: #DB5F8E;
-}
-.theme-dark.theme-rose {
-  --primary-color: #FFC6DA;
-  --primary-color-light: #FFC6DA;
-  --primary-color-dark: #DB5F8E;
+/* ===================    Paletas temáticas =================== */
+@layer base {
+  /* 🔵 AZUL */
+  .theme-colors-blue.theme-light {
+    --primary: 59 174 223; /* #3BAEDF */
+    --primary-light: 125 207 255; /* #7DCFFF */
+    --primary-dark: 59 174 223; /* #3BAEDF */
+  }
+
+  .theme-colors-blue.theme-dark {
+    --primary: 174 235 255; /* #AEEBFF */
+    --primary-light: 174 235 255; /* #AEEBFF */
+    --primary-dark: 59 174 223; /* #3BAEDF */
+  }
+
+  /* 🌸 ROSADO */
+  .theme-rose.theme-light {
+    --primary: 219 95 142; /* #DB5F8E */
+    --primary-light: 255 139 179; /* #FF8BB3 */
+    --primary-dark: 219 95 142; /* #DB5F8E */
+  }
+
+  .theme-rose.theme-dark {
+    --primary: 255 198 218; /* #FFC6DA */
+    --primary-light: 255 198 218; /* #FFC6DA */
+    --primary-dark: 219 95 142; /* #DB5F8E */
+  }
+
+  /* 🍃 VERDE */
+  .theme-emerald.theme-light {
+    --primary: 56 142 60; /* #388E3C */
+    --primary-light: 76 175 80; /* #4CAF50 */
+    --primary-dark: 56 142 60; /* #388E3C */
+  }
+
+  .theme-emerald.theme-dark {
+    --primary: 129 199 132; /* #81C784 */
+    --primary-light: 129 199 132; /* #81C784 */
+    --primary-dark: 56 142 60; /* #388E3C */
+  }
+
+  /* 🧡 NARANJA */
+  .theme-amber.theme-light {
+    --primary: 245 124 0; /* #F57C00 */
+    --primary-light: 255 183 77; /* #FFB74D */
+    --primary-dark: 245 124 0; /* #F57C00 */
+  }
+
+  .theme-amber.theme-dark {
+    --primary: 255 208 138; /* #FFD08A */
+    --primary-light: 255 208 138; /* #FFD08A */
+    --primary-dark: 245 124 0; /* #F57C00 */
+  }
+
+  /* ❤️ CARMESÍ */
+  .theme-crimson.theme-light {
+    --primary: 198 40 40; /* #C62828 */
+    --primary-light: 244 67 54; /* #F44336 */
+    --primary-dark: 198 40 40; /* #C62828 */
+  }
+
+  .theme-crimson.theme-dark {
+    --primary: 229 115 115; /* #E57373 */
+    --primary-light: 229 115 115; /* #E57373 */
+    --primary-dark: 198 40 40; /* #C62828 */
+  }
 }
 
-/* 🍃 VERDE */
-.theme-light.theme-emerald {
-  --primary-color: #388E3C;
-  --primary-color-light: #4CAF50;
-  --primary-color-dark: #388E3C;
-}
-.theme-dark.theme-emerald {
-  --primary-color: #81C784;
-  --primary-color-light: #81C784;
-  --primary-color-dark: #388E3C;
+/* ===================    Estilos base del body =================== */
+@layer base {
+  body {
+    @apply bg-background text-foreground font-poppins;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-foreground;
+  }
 }
 
-/* 🧡 NARANJA */
-.theme-light.theme-amber {
-  --primary-color: #F57C00;
-  --primary-color-light: #FFB74D;
-  --primary-color-dark: #F57C00;
-}
-.theme-dark.theme-amber {
-  --primary-color: #FFD08A;
-  --primary-color-light: #FFD08A;
-  --primary-color-dark: #F57C00;
-}
-
-/* ❤️ CARMESÍ */
-.theme-light.theme-crimson {
-  --primary-color: #C62828;
-  --primary-color-light: #F44336;
-  --primary-color-dark: #C62828;
-}
-.theme-dark.theme-crimson {
-  --primary-color: #E57373;
-  --primary-color-light: #E57373;
-  --primary-color-dark: #C62828;
-}
-
-body {
-  background-color: var(--background-color);
-  color: var(--text-color);
-  font-family: 'Poppins', sans-serif;
-  margin: 0;
-  padding: 0;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  color: var(--text-color);
+/* ===================    Utilidades personalizadas =================== */
+@layer utilities {
+  .bg-primary-translucent {
+    background-color: rgb(var(--primary) / 0.05);
+  }
+  
+  .hover\:bg-primary-translucent:hover {
+    background-color: rgb(var(--primary) / 0.05);
+  }
 }
