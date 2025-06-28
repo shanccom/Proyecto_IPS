@@ -88,7 +88,7 @@ export class AuthService {
     return this.http.put(`${this.baseUrl}admin/users/${userId}/status/`, statusData, { headers });
   }
 
-  private getAuthHeaders(): HttpHeaders {
+  public getAuthHeaders(): HttpHeaders {
     const token = this.getToken();
     return new HttpHeaders({
       'Authorization': `Token ${token}`,

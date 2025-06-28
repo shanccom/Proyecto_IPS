@@ -8,6 +8,9 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
 class ClienteListCreateView(generics.ListCreateAPIView):
     queryset = Cliente.objects.all()
@@ -26,6 +29,8 @@ class RecetaDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RecetaSerializer
     
 @api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def create_receta(request):
 
     print(request.data)
@@ -99,6 +104,8 @@ def safe_decimal(value):
     return None
 
 @api_view(['PUT'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def update_receta(request, codigo):
     
     try:
@@ -139,6 +146,8 @@ def update_receta(request, codigo):
 
 #RECUPERARR recetas de un cliente
 @api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def recetas_cliente(request):
     codigo_cliente = request.query_params.get('nombre_cliente', None)  
     if codigo_cliente:
@@ -157,6 +166,8 @@ def recetas_cliente(request):
         return Response({"error": "Debe proporcionar el codigo del cliente"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def obtener_clientes(request):
     try:
         clientes = Cliente.objects.all()
@@ -167,6 +178,8 @@ def obtener_clientes(request):
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def crear_cliente(request):
     if request.method == 'POST':
         serializer = ClienteSerializer(data=request.data)

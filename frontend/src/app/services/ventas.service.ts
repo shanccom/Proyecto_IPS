@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AuthService } from './auth.service';
 
 export interface Producto {
   id?: number;
@@ -58,10 +59,11 @@ export class VentasService {
         })
     };
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient, private authService:AuthService) {}
 
     buscarProductoPorCodigo(codigo: string): Observable<Producto> {
-      return this.http.get<any>(`${this.apiUrl}/productos/buscar?codigo=${codigo}`)
+      const headers = this.authService.getAuthHeaders();
+      return this.http.get<any>(`${this.apiUrl}/productos/buscar?codigo=${codigo}`, {headers})
         .pipe(
           map(data => ({
             id: data.codigo || null,
@@ -75,16 +77,20 @@ export class VentasService {
 
   // Crear una boleta
     crearBoleta(boletaData: BoletaRequest): Observable<BoletaResponse> {
-        return this.http.post<BoletaResponse>(`${this.apiUrl}/ventas/boletas/`, boletaData, this.httpOptions);
+      const headers = this.authService.getAuthHeaders();
+      const options = { ...this.httpOptions, headers };
+      return this.http.post<BoletaResponse>(`${this.apiUrl}/ventas/boletas/`, boletaData, options);
     }
 
     // Obtener todas las boletas
     obtenerBoletas(): Observable<{boletas: BoletaResponse[], total_boletas: number}> {
-        return this.http.get<{boletas: BoletaResponse[], total_boletas: number}>(`${this.apiUrl}/ventas/boletas/lista/`);
+      const headers = this.authService.getAuthHeaders();  
+      return this.http.get<{boletas: BoletaResponse[], total_boletas: number}>(`${this.apiUrl}/ventas/boletas/lista/` , {headers});
     }
 
     // Obtener siguiente correlativo
     obtenerSiguienteCorrelativo(serie: string): Observable<{ correlativo: string }> {
-        return this.http.get<{ correlativo: string }>(`${this.apiUrl}/ventas/boletas/siguiente-correlativo/${serie}/`);
+      const headers = this.authService.getAuthHeaders();  
+      return this.http.get<{ correlativo: string }>(`${this.apiUrl}/ventas/boletas/siguiente-correlativo/${serie}/`, {headers});
     }
 }

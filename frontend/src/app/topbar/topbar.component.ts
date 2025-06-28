@@ -59,12 +59,12 @@ export class TopbarComponent implements OnInit, OnDestroy {
   logout() {
     this.authService.logout().subscribe({
       next: (response) => {
-        console.log('Logout exitoso:', response);
+        //console.log('Logout exitoso:', response);
         this.authService.clearAuth(); // Limpia token y usuario (si tienes este método)
         this.router.navigate(['/login']); // Redirige al login
       },
       error: (error) => {
-        console.error('Error durante logout:', error);
+        //console.error('Error durante logout:', error);
         // Podrías mostrar un mensaje opcional al usuario
       }
     });

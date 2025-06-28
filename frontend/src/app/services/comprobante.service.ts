@@ -1,18 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ComprobanteService {
 
-    private apiUrl = 'http://localhost:8000/apiCom/comprobantes/';
+    private baseUrl = 'http://localhost:8000/apiCom/comprobantes/';
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient, private authService: AuthService) {}
 
     // Método para crear un comprobante
-    crearComprobante(data: any): Observable<any> {
-        return this.http.post(this.apiUrl, data);
+    crearComprobante(comprobante: any): Observable<any> {
+      const headers = this.authService.getAuthHeaders();
+      return this.http.post(`${this.baseUrl}`, comprobante, {headers});
     }
 }

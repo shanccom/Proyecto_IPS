@@ -71,9 +71,8 @@ def buscar_producto(codigo_producto):
 
 
 @api_view(['POST'])
-#@authentication_classes([TokenAuthentication])
-#@permission_classes([IsAuthenticated])
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def crear_boleta(request):
     try:
         data = json.loads(request.body)
@@ -287,8 +286,8 @@ def crear_boleta(request):
         }, status=500)
 
 @api_view(['GET'])
-#@authentication_classes([TokenAuthentication])
-#@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def obtener_siguiente_correlativo(request, serie):
     try:
         ultima_boleta = Boleta.objects.filter(serie=serie).aggregate(
@@ -314,8 +313,8 @@ def obtener_siguiente_correlativo(request, serie):
         }, status=500)
 
 @api_view(['GET'])
-#@authentication_classes([TokenAuthentication])
-#@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def listar_boletas(request):
     try:
         boletas = Boleta.objects.all().prefetch_related('items__content_object').order_by('-fecha')
@@ -383,8 +382,8 @@ def listar_boletas(request):
 # Empleados
 # Añadir empleados
 @api_view(['POST'])
-#@authentication_classes([TokenAuthentication])
-#@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 # Editar condicion de empleado
 def new_empleado(request):
     emplCod = request.data.get('emplCod')

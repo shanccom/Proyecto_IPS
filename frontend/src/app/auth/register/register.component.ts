@@ -49,7 +49,7 @@ export class RegisterComponent {
 
     this.authService.register(registerData).subscribe({
       next: (response) => {
-        console.log('Registro exitoso:', response);
+        //console.log('Registro exitoso:', response);
         
         // Usar el método setAuth del servicio
         this.authService.setAuth(response.token, response.user);
@@ -57,7 +57,7 @@ export class RegisterComponent {
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Error en registro:', error);
+        //console.error('Error en registro:', error);
         this.isLoading = false;
         
         if (error.status === 400) {
