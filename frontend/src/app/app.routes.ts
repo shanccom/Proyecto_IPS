@@ -7,16 +7,28 @@ import { InventarioComponent } from './inventario/inventario.component'
 import { ClientesComponent } from './clientes/clientes.component';
 import { ListaVentasComponent } from './lista-ventas/lista-ventas.component';
 import { RegisterComponent } from './auth/register/register.component';
+import { ReportesComponent } from './reportes/reportes.component';
+import { CuentaComponent } from './admin/cuenta/cuenta.component';
+import { UsuariosComponent } from './admin/usuarios/usuarios.component';
+
+//Importación de los guards
+import { AuthGuard } from './guards/auth.guard';
+import { AdminGuard } from './guards/admin.guard';
+import { GuestGuard } from './guards/guest.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'inventario', component: InventarioComponent },
-  { path: 'factura', component: ComprobanteComponent },
-  { path: 'clientes', component: ClientesComponent },
-  { path: 'venta', component:VentaComponent },
-  { path: 'listaVentas', component:ListaVentasComponent },
+  { path: 'login', component: LoginComponent , canActivate: [GuestGuard] },
+  { path: 'register', component: RegisterComponent, canActivate: [GuestGuard] },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
+  { path: 'inventario', component: InventarioComponent, canActivate: [AuthGuard]},
+  { path: 'factura', component: ComprobanteComponent, canActivate: [AuthGuard]},
+  { path: 'clientes', component: ClientesComponent, canActivate: [AuthGuard]},
+  { path: 'venta', component:VentaComponent, canActivate: [AuthGuard] },
+  { path: 'listaVentas', component:ListaVentasComponent, canActivate: [AuthGuard] },
+  { path: 'reportes', component:ReportesComponent, canActivate: [AdminGuard] },
+  //Ahora admin
+  { path: 'admin-cuenta', component:CuentaComponent, canActivate: [AdminGuard] },
+  { path: 'admin-usuarios', component:UsuariosComponent, canActivate: [AdminGuard] },
   { path: '**', redirectTo: 'login' }
 ];
