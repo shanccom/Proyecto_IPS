@@ -54,9 +54,9 @@
           <p class="text-white text-sm">{{ boleta.cliente.num_doc }}</p>
         </div>
 
-        <!-- ✅ NUEVA SECCIÓN: Estado SUNAT -->
+        <!-- ✅ SECCIÓN CORREGIDA: Estado SUNAT -->
         <div class="mb-6 p-4 bg-[#292C2D] rounded-lg border-l-4" 
-             [ngClass]="{'border-green-400': boleta.enviado_sunat, 'border-orange-400': !boleta.enviado_sunat}">
+            [ngClass]="{'border-green-400': boleta.estado === 'enviada', 'border-orange-400': boleta.estado !== 'enviada'}">
           <h4 class="font-semibold text-white mb-3 flex items-center">
             <svg class="w-5 h-5 mr-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -67,26 +67,26 @@
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3">
               <!-- Estado visual -->
-              <div *ngIf="boleta.enviado_sunat" class="flex items-center space-x-2">
+              <div *ngIf="boleta.estado === 'enviada'" class="flex items-center space-x-2">
                 <div class="w-3 h-3 bg-green-400 rounded-full"></div>
                 <span class="text-green-400 font-medium">Enviada a SUNAT</span>
               </div>
-              <div *ngIf="!boleta.enviado_sunat" class="flex items-center space-x-2">
+              <div *ngIf="boleta.estado !== 'enviada'" class="flex items-center space-x-2">
                 <div class="w-3 h-3 bg-orange-400 rounded-full animate-pulse"></div>
                 <span class="text-orange-400 font-medium">Pendiente de envío</span>
               </div>
               
               <!-- Información adicional si está enviada -->
-              <div *ngIf="boleta.enviado_sunat && boleta.codigo_sunat" class="text-sm text-gray-400">
+              <div *ngIf="boleta.estado === 'enviada' && boleta.codigo_sunat" class="text-sm text-gray-400">
                 Código: {{ boleta.codigo_sunat }}
               </div>
             </div>
             
             <!-- Botones de acción -->
             <div class="flex space-x-2">
-              <!-- Botón Enviar a SUNAT -->
+              <!-- Botón Enviar a SUNAT (solo si NO está enviada) -->
               <button 
-                *ngIf="!boleta.enviado_sunat"
+                *ngIf="boleta.estado !== 'enviada'"
                 (click)="reenviarSunat(boleta)"
                 class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 flex items-center space-x-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,9 +95,9 @@
                 <span>Enviar a SUNAT</span>
               </button>
               
-              <!-- Botón Reenviar -->
+              <!-- Botón Reenviar (solo si YA está enviada) -->
               <button 
-                *ngIf="boleta.enviado_sunat"
+                *ngIf="boleta.estado === 'enviada'"
                 (click)="reenviarSunat(boleta)"
                 class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 flex items-center space-x-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -106,9 +106,9 @@
                 <span>Reenviar</span>
               </button>
               
-              <!-- Botón Descargar CDR -->
+              <!-- Botón Descargar CDR (solo si está enviada Y tiene CDR) -->
               <button 
-                *ngIf="boleta.enviado_sunat && boleta.nombre_cdr"
+                *ngIf="boleta.estado === 'enviada' && boleta.nombre_cdr"
                 (click)="descargarCDR(boleta)"
                 class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 flex items-center space-x-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -119,6 +119,8 @@
             </div>
           </div>
         </div>
+
+        
 
         <!-- Items de la boleta -->
         <div>

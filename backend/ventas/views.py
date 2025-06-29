@@ -75,7 +75,7 @@ def buscar_producto(codigo_producto):
 def crear_boleta(request):
     try:
         data = json.loads(request.body)
-        print(f"Datos recibidos: {data}")  # Debug
+        print(f"Datos recibidos: {data}")
         
         # Validar datos requeridos
         required_fields = ['serie', 'cliente', 'items', 'subtotal', 'igv', 'total']
@@ -117,29 +117,29 @@ def crear_boleta(request):
         
         correlativo = f"{siguiente_numero:06d}"
         
-        # Crear la boleta
+        # ✅ CREAR LA BOLETA CON ESTADO 'pendiente' (SIN ENVIAR A SUNAT)
         boleta = Boleta.objects.create(
             serie=data['serie'],
             correlativo=correlativo,
             cliente=cliente,
             subtotal=Decimal(str(data['subtotal'])),
             igv=Decimal(str(data['igv'])),
-            total=Decimal(str(data['total']))
+            total=Decimal(str(data['total'])),
+            estado='pendiente',  # ✅ Estado inicial
+            enviado_sunat=False  # ✅ No enviado aún
         )
         
-        # Crear los items de la boleta
+        # Crear los items de la boleta (tu lógica existente)
         for item_data in data['items']:
             try:
-                print(f"Procesando item: {item_data}")  # Debug
+                print(f"Procesando item: {item_data}")
                 
-                # Obtener valores básicos
                 cantidad = item_data.get('cantidad', 1)
                 valor_unitario = item_data.get('valor_unitario')
                 producto_id = item_data.get('producto_id')
                 codigo_producto = item_data.get('codigo', '')
                 descripcion = item_data.get('descripcion', '')
                 
-                # Validaciones básicas
                 if cantidad <= 0:
                     boleta.delete()
                     return JsonResponse({
@@ -161,61 +161,46 @@ def crear_boleta(request):
                 )
                 
                 if es_producto_personalizado:
-                    print(f"Procesando producto personalizado: {codigo_producto}")  # Debug
-                    
                     if not descripcion:
                         boleta.delete()
                         return JsonResponse({
                             'error': 'Descripción es requerida para productos personalizados'
                         }, status=400)
                     
-                    # Crear item para producto personalizado
                     ItemBoleta.objects.create(
                         boleta=boleta,
-                        content_type=None,  # Sin content_type para productos personalizados
-                        object_id=None,     # Sin object_id para productos personalizados
+                        content_type=None,
+                        object_id=None,
                         cantidad=cantidad,
                         valor_unitario=Decimal(str(valor_unitario)),
                         descripcion_personalizada=descripcion
                     )
-                    
-                    print(f"Item personalizado creado: {descripcion}")  # Debug
-                    
                 else:
-                    # Producto normal - lógica existente
-                    print(f"Procesando producto normal: {producto_id}")  # Debug
-                    
-                    # Buscar producto en todos los modelos disponibles
                     producto, content_type, precio = buscar_producto(producto_id)
                     
                     if not producto:
                         boleta.delete()
                         return JsonResponse({
-                            'error': f'Producto con código {producto_id} no encontrado en ningún modelo'
+                            'error': f'Producto con código {producto_id} no encontrado'
                         }, status=404)
                     
-                    # Crear item de boleta usando el ID primario del producto encontrado
                     ItemBoleta.objects.create(
                         boleta=boleta,
                         content_type=content_type,
-                        object_id=str(producto.pk),  # Asegurar que sea string
+                        object_id=str(producto.pk),
                         cantidad=cantidad,
                         valor_unitario=Decimal(str(valor_unitario)),
-                        descripcion_personalizada=None  # No usar descripción personalizada para productos normales
+                        descripcion_personalizada=None
                     )
-                    
-                    print(f"Item creado para producto: {producto} (Tipo: {content_type.model})")  # Debug
                 
             except Exception as e:
-                print(f"Error al procesar item: {str(e)}")  # Debug
-                import traceback
-                traceback.print_exc()
+                print(f"Error al procesar item: {str(e)}")
                 boleta.delete()
                 return JsonResponse({
                     'error': f'Error al procesar item: {str(e)}'
                 }, status=500)
         
-        # Preparar los items para la respuesta
+        # Preparar items para respuesta
         items_response = []
         for item in boleta.items.all():
             item_data = {
@@ -224,16 +209,13 @@ def crear_boleta(request):
                 'subtotal': float(item.subtotal)
             }
             
-            # Agregar información específica según el tipo de item
             if item.descripcion_personalizada:
-                # Producto personalizado
                 item_data.update({
                     'codigo': 'PERSONALIZADO',
                     'descripcion': item.descripcion_personalizada,
                     'tipo': 'personalizado'
                 })
             elif item.content_object:
-                # Producto del inventario
                 producto = item.content_object
                 item_data.update({
                     'codigo': getattr(producto, 'codigo', ''),
@@ -241,20 +223,13 @@ def crear_boleta(request):
                     'tipo': 'inventario',
                     'producto_id': producto.pk
                 })
-            else:
-                # Fallback
-                item_data.update({
-                    'codigo': 'DESCONOCIDO',
-                    'descripcion': 'Producto sin descripción',
-                    'tipo': 'desconocido'
-                })
             
             items_response.append(item_data)
         
-        microservicio_service = MicroservicioSunatService()
-        resultado_sunat = microservicio_service.enviar_boleta_sunat(boleta)
-
-        # Respuesta exitosa con items incluidos
+        # ✅ NO ENVIAR A SUNAT AUTOMÁTICAMENTE
+        # El envío se hará desde la lista de ventas usando reenviar_boleta_sunat
+        
+        # Respuesta exitosa
         response_data = {
             'id': boleta.id,
             'serie': boleta.serie,
@@ -265,30 +240,23 @@ def crear_boleta(request):
                 'num_doc': boleta.cliente.cliNumDoc,
                 'rzn_social': boleta.cliente.cliNom
             },
-            'items': items_response,  # ✅ Items incluidos para SUNAT
+            'items': items_response,
             'subtotal': float(boleta.subtotal),
             'igv': float(boleta.igv),
             'total': float(boleta.total),
-            'estado': 'pendiente',
-            'enviado_sunat': boleta.enviado_sunat,
-            'sunat_resultado': resultado_sunat
+            'estado': 'pendiente',  # ✅ Estado inicial
+            'enviado_sunat': False,  # ✅ No enviado
+            'mensaje': 'Boleta creada exitosamente. Puede enviarla a SUNAT desde la lista de ventas.'
         }
         
-        print(f"Boleta creada exitosamente: {response_data}")  # Debug
+        print(f"Boleta creada exitosamente: {response_data}")
         return JsonResponse(response_data, status=201)
         
     except json.JSONDecodeError:
-        return JsonResponse({
-            'error': 'Datos JSON inválidos'
-        }, status=400)
-    
+        return JsonResponse({'error': 'Datos JSON inválidos'}, status=400)
     except Exception as e:
-        print(f"Error general: {str(e)}")  # Debug
-        import traceback
-        traceback.print_exc()  # Debug completo
-        return JsonResponse({
-            'error': f'Error interno: {str(e)}'
-        }, status=500)
+        print(f"Error general: {str(e)}")
+        return JsonResponse({'error': f'Error interno: {str(e)}'}, status=500)
 
 @require_http_methods(["GET"])
 def obtener_siguiente_correlativo(request, serie):

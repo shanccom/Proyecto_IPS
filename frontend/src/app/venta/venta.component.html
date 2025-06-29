@@ -55,37 +55,128 @@
               </div>
             </div>
 
+            
             <!-- Información del Cliente -->
             <div class="pr-6 pl-6" formGroupName="cliente">
               <h2 class="text-xl font-semibold text-white mb-6">Datos del Cliente</h2>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+              <!-- Diseño con tamaños específicos -->
+              <div class="grid grid-cols-1 md:grid-cols-[150px_160px_1fr] gap-6">
+                
+                <!-- Tipo de Documento -->
                 <div>
                   <label class="block text-sm font-medium text-white mb-2">Tipo de Documento</label>
-                  <select 
+                  <select
                     formControlName="tipo_doc"
-                    class="w-full px-3 py-2 rounded-lg">
+                    (change)="onTipoDocumentoChange()"
+                    class="text-black w-[150px] px-3 py-2 rounded-lg bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
                     <option value="1">DNI</option>
                     <option value="6">RUC</option>
                   </select>
                 </div>
+
+                <!-- Número de Documento -->
                 <div>
-                  <label class="block text-sm font-medium text-white mb-2">Número de Documento</label>
-                  <input 
-                    type="text" 
-                    formControlName="num_doc"
-                    class="w-full px-3 py-2 rounded-lg"
-                    placeholder="12345678">
+                  <label class="block text-sm font-medium text-white mb-2">
+                    {{ ventaForm.get('cliente.tipo_doc')?.value === '1' ? 'DNI' : 'Número de Documento' }}
+                  </label>
+
+                  <div class="relative w-[170px]">
+                    <input
+                      type="text"
+                      formControlName="num_doc"
+                      (input)="ventaForm.get('cliente.tipo_doc')?.value === '1' ? onDniInput($event) : null"
+                      [placeholder]="ventaForm.get('cliente.tipo_doc')?.value === '1' ? 'Ingrese DNI de 8 dígitos' : 'Número de documento'"
+                      [maxlength]="ventaForm.get('cliente.tipo_doc')?.value === '1' ? 8 : 20"
+                      [class]="'text-black w-full px-3 py-2 pr-10 rounded-lg border transition-all focus:ring-2 focus:ring-blue-200 ' + 
+                              (dniEncontrado ? 'border-green-500 bg-green-50' : 
+                                (ventaForm.get('cliente.num_doc')?.invalid && ventaForm.get('cliente.num_doc')?.touched ? 
+                                'border-red-500 bg-red-50' : 'border-gray-300 bg-white'))">
+
+                    <!-- Indicadores -->
+                    <div class="absolute right-3 top-2.5">
+                      <!-- Cargando -->
+                      <div *ngIf="consultandoDni" class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+
+                      <!-- Éxito -->
+                      <svg *ngIf="dniEncontrado && !consultandoDni" class="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                      </svg>
+
+                      <!-- Error -->
+                      <svg *ngIf="!dniEncontrado && !consultandoDni && 
+                                ventaForm.get('cliente.tipo_doc')?.value === '1' && 
+                                ventaForm.get('cliente.num_doc')?.value?.length === 8" 
+                          class="h-4 w-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  <!-- Mensajes de estado -->
+                  <div class="mt-1 min-h-[20px]">
+                    <div *ngIf="consultandoDni" class="text-xs text-blue-300 flex items-center">
+                      <div class="animate-spin rounded-full h-3 w-3 border-b border-blue-300 mr-1"></div>
+                      Consultando RENIEC...
+                    </div>
+
+                    <p *ngIf="dniEncontrado && !consultandoDni && datosPersona" class="text-xs text-green-300">
+                      DNI encontrado
+                    </p>
+
+                    <p *ngIf="ventaForm.get('cliente.tipo_doc')?.value === '1' && 
+                            ventaForm.get('cliente.num_doc')?.value?.length > 0 && 
+                            ventaForm.get('cliente.num_doc')?.value?.length < 8 && 
+                            !consultandoDni" 
+                      class="text-xs text-yellow-300">
+                      DNI debe tener 8 dígitos
+                    </p>
+
+                    <p *ngIf="!dniEncontrado && !consultandoDni && 
+                            ventaForm.get('cliente.tipo_doc')?.value === '1' && 
+                            ventaForm.get('cliente.num_doc')?.value?.length === 8" 
+                      class="text-xs text-red-300">
+                      DNI no encontrado en RENIEC
+                    </p>
+                  </div>
                 </div>
+
+                <!-- Nombre / Razón Social -->
                 <div>
-                  <label class="block text-sm font-medium text-white mb-2">Nombre/Razón Social</label>
-                  <input 
-                    type="text" 
-                    formControlName="rzn_social"
-                    class="w-full px-3 py-2 rounded-lg"
-                    placeholder="Juan Pérez">
+                  <label class="block text-sm font-medium text-white mb-2">
+                    {{ ventaForm.get('cliente.tipo_doc')?.value === '1' ? 'Nombre Completo' : 'Razón Social' }}
+                  </label>
+
+                  <div class="relative">
+                    <input
+                      type="text"
+                      formControlName="rzn_social"
+                      [placeholder]="ventaForm.get('cliente.tipo_doc')?.value === '1' ? 
+                                    (dniEncontrado ? 'Nombre obtenido automáticamente' : 'Ingrese nombre completo') : 
+                                    'Ingrese razón social'"
+                      [readonly]="dniEncontrado && ventaForm.get('cliente.tipo_doc')?.value === '1'"
+                      [class]="'text-black w-full px-3 py-2 rounded-lg border transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-200 ' + 
+                              (dniEncontrado ? 'border-green-500 bg-green-50 pr-10' : 'border-gray-300 bg-white')"
+                      required>
+
+                    <!-- Icono de bloqueo -->
+                    <svg *ngIf="dniEncontrado && ventaForm.get('cliente.tipo_doc')?.value === '1'" 
+                        class="absolute right-3 top-2.5 h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                  </div>
                 </div>
+
               </div>
             </div>
+
+
+
+
+
+
 
             <!-- Scanner y Productos -->
             <div class="rounded-lg p-6">
