@@ -6,6 +6,9 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Va
 import { VentasService, Producto } from '../services/ventas.service';
 import { catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';  
+import { ReniecService, PersonaReniec } from '../services/reniec.service';
+import { Subject } from 'rxjs';
+import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-venta',
@@ -36,10 +39,15 @@ export class VentaComponent implements OnInit {
   productos: any[] = [];
   total: number = 0;
 
+  consultandoDni = false;
+  dniEncontrado = false;
+  datosPersona: PersonaReniec | null = null;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
-    private ventaService: VentasService
+    private ventaService: VentasService,
+    private reniecService: ReniecService
   ) {
     this.ventaForm = this.createForm();
     this.formularioLunaPersonalizada = this.createFormularioLuna();
@@ -48,6 +56,11 @@ export class VentaComponent implements OnInit {
   ngOnInit(): void {
     this.generarNuevoCorrelativo();
     this.calcularTotalesCompletos();
+    this.setupDniWatcher();
+  }
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   //PARA ASEGURARNOS DE QUE EL SERVICIO DE SUNAT FUNCIONE DEBE DE TENER ESTA ESTRUCTURA
@@ -182,8 +195,10 @@ export class VentaComponent implements OnInit {
   }
 
   guardarBoleta() {
-    const cliente = this.ventaForm.get('cliente')?.value;
+    const cliente = this.ventaForm.get('cliente')?.getRawValue();
     const productosForm = this.items.controls;
+
+    console.log('Cliente:', cliente); // DEBUG: Ver qué datos hay
 
     if (!cliente.tipo_doc || !cliente.num_doc || !cliente.rzn_social) {
       alert('Por favor, complete los datos del cliente.');
@@ -347,5 +362,123 @@ export class VentaComponent implements OnInit {
     if (event.key === 'Enter') {
       this.buscarProductoPorCodigo();
     }
+  }
+
+  /**
+   * Configura el observador para cambios automáticos en el DNI
+   */
+  private setupDniWatcher() {
+    const dniControl = this.ventaForm.get('cliente.num_doc');
+    const tipoDocControl = this.ventaForm.get('cliente.tipo_doc');
+    
+    if (dniControl && tipoDocControl) {
+      dniControl.valueChanges.pipe(
+        debounceTime(800), // Espera 800ms después del último cambio
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      ).subscribe(numDoc => {
+        // Solo consultar si es tipo DNI (valor '1') y tiene 8 dígitos
+        if (tipoDocControl.value === '1' && numDoc && numDoc.length === 8 && /^\d{8}$/.test(numDoc)) {
+          this.consultarDniReniec(numDoc);
+        } else {
+          this.limpiarDatosReniec();
+        }
+      });
+    }
+  }
+
+  /**
+   * Maneja el input del DNI (llamado desde el template)
+   */
+  onDniInput(event: any) {
+    const dni = event.target.value;
+    
+    // Solo permitir números
+    const soloNumeros = dni.replace(/\D/g, '');
+    if (dni !== soloNumeros) {
+      this.ventaForm.get('cliente.num_doc')?.setValue(soloNumeros);
+    }
+    
+    // Limpiar datos si no tiene 8 dígitos
+    if (soloNumeros.length !== 8) {
+      this.limpiarDatosReniec();
+    }
+  }
+
+  /**
+   * Maneja el cambio de tipo de documento
+   */
+  onTipoDocumentoChange() {
+    this.ventaForm.get('cliente.num_doc')?.setValue('');
+    this.ventaForm.get('cliente.rzn_social')?.setValue('');
+    this.limpiarDatosReniec();
+  }
+
+  /**
+   * Buscar DNI manualmente (botón)
+   */
+  buscarPorDni() {
+    const dni = this.ventaForm.get('cliente.num_doc')?.value;
+    if (dni && dni.length === 8) {
+      this.consultarDniReniec(dni);
+    }
+  }
+
+  /**
+   * Consulta el DNI en RENIEC
+   */
+  private consultarDniReniec(dni: string) {
+    this.consultandoDni = true;
+    this.dniEncontrado = false;
+
+    console.log(`Consultando DNI en RENIEC: ${dni}`);
+
+    this.reniecService.consultarDni(dni).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (persona: PersonaReniec) => {
+        console.log('DNI encontrado en RENIEC:', persona);
+        
+        this.datosPersona = persona;
+        this.dniEncontrado = true;
+        this.consultandoDni = false;
+        
+        // Llenar el campo de razón social con el nombre completo
+        this.ventaForm.get('cliente.rzn_social')?.setValue(persona.nombreCompleto);
+        this.ventaForm.get('cliente.rzn_social')?.disable(); // Deshabilitar edición
+        
+        // Opcional: mostrar notificación de éxito
+        this.mostrarNotificacion('DNI encontrado en RENIEC', 'success');
+      },
+      error: (error) => {
+        console.error('Error al consultar DNI:', error);
+        
+        this.consultandoDni = false;
+        this.dniEncontrado = false;
+        this.datosPersona = null;
+        
+        // Mostrar error al usuario
+        this.mostrarNotificacion(error.message || 'Error al consultar DNI', 'error');
+      }
+    });
+  }
+
+  /**
+   * Limpia los datos obtenidos de RENIEC
+   */
+  private limpiarDatosReniec() {
+    this.dniEncontrado = false;
+    this.datosPersona = null;
+    
+    // Si el campo estaba deshabilitado, habilitarlo
+    if (this.ventaForm.get('cliente.rzn_social')?.disabled) {
+      this.ventaForm.get('cliente.rzn_social')?.enable();
+      this.ventaForm.get('cliente.rzn_social')?.setValue('');
+    }
+  }
+
+  private mostrarNotificacion(mensaje: string, tipo: 'success' | 'error' | 'warning' | 'info') {
+    console.log(`[${tipo.toUpperCase()}] ${mensaje}`);
+    
   }
 }

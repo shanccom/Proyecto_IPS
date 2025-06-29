@@ -20,45 +20,82 @@ export class ListaVentasComponent implements OnInit{
 
   ngOnInit(): void {
     this.cargarBoletas();
+    setTimeout(() => {
+      this.verificarDatos();
+    }, 2000);
   }
 
-  // Separé la lógica de carga en un método para poder reutilizarla
-  cargarBoletas(): void {
-    this.loading = true;
-    this.boletaService.obtenerBoletas().subscribe({
-      next: (data) => {
-        this.boletas = data.boletas;
-        this.loading = false;
-      },
-      error: (err) => {
-        this.error = 'Error al cargar boletas';
-        this.loading = false;
-        console.error(err);
-      }
-    });
-  }
-
-  // ✅ NUEVO MÉTODO PARA REENVIAR A SUNAT
   reenviarSunat(boleta: any): void {
-    if (confirm('¿Está seguro de reenviar esta boleta a SUNAT?')) {
+    const mensaje = boleta.estado === 'enviada' 
+      ? '¿Está seguro de REenviar esta boleta a SUNAT?' 
+      : '¿Está seguro de enviar esta boleta a SUNAT?';
+      
+    if (confirm(mensaje)) {
       this.boletaService.reenviarBoletaSunat(boleta.id).subscribe({
         next: (response) => {
-          if (response.success) {
-            alert('Boleta reenviada exitosamente a SUNAT');
-            this.cargarBoletas(); // Recargar lista para ver el estado actualizado
+          console.log('Respuesta del servidor:', response);
+          
+          let esExitoso = false;
+          
+          if (typeof response === 'string') {
+            // Si la respuesta es un string, verificar si contiene "exitosamente"
+            esExitoso = response.toLowerCase().includes('exitosamente') || 
+                       response.toLowerCase().includes('éxito');
+          } else if (typeof response === 'object' && response !== null) {
+            // Si es un objeto, verificar la propiedad success
+            esExitoso = response.success === true;
+          }
+          
+          if (esExitoso) {
+            alert('Boleta enviada exitosamente a SUNAT');
+            
+            boleta.estado = 'enviada';
+            
+            this.cargarBoletas(); 
           } else {
-            alert('Error al reenviar: ' + response.error);
+            const errorMsg = typeof response === 'object' && response.error 
+              ? response.error 
+              : 'Error desconocido';
+            alert('Error al enviar: ' + errorMsg);
           }
         },
         error: (error) => {
-          alert('Error de conexión: ' + error.message);
-          console.error('Error reenviar SUNAT:', error);
+          console.error('Error completo:', error);
+          alert('Error de conexión: ' + (error.message || 'Error desconocido'));
         }
       });
     }
   }
 
-  // ✅ NUEVO MÉTODO PARA DESCARGAR CDR
+  cargarBoletas(): void {
+    this.loading = true;
+    this.boletaService.obtenerBoletas().subscribe({
+      next: (data) => {
+        console.log('📦 Datos recibidos del servidor:', data);
+        this.boletas = data.boletas;
+        
+        this.boletas.forEach((boleta, index) => {
+          console.log(`🧾 Boleta ${index + 1}:`, {
+            id: boleta.id,
+            serie: boleta.serie,
+            correlativo: boleta.correlativo,
+            estado: boleta.estado, 
+            tipo_estado: typeof boleta.estado,
+            nombre_cdr: boleta.nombre_cdr
+          });
+        });
+        
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'Error al cargar boletas';
+        this.loading = false;
+        console.error('Error cargando boletas:', err);
+      }
+    });
+  }
+
+  // MÉTODO PARA DESCARGAR CDR
   descargarCDR(boleta: any): void {
     if (!boleta.nombre_cdr) {
       alert('Esta boleta no tiene CDR disponible');
@@ -84,22 +121,51 @@ export class ListaVentasComponent implements OnInit{
     });
   }
 
-  // ✅ MÉTODO AUXILIAR PARA MOSTRAR ESTADO SUNAT
   obtenerEstadoSunat(boleta: any): string {
-    if (boleta.enviado_sunat) {
+    // El backend retorna 'estado', no 'enviado_sunat'
+    if (boleta.estado === 'enviada') {
       return 'Enviada a SUNAT';
-    } else {
+    } else if (boleta.estado === 'pendiente') {
       return 'Pendiente SUNAT';
+    } else if (boleta.estado === 'anulada') {
+      return 'Anulada';
     }
+    return 'Estado desconocido';
   }
 
-  // ✅ MÉTODO AUXILIAR PARA VERIFICAR SI PUEDE REENVIAR
   puedeReenviar(boleta: any): boolean {
-    return !boleta.enviado_sunat;
+    // Puede reenviar si NO está enviada (pendiente o anulada)
+    return boleta.estado !== 'enviada';
   }
 
-  // ✅ MÉTODO AUXILIAR PARA VERIFICAR SI TIENE CDR
+  estaEnviada(boleta: any): boolean {
+    return boleta.estado === 'enviada';
+  }
+
   tieneCDR(boleta: any): boolean {
-    return boleta.enviado_sunat && boleta.nombre_cdr;
+    return boleta.estado === 'enviada' && 
+            boleta.nombre_cdr && 
+            boleta.nombre_cdr.trim() !== '' &&
+            boleta.nombre_cdr !== 'undefined';
+  }
+
+
+  verificarDatos(): void {
+    console.log('🔍 VERIFICACIÓN DE DATOS DE BOLETAS:');
+    console.log('Total boletas:', this.boletas.length);
+    
+    this.boletas.forEach((boleta, index) => {
+      console.log(`Boleta ${index + 1}:`, {
+        id: boleta.id,
+        serie: boleta.serie,
+        correlativo: boleta.correlativo,
+        estado: boleta.estado, 
+        tipo_estado: typeof boleta.estado,
+        nombre_cdr: boleta.nombre_cdr,
+        fecha_emision: boleta.fecha_emision,
+        total: boleta.total
+      });
+      
+    });
   }
 }

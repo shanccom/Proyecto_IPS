@@ -31,7 +31,7 @@ export interface BoletaRequest {
   subtotal: number;
   igv: number;
   total: number;
-  enviar_sunat?: boolean; // Flag para enviar a SUNAT
+  enviar_sunat?: boolean;
 }
 
 
@@ -45,13 +45,8 @@ export interface BoletaResponse {
     subtotal: number;
     igv: number;
     total: number;
-    estado: 'pendiente' | 'enviada' | 'anulada';
+    estado: 'pendiente' | 'enviada' | 'anulada'; 
     url_pdf?: string;
-
-    // PARA SUNAT
-    enviado_sunat?: boolean;
-    sunat_resultado?: any;
-    hash_sunat?: string;
     nombre_cdr?: string;
 }
 
@@ -61,51 +56,54 @@ export interface BoletaResponse {
 })
 
 export class VentasService {
-    private apiUrl = 'http://localhost:8000';
-    private httpOptions = {
-        headers: new HttpHeaders({
-            'Content-Type': 'application/json'
-        })
-    };
+  private apiUrl = 'http://localhost:8000';
+  private httpOptions = {
+      headers: new HttpHeaders({
+          'Content-Type': 'application/json'
+      })
+  };
 
-    constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {}
 
-    buscarProductoPorCodigo(codigo: string): Observable<Producto> {
-      return this.http.get<any>(`${this.apiUrl}/productos/buscar?codigo=${codigo}`)
-        .pipe(
-          map(data => ({
-            id: data.codigo || null,
-            codigo: data.codigo,
-            nombre: data.publico || 'Producto sin nombre',
-            precio: parseFloat(data.precio),
-            stock: data.stock
-          }))
-        );
-}
+  buscarProductoPorCodigo(codigo: string): Observable<Producto> {
+    return this.http.get<any>(`${this.apiUrl}/productos/buscar?codigo=${codigo}`)
+      .pipe(
+        map(data => ({
+          id: data.codigo || null,
+          codigo: data.codigo,
+          nombre: data.publico || 'Producto sin nombre',
+          precio: parseFloat(data.precio),
+          stock: data.stock
+        }))
+      );
+  }
     
-    // Crear una boleta
-    crearBoleta(boletaData: BoletaRequest): Observable<BoletaResponse> {
-        return this.http.post<BoletaResponse>(`${this.apiUrl}/ventas/boletas/`, boletaData, this.httpOptions);
-    }
+  // Crear una boleta
+  crearBoleta(boletaData: BoletaRequest): Observable<BoletaResponse> {
+      return this.http.post<BoletaResponse>(`${this.apiUrl}/ventas/boletas/`, boletaData, this.httpOptions);
+  }
 
-    // Obtener todas las boletas
-    obtenerBoletas(): Observable<{boletas: BoletaResponse[], total_boletas: number}> {
-        return this.http.get<{boletas: BoletaResponse[], total_boletas: number}>(`${this.apiUrl}/ventas/boletas/lista/`);
-    }
+  // Obtener todas las boletas
+  obtenerBoletas(): Observable<{boletas: BoletaResponse[], total_boletas: number}> {
+      return this.http.get<{boletas: BoletaResponse[], total_boletas: number}>(`${this.apiUrl}/ventas/boletas/lista/`);
+  }
 
-    // Obtener siguiente correlativo
-    obtenerSiguienteCorrelativo(serie: string): Observable<{ correlativo: string }> {
-        return this.http.get<{ correlativo: string }>(`${this.apiUrl}/ventas/boletas/siguiente-correlativo/${serie}/`);
-    }
+  // Obtener siguiente correlativo
+  obtenerSiguienteCorrelativo(serie: string): Observable<{ correlativo: string }> {
+      return this.http.get<{ correlativo: string }>(`${this.apiUrl}/ventas/boletas/siguiente-correlativo/${serie}/`);
+  }
 
-    //NUEVOS MÉTODOS PARA SUNAT
-    reenviarBoletaSunat(boletaId: number): Observable<any> {
-        return this.http.post<any>(`${this.apiUrl}/ventas/boletas/${boletaId}/reenviar-sunat/`, {});
-    }
+  //NUEVOS MÉTODOS PARA SUNAT
+  reenviarBoletaSunat(boletaId: number): Observable<any> {
+      return this.http.post<any>(`${this.apiUrl}/ventas/boletas/${boletaId}/reenviar-sunat/`, {});
+  }
 
-    descargarCDR(boletaId: number): Observable<Blob> {
-        return this.http.get(`${this.apiUrl}/ventas/boletas/${boletaId}/descargar-cdr/`, {
-            responseType: 'blob'
-        });
-    }
+  descargarCDR(boletaId: number): Observable<Blob> {
+      return this.http.get(`${this.apiUrl}/ventas/boletas/${boletaId}/descargar-cdr/`, {
+          responseType: 'blob'
+      });
+  }
+  
+
+
 }
