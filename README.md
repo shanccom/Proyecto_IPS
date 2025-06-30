@@ -28,13 +28,18 @@ El proyecto está diseñado para ser escalable y organizado en 3 componentes pri
     - python -m venv venv
     - venv\Scripts\activate
     - pip install -r requirements.txt (solo tiene django por el momento)
+    - cd backend
     - python manage.py migrate (Migrar la base de datos)
     - python manage.py runserver (Levantar el servidor)
 
 3. 📌 Frontend (Angular): 
+    - cd frontend
     - npm install
-    - ng serve
+    - npm start
 
+3. 📌 Servicio Boletas y DNI (PHP): OJO necesitas una version mayor a 8.2
+    - cd microservicio-comprobantes
+    - php -S localhost:8010 -t public
 4. 📌 Greenter (Libreria de PHP para la conexion directa con la SUNAT):  https://youtu.be/6eiZ4eZ801M?si=5wTLw_HnEZwZgh9b&t=370
     
 ## 🔗 Tener en cuenta
@@ -51,21 +56,9 @@ http://boleta-electronica-sunat.infy.uk/microservicio.php
 
 ------------------------------------------------------------
 
-2. Uso local con XAMPP
 
 Requisitos:
-- Tener instalado PHP: https://www.php.net/downloads.php
-- Tener instalado Composer: https://getcomposer.org/
-- Tener instalado XAMPP: https://www.apachefriends.org/index.html
+- Tener instalado PHP: https://www.php.net/downloads.php 
 
 Pasos para la instalación local:
 
-1. Abre la carpeta 'htdocs' dentro del directorio donde instalaste XAMPP.
-2. Copia allí los siguientes archivos:
-   - microservicio.php
-   - config.php
-   - El archivo del certificado digital (.pem, .crt o .pfx)
-3. Abre una terminal dentro de esa carpeta (htdocs) y ejecuta el siguiente comando:
-   composer require greenter/lite
-4. Inicia Apache desde el panel de control de XAMPP.
-5. Utiliza una herramienta como Postman para enviar peticiones y probar el funcionamiento del microservicio.

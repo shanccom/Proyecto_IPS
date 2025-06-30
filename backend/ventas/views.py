@@ -3,7 +3,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Q, Max
 from django.contrib.contenttypes.models import ContentType
-from .models import Cliente, Luna, Boleta, ItemBoleta
+from .models import Cliente, Luna, Boleta, ItemBoleta, Empleado
+from usuario.models import Usuario
 from inventario.models import Montura, Accesorio
 from .serializers import ClienteSerializer, LunaSerializer, EmpleadoSerializer
 from rest_framework.views import APIView
@@ -16,7 +17,7 @@ from decimal import Decimal
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
 from services.microservicio_service import MicroservicioSunatService
@@ -39,9 +40,116 @@ class LunaViewSet(viewsets.ModelViewSet):
             'colores_halo': Luna.HALO_CHOICES
         })
         
-# Recuperar
-# Verificaciones 
-# añadir empleado
+# EMPLEADOS
+# Añadir empleados
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+# Editar condicion de empleado
+def new_empleado(request):
+    emplCod = request.data.get('emplCod')
+    emplNom = request.data.get('emplNom')
+    emplCarg = request.data.get('emplCarg')
+    emplCond = request.data.get('emplCond')
+    
+    if not emplCod or not emplNom:
+        return Response({"error": "emplCod y emplNom son obligatorios"}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        Empleado = Empleado.objects.create(
+            emplCod = emplCod,
+            emplNom = emplNom,
+            emplCarg = emplCarg,
+            emplCond = emplCond,
+        )
+        serializer = EmpleadoSerializer(Empleado)
+        return Response(serializer.data, status= status.HTTP_201_CREATED)
+    except Exception as e:
+        return Response({"error":str(e)})
+        
+@api_view(['PUT'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAdminUser])
+def editar_empleado(request, empl_cod):
+    try:
+        empleado = Empleado.objects.get(emplCod=empl_cod)
+
+        if 'emplNom' in request.data:
+            empleado.emplNom = request.data['emplNom']
+
+        if 'emplCarg' in request.data:
+            if request.data['emplCarg'] in ['gerente', 'colaborador']:
+                empleado.emplCarg = request.data['emplCarg']
+            else:
+                return Response({"error": "emplCarg debe ser 'gerente' o 'colaborador'"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if 'empCond' in request.data:
+            if request.data['empCond'] in ['activo', 'inactivo']:
+                empleado.empCond = request.data['empCond']
+            else:
+                return Response({"error": "empCond debe ser 'activo' o 'inactivo'"}, status=status.HTTP_400_BAD_REQUEST)
+
+        empleado.save()
+        serializer = EmpleadoSerializer(empleado)
+        return Response({'message': 'Empleado actualizado exitosamente', 'empleado': serializer.data}, status=status.HTTP_200_OK)
+
+    except Empleado.DoesNotExist:
+        return Response({"error": "Empleado no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def lista_empleados_sin_usuario(request):
+    try:
+        empleados_sin_usuario = Empleado.objects.filter(usuario__isnull=True, empCond='activo').order_by('emplNom')
+        serializer = EmpleadoSerializer(empleados_sin_usuario, many=True)
+        return Response({'empleados_sin_usuario': serializer.data, 'total': empleados_sin_usuario.count()}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# ====== USUARIOS CON EMPLEADOS ======
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAdminUser])
+def lista_usuarios_con_empleados(request):
+    try:
+        usuarios = Usuario.objects.select_related('emplCod').all().order_by('usuarioNom')
+        usuarios_data = []
+        for usuario in usuarios:
+            usuarios_data.append({
+                'id': usuario.id,
+                'usuarioNom': usuario.usuarioNom,
+                'is_active': usuario.is_active,
+                'is_staff': usuario.is_staff,
+                'is_superuser': usuario.is_superuser,
+                'last_login': usuario.last_login,
+                'empleado': {
+                    'emplCod': usuario.emplCod.emplCod,
+                    'emplNom': usuario.emplCod.emplNom,
+                    'emplCarg': usuario.emplCod.emplCarg,
+                    'empCond': usuario.emplCod.empCond,
+                }
+            })
+        return Response({'usuarios': usuarios_data, 'total_usuarios': len(usuarios_data)}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def detalle_empleado(request, empl_cod):
+    try:
+        empleado = Empleado.objects.get(emplCod=empl_cod)
+        serializer = EmpleadoSerializer(empleado)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Empleado.DoesNotExist:
+        return Response({"error": "Empleado no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 def buscar_producto(codigo_producto):
 
     if str(codigo_producto).isdigit():
@@ -428,33 +536,4 @@ def descargar_cdr(request, boleta_id):
         return JsonResponse({
             'error': f'Error al descargar CDR: {str(e)}'
         }, status=500)
-
-
-# Empleados
-# Añadir empleados
-@api_view(['POST'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-# Editar condicion de empleado
-def new_empleado(request):
-    emplCod = request.data.get('emplCod')
-    emplNom = request.data.get('emplNom')
-    emplCarg = request.data.get('emplCarg')
-    emplCond = request.data.get('emplCond')
-    
-    if not emplCod or not emplNom:
-        return Response({"error": "emplCod y emplNom son obligatorios"}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        Empleado = Empleado.objects.create(
-            emplCod = emplCod,
-            emplNom = emplNom,
-            emplCarg = emplCarg,
-            emplCond = emplCond,
-        )
-        serializer = EmpleadoSerializer(Empleado)
-        return Response(serializer.data, status= status.HTTP_201_CREATED)
-    except Exception as e:
-        return Response({"error":str(e)})
-        
 

@@ -18,7 +18,7 @@ class Empleado(models.Model):
     emplCod = models.AutoField(primary_key = True, )
     emplNom = models.CharField(max_length = 50)
     emplCarg = models.CharField(max_length = 20, choices=CARGO)
-    empCond = models.CharField(choices = CONDICION_EMPLEADO, max_length=20)
+    emplCond = models.CharField(choices = CONDICION_EMPLEADO, max_length=20)
     
     def __str__(self):
         return f"{self.emplCod} {self.emplNom} {self.emplCarg}"
