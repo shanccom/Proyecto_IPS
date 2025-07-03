@@ -55,7 +55,7 @@ class CustomUserManager(BaseUserManager):
             # Verificar si ya existe un empleado gerente
             empleado_gerente = Empleado.objects.filter(
                 emplCarg='gerente',
-                empCond='activo'
+                emplCond='activo'
             ).first()
             
             if empleado_gerente:
@@ -66,7 +66,7 @@ class CustomUserManager(BaseUserManager):
             empleado_gerente = Empleado.objects.create(
                 emplNom='Gerente Principal',
                 emplCarg='gerente',
-                empCond='activo'
+                emplCond='activo'
             )
             
             logger.info(f"Empleado gerente creado automáticamente: {empleado_gerente}")
