@@ -4,6 +4,14 @@
     </div>
 
     <div class="topbar-opciones">
+        <i
+            class="bx"
+            [class.bx-moon]="!isDarkMode"
+            [class.bx-sun]="isDarkMode"
+            (click)="toggleTheme()"
+            title="Cambiar tema"
+        ></i>
+
         <i class="bx bx-bell"></i>
         <div class="user-info">
             <!-- imagen temporal -->

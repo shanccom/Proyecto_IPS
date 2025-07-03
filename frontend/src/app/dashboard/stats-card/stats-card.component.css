@@ -1,4 +1,4 @@
-.card {
+/*.card {
   background-color: #292C2D;
   padding: 15px;
   border-radius: 10px;
@@ -35,4 +35,42 @@
   font-weight: bold;
   margin: 0;
   color: #fff;
+}
+*/
+.card {
+  background-color: var(--card-bg-color);
+  padding: 15px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 250px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header i {
+  font-size: 14px;
+  color: var(--surface-color);
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  padding: 8px;
+}
+
+.card-header h4 {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-color);
+  font-weight: normal; 
+}
+
+.stats-value {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+  color: var(--text-color);
 }

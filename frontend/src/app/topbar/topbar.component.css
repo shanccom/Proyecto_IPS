@@ -1,3 +1,4 @@
+/*
 .topbar {
     position: fixed; 
     top: 0px;
@@ -45,4 +46,72 @@
 
 .user-info span {
     font-size: 14px;
+}
+
+.topbar-opciones i:hover {
+  cursor: pointer;
+  color: var(--primary-color);
+}
+*/
+
+.topbar {
+  position: fixed;
+  top: 15px;
+  left: 220px;
+  right: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+  padding: 8px 20px;
+  background-color: var(--surface-color);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: background-color 0.3s;
+}
+
+.page-title {
+  font-size: 23px;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+.topbar-opciones {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.topbar-opciones i {
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+.topbar-opciones i:hover {
+  cursor: pointer;
+  color: var(--primary-color);
+}
+
+/* user-info igual, solo colores por variable */
+.user-info span {
+  font-size: 14px;
+  color: var(--text-color);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-info img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover; 
+}
+
+
+.topbar-opciones i:hover {
+  cursor: pointer;
+  color: var(--primary-color);
 }

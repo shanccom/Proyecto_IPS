@@ -1,3 +1,4 @@
+/*
 body, html {
   height: 100%;
   margin: 0;
@@ -14,7 +15,7 @@ body, html {
   position: absolute; 
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%); /* Lo centra realmente */
+  transform: translate(-50%, -50%); //Lo centra realmente 
   box-shadow: 0 4px 6px rgba(0, 191, 255, 0.1), 0 1px 3px rgba(255, 251, 251, 0.08);
 }
 .login-container h2 {
@@ -81,4 +82,90 @@ body, html {
   font-size: 1.2rem;
   color: #888;
 }
+*/
 
+.login-container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto; 
+  padding: 60px;
+  border-radius: 20px;
+  background-color: var(--surface-color);
+  box-sizing: border-box;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 4px 6px rgba(0, 191, 255, 0.1), 0 1px 3px rgba(255, 251, 251, 0.08);
+
+}
+
+.login-container h2 {
+  text-align: center;
+  font-weight: 400;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+  color: var(--text-color);
+}
+
+.login-container input {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0 15px;
+  border-radius: 5px;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-bg-color);
+  color: var(--text-color);
+  font-size: 16px;
+}
+.login-container label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  font-size: medium;
+}
+
+.login-container button {
+  width: 50%;
+  padding: 10px;
+  font-size: 16px;
+  background-color: var(--primary-color);
+  color: var(--surface-color);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: block;
+  margin: 20px auto;
+  box-shadow: 0 4px 6px rgba(0, 191, 255, 0.1), 0 1px 3px rgba(255, 251, 251, 0.08);
+
+}
+
+.login-container button:hover {
+  background-color: var(--accent-color);
+}
+
+.error {
+  color: var(--error-color);
+  text-align: center;
+}
+
+/* iconos de password */
+.password-container i {
+  position: absolute;
+  color: var(--text-secondary);
+  position: absolute;
+  right: 5px;
+  top: 45%;
+  transform: translateY(-50%); 
+  font-size: 1.2rem;
+}
+
+.password-container {
+  position: relative;
+}
+
+.password-container input {
+  width: 100%; 
+  padding: 10px;
+}

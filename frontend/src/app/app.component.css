@@ -1,4 +1,4 @@
-.app-container {
+/*.app-container {
   display: flex;
 }
 .main-content {
@@ -6,6 +6,20 @@
   padding: 20px;
   margin-left: 140px;
 }
+
+*/
+.app-container {
+  display: flex;
+  background-color: var(--background-color);
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  margin-left: 140px;
+  color: var(--text-color);
+}
+
 .top{
   
 }

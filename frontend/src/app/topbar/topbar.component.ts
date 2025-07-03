@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { PageTitleService } from '../services/page-title.service';  // Importar el servicio
 import { Subscription } from 'rxjs';
+import { TemasService } from '../services/temas.service';
 
 @Component({
   selector: 'app-topbar',
@@ -9,12 +10,15 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./topbar.component.css']
 })
 export class TopbarComponent implements OnInit, OnDestroy {
+  
+  isDarkMode = false; //Para los temas
   pageTitle: string = ''; 
 
   routerSubscription: Subscription | null = null;
 
   constructor(
     private router: Router,
+    private temasService: TemasService,
     private pageTitleService: PageTitleService  // Inyectar el servicio
   ) {}
 
@@ -56,6 +60,16 @@ export class TopbarComponent implements OnInit, OnDestroy {
     // Desuscribirse para evitar posibles fugas de memoria
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
+    }
+  }
+
+  // Para el thema
+  toggleTheme() {
+    this.isDarkMode = !this.isDarkMode;
+    if (this.isDarkMode) {
+      this.temasService.aplicarOscuro();
+    } else {
+      this.temasService.aplicarBlanco();
     }
   }
 }

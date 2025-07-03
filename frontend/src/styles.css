@@ -2,22 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-    color-scheme: dark light;
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-color);
+}
+
+.dark-theme {
+color-scheme: dark light;
     --background-color: #121212; /* Fondo oscuro */
     --text-color: #ffffff; /* Texto blanco */
     --primary-color: #A7DCFF; /* Color primario para enlaces, botones, etc */
-
 }
 
-/* Aplica los colores globales al tema oscuro */
+
+/* styles.css */
+
+/* --- Tema claro (por defecto) --- */
+:root {
+  --background-color: #f5f5f5;       /* gris muy claro */
+  --surface-color:    #ffffff;       /* blanco suave para tarjetas/controles */
+  --card-bg-color:    #f0f0f0;       /* fondo alternativo de cards */
+  --input-bg-color:   #ffffff;       /* inputs */
+  --border-color:     #d1d1d1;       /* bordes suaves */
+  --text-color:       #333333;       /* texto primario */
+  --text-secondary:   #555555;       /* texto secundario */
+  --primary-color:    #1976d2;       /* azul intenso */
+  --accent-color:     #90caf9;       /* azul claro */
+  --error-color:      #e53935;       /* rojo suave */
+}
+
+/* --- Tema oscuro --- */
+.dark-theme {
+  --background-color: #121212;
+  --surface-color:    #1e1e1e;
+  --card-bg-color:    #242424;
+  --input-bg-color:   #2a2a2a;
+  --border-color:     #333333;
+  --text-color:       #e0e0e0;
+  --text-secondary:   #aaaaaa;
+  --primary-color:    #90caf9;
+  --accent-color:     #1976d2;
+  --error-color:      #ff6e6e;
+}
+.title-theme-color{ /*Tema claro*/
+  color: var(--text-color);
+}
+/* Aplicación global */
 body {
-    background-color: var(--background-color);
-    color: var(--text-color);
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 0;
+  background-color: var(--background-color);
+  color:            var(--text-color);
+  transition: background-color 0.3s, color 0.3s;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
 }
-h1, h2, h3, h4, h5, h6 {
-    color: var(--text-color);
+
+a, button, .topbar-opciones i {
+  color: var(--text-color);
 }
