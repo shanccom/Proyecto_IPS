@@ -65,13 +65,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
     logout() {
       this.authService.logout().subscribe({
         next: (response) => {
-          //console.log('Logout exitoso:', response);
-          this.authService.clearAuth(); // Limpia token y usuario (si tienes este método)
+          console.log('Logout exitoso:', response);
+          this.authService.clearAuth(); // Limpia token y usuario
           this.router.navigate(['/login']); // Redirige al login
         },
         error: (error) => {
-          //console.error('Error durante logout:', error);
-          // Podrías mostrar un mensaje opcional al usuario
+          console.error('Error durante logout:', error);
         }
       });
     }
