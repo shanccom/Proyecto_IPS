@@ -20,6 +20,11 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
+#para el grafico
+from django.db.models import Sum
+from django.db.models.functions import TruncDay, TruncMonth, TruncYear
+#
+
 from services.microservicio_service import MicroservicioSunatService
 import requests
 from django.conf import settings
@@ -537,3 +542,48 @@ def descargar_cdr(request, boleta_id):
             'error': f'Error al descargar CDR: {str(e)}'
         }, status=500)
 
+
+
+#para os graficos:
+
+@api_view(['GET'])
+def ganancia_total(request):
+    rango = request.GET.get('rango', 'dia')  # por defecto  día
+
+    if rango == 'dia':
+        boletas = (
+            Boleta.objects
+            .filter(estado='pendiente') # cambiar luego para que solo seleccione las pagadas, por ahoar asi 
+            .annotate(fecha_dia=TruncDay('fecha'))
+            .values('fecha_dia')
+            .annotate(total=Sum('total'))
+            .order_by('fecha_dia')
+        )
+        resultado = [{'fecha_dia': b['fecha_dia'].strftime('%Y-%m-%d'), 'total': b['total']} for b in boletas]
+
+    elif rango == 'mes':
+        boletas = (
+            Boleta.objects
+            .filter(estado='pendiente')
+            .annotate(fecha_mes=TruncDay('fecha'))
+            .values('fecha_mes')
+            .annotate(total=Sum('total'))
+            .order_by('fecha_mes')
+        )
+        resultado = [{'fecha_mes': b['fecha_mes'].strftime('%Y-%m'), 'total': b['total']} for b in boletas]
+
+    elif rango == 'anio':
+        boletas = (
+            Boleta.objects
+            .filter(estado='pendiente')
+            .annotate(fecha_anio=TruncYear('fecha'))
+            .values('fecha_anio')
+            .annotate(total=Sum('total'))
+            .order_by('fecha_anio')
+        )
+        resultado = [{'fecha_anio': b['fecha_anio'].year, 'total': b['total']} for b in boletas]
+
+    else:
+        return Response({'error': 'Rango inválido'}, status=400)
+
+    return Response(resultado)

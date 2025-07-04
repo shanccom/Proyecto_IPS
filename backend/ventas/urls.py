@@ -13,6 +13,8 @@ urlpatterns = [
     path('boletas/siguiente-correlativo/<str:serie>/', views.obtener_siguiente_correlativo, name='siguiente_correlativo'),
     path('create_empleado', views.new_empleado, name = 'nuevo empleado'),
 
+    path('boletas/ganancia/', views.ganancia_total, name='ganancia_total'),
+
     # RUTAS PARA SUNAT
     path('boletas/<int:boleta_id>/reenviar-sunat/', views.reenviar_boleta_sunat, name='reenviar_sunat'),
     path('boletas/<int:boleta_id>/descargar-cdr/', views.descargar_cdr, name='descargar_cdr'),
