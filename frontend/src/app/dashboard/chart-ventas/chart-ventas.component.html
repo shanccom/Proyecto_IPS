@@ -1,0 +1,28 @@
+<div class="w-full max-w-xl mx-auto">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold">Ganancia Total</h2>
+        
+        <!-- Botones  -->
+        <div class="flex space-x-2">
+        <button 
+            class="px-4 py-1 rounded border border-transparent" 
+            [class.bg-blue-500]="rango === 'dia'" 
+            [class.text-white]="rango === 'dia'" 
+            (click)="cambiarRangoManual('dia')">Día</button>
+
+        <button 
+            class="px-4 py-1 rounded border border-transparent" 
+            [class.bg-blue-500]="rango === 'mes'" 
+            [class.text-white]="rango === 'mes'" 
+            (click)="cambiarRangoManual('mes')">Mes</button>
+
+        <button 
+            class="px-4 py-1 rounded border border-transparent" 
+            [class.bg-blue-500]="rango === 'anio'" 
+            [class.text-white]="rango === 'anio'" 
+            (click)="cambiarRangoManual('anio')">Año</button>
+        </div>
+    </div>
+
+    <canvas id="gananciaChart" width="400" height="200"></canvas>
+</div>
