@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StatsCardComponent } from '../stats-card/stats-card.component'
 import { RouterModule } from '@angular/router';
-import { ChartVentasComponent } from "../chart-ventas/chart-ventas.component";
+import { ChartVentasComponent } from '../chart-ventas/chart-ventas.component';
 
 @Component({
   selector: 'app-dashboard',

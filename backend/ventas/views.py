@@ -20,9 +20,11 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
-#para el grafico
+#dashboard
 from django.db.models import Sum
 from django.db.models.functions import TruncDay, TruncMonth, TruncYear
+from django.utils import timezone
+from datetime import timedelta
 #
 
 from services.microservicio_service import MicroservicioSunatService
@@ -545,9 +547,10 @@ def descargar_cdr(request, boleta_id):
 
 
 #para os graficos:
-
+# Las ventas
 @api_view(['GET'])
-def ganancia_total(request):
+@permission_classes([IsAuthenticated])
+def ventas_total(request):
     rango = request.GET.get('rango', 'dia')  # por defecto  día
 
     if rango == 'dia':
@@ -587,3 +590,27 @@ def ganancia_total(request):
         return Response({'error': 'Rango inválido'}, status=400)
 
     return Response(resultado)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def resumen_dashboard(request):
+    hoy = timezone.now().date()
+    inicio_semana = hoy - timedelta(days=hoy.weekday())
+    inicio_mes = hoy.replace(day=1)
+
+    # Ventas del día (cantidad de boletas y total)
+    boletas_dia = Boleta.objects.filter(fecha__date=hoy)
+    ganancia_dia = sum(b.total for b in boletas_dia)
+
+    # Ventas de la semana
+    ventas_semana = Boleta.objects.filter(fecha__date__gte=inicio_semana).count()
+
+    # Ventas del mes
+    ventas_mes = Boleta.objects.filter(fecha__date__gte=inicio_mes).count()
+
+    return Response({
+        'ventas_semana': ventas_semana,
+        'ventas_mes': ventas_mes,
+        'ganancia_dia': ganancia_dia,
+    })

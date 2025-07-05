@@ -7,13 +7,21 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class DashboardService {
-  private baseUrl = 'http://localhost:8000/ventas/boletas/'; 
+  private baseUrl = 'http://localhost:8000/ventas/'; 
 
   constructor(private http: HttpClient, private authService:AuthService) {}
 
-  obtenerGanancia(rango: 'dia' | 'mes' | 'anio'): Observable<any[]> {
+  obtenerVentas(rango: 'dia' | 'mes' | 'anio'): Observable<any[]> {
     const headers = this.authService.getAuthHeaders();
-    return this.http.get<any[]>(`${this.baseUrl}ganancia/?rango=${rango}`, { headers });
+    return this.http.get<any[]>(`${this.baseUrl}boletas/ventas/?rango=${rango}`, { headers });
   }
+
+  // Obtener el resumen del dashboard, com ventas y ganancias
+  obtenerResumenDashboard(): Observable<any> {
+    const headers = this.authService.getAuthHeaders();
+    return this.http.get<any>(`${this.baseUrl}resumen/`, { headers });
+  }
+
+
 
 }

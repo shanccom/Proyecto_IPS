@@ -1,35 +1,3 @@
-<!-- 
-<table class="tabla-productos">
-  <thead>
-    <tr>
-      <th>Código</th>
-      <th>Nombre</th>
-      <th>Marca</th>
-      <th>Material</th>
-      <th>Color</th>
-      <th>Precio</th>
-      <th>Estado</th>
-      <th>Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let producto of productos">
-      <td>{{ producto.codigo }}</td>
-      <td>{{ producto.tipo }}</td>
-      <td>{{ producto.marca }}</td>
-      <td>{{ producto.material }}</td>
-      <td>{{ producto.color }}</td>
-      <td>{{ producto.precio | currency:'PEN' }}</td>
-      <td>{{ producto.estado }}</td>
-      <td>
-        <button (click)="onEditar(producto)">Editar</button>
-        <button (click)="onEliminar(producto.codigo)">Eliminar</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
--->
 <div class="overflow-x-auto mt-4 ml-[80px]">
   <table class="min-w-full divide-y divide-[#6B6B6B] ">
     <thead class="bg-[#292C2D]">
@@ -44,6 +12,7 @@
           <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Color</th>
           <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Estado</th>
           <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Precio</th>
+          <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Costo</th>
         </ng-container>
 
         <!-- Accesorio -->
@@ -70,6 +39,7 @@
           <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.color }}</td>
           <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.estado }}</td>
           <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.precio | currency:'PEN' }}</td>
+          <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.costo | currency:'PEN' }}</td>
         </ng-container>
 
         <!-- Accesorio -->
