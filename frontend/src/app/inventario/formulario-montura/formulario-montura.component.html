@@ -1,10 +1,16 @@
 <form [formGroup]="form" (ngSubmit)="guardar()" class="grid grid-cols-2 gap-4 p-6 rounded-lg text-white ">
-  
-  <!-- precio Venta -->
+
+  <!-- Precio Venta -->
   <div class="flex flex-col">
     <label class="mb-1 font-medium">Precio Venta</label>
     <input type="number" formControlName="proPrecioVenta" placeholder="Precio Venta"
       class="bg-[#3D4142] text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+    <small *ngIf="form.get('proPrecioVenta')?.touched && form.get('proPrecioVenta')?.hasError('required')" class="text-red-400 text-xs mt-1">
+      El precio de venta es obligatorio.
+    </small>
+    <small *ngIf="form.get('proPrecioVenta')?.touched && form.get('proPrecioVenta')?.hasError('min')" class="text-red-400 text-xs mt-1">
+      El precio debe ser mayor a 0.
+    </small>
   </div>
 
   <!-- Costo -->
@@ -12,41 +18,65 @@
     <label class="mb-1 font-medium">Costo</label>
     <input type="number" formControlName="proCosto" placeholder="Costo"
       class="bg-[#3D4142] text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+    <small *ngIf="form.get('proCosto')?.touched && form.get('proCosto')?.hasError('required')" class="text-red-400 text-xs mt-1">
+      El costo es obligatorio.
+    </small>
+    <small *ngIf="form.get('proCosto')?.touched && form.get('proCosto')?.hasError('min')" class="text-red-400 text-xs mt-1">
+      El costo debe ser mayor a 0.
+    </small>
   </div>
 
-  <!-- marca -->
+  <!-- Marca -->
   <div class="flex flex-col">
     <label class="mb-1 font-medium">Marca</label>
     <input formControlName="monMarca" placeholder="Marca"
       class="bg-[#3D4142] text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+    <small *ngIf="form.get('monMarca')?.touched && form.get('monMarca')?.hasError('required')" class="text-red-400 text-xs mt-1">
+      La marca es obligatoria.
+    </small>
   </div>
 
-  <!-- publico -->
+  <!-- Público -->
   <div class="flex flex-col">
     <label class="mb-1 font-medium">Público</label>
     <input formControlName="monPubl" placeholder="Público"
       class="bg-[#3D4142] text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+    <small *ngIf="form.get('monPubl')?.touched && form.get('monPubl')?.hasError('required')" class="text-red-400 text-xs mt-1">
+      El público es obligatorio.
+    </small>
   </div>
 
-  <!-- material -->
+  <!-- Material -->
   <div class="flex flex-col">
     <label class="mb-1 font-medium">Material</label>
     <input formControlName="monMate" placeholder="Material"
       class="bg-[#3D4142] text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+    <small *ngIf="form.get('monMate')?.touched && form.get('monMate')?.hasError('required')" class="text-red-400 text-xs mt-1">
+      El material es obligatorio.
+    </small>
   </div>
-  <!-- color-->
+
+  <!-- Color -->
   <div class="flex flex-col">
     <label class="mb-1 font-medium">Color</label>
     <input formControlName="monColor" placeholder="Color"
       class="bg-[#3D4142] text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
-  </div>
-  <!-- esta vendida o no?-->
-  <div class="flex items-center space-x-4">
-    <label class="mb-1 font-medium">Vendida</label>
-    <input type="radio" formControlName="monVendida" name="monVendida" [value]="true" /> Sí
-    <input type="radio" formControlName="monVendida" name="monVendida" [value]="false" /> No
+    <small *ngIf="form.get('monColor')?.touched && form.get('monColor')?.hasError('required')" class="text-red-400 text-xs mt-1">
+      El color es obligatorio.
+    </small>
   </div>
 
+  <!-- Vendida -->
+  <div class="flex flex-col">
+    <label class="mb-1 font-medium">Vendida</label>
+    <div class="flex items-center space-x-4">
+      <label><input type="radio" formControlName="monVendida" name="monVendida" [value]="true" /> Sí</label>
+      <label><input type="radio" formControlName="monVendida" name="monVendida" [value]="false" /> No</label>
+    </div>
+    <small *ngIf="form.get('monVendida')?.touched && form.get('monVendida')?.hasError('required')" class="text-red-400 text-xs mt-1">
+      Debes indicar si fue vendida o no.
+    </small>
+  </div>
 
   <!-- Botones -->
   <div class="col-span-2 flex justify-center gap-6 pt-4">

@@ -3,11 +3,13 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms'; 
 import { InventarioService } from '../../services/inventario.service';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
+  standalone: true,
   selector: 'app-formulario-accesorio',
-  imports: [ReactiveFormsModule,],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './formulario-accesorio.component.html',
   styleUrl: './formulario-accesorio.component.css'
 })
@@ -21,8 +23,8 @@ export class FormularioAccesorioComponent {
     this.form = this.fb.group({
       accNombre: ['', Validators.required],
       accDescrip: [''],
-      proCosto: [0, [Validators.required, Validators.min(0)]],
-      proPrecioVenta: [0, [Validators.required, Validators.min(0)]]
+      proCosto: [0,[Validators.required, Validators.min(0.01)]],
+      proPrecioVenta: [0,[Validators.required, Validators.min(0.01)]],
     });
   }
 

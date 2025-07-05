@@ -162,7 +162,7 @@ export class InventarioComponent implements OnInit {
   }
 
   // PARTE DE CODIGO DE BARRAS
-   mostrarCodigoBarras(producto: any): void {
+  mostrarCodigoBarras(producto: any): void {
     console.log('Producto recibido:', producto); // Debug
     this.codigoProducto = producto.codigo; // o producto.codigo_barras
     this.modalCodigoVisible = true;
