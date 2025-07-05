@@ -19,9 +19,8 @@ export class DashboardService {
   // Obtener el resumen del dashboard, com ventas y ganancias
   obtenerResumenDashboard(): Observable<any> {
     const headers = this.authService.getAuthHeaders();
-    return this.http.get<any>(`${this.baseUrl}resumen/`, { headers });
+    return this.http.get<any>(`${this.baseUrl}resumen_dashboard/`, { headers });
   }
-
 
 
 }

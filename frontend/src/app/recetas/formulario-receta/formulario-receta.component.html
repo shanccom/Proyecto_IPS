@@ -59,6 +59,23 @@
         </div>
     </div>
 
+    <div class="flex justify-end space-x-4 col-span-2">
+      <!-- Error: no acpta vacio -->
+      <div *ngIf="recetaForm.touched && recetaForm.errors && recetaForm.errors['vacio']" class="text-red-400">
+        {{ recetaForm.errors['vacio'] }}
+      </div>
+      <!-- Error: fuera de rango, cyl, sph -->
+      <div *ngIf="recetaForm.touched && recetaForm.errors && recetaForm.errors['fueraDeRango']" class="text-red-400">
+        {{ recetaForm.errors['fueraDeRango'] }}
+      </div>
+      <!-- Error: no es número -->
+      <div *ngIf="recetaForm.touched && recetaForm.errors && recetaForm.errors['noEsNumero']" class="text-red-400 text-sm col-span-2 text-center">
+        {{ recetaForm.errors['noEsNumero'] }}
+      </div>
+
+    </div>
+
+
     <!-- Botones -->
     <div class="col-span-2 flex justify-center gap-6 pt-4">
       <button type="submit" class="bg-[#A7DCFF] text-black px-6 py-2 rounded-lg font-semibold hover:bg-[#90c7eb] transition">
