@@ -25,6 +25,7 @@ export class ClientesComponent implements OnInit {
   nombreBuscado: string ='';
   clientesFiltrados: any[] = [];
   
+  
   constructor( private clientesService: ClientesService){};
   ngOnInit(): void {
     this.obtenerClientes();

@@ -1,5 +1,3 @@
-// guards/admin.guard.ts - Para rutas que requieren permisos de administrador
-// guards/auth.guard.ts
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';

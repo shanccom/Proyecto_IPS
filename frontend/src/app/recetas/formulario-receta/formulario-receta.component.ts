@@ -86,6 +86,7 @@ export class FormularioRecetaComponent implements OnInit, OnChanges{
     const datosReceta = {
       cliCod: this.cliCod, 
       fecha: this.recetaForm.value.fecha,  
+      medicion_propia:this.recetaForm.value.medicion_propia,
       recOD_sph: this.recetaForm.value.OD_SPH,
       recOD_cyl: this.recetaForm.value.OD_CYL,
       recOD_eje: this.recetaForm.value.OD_eje,
