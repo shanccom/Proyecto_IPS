@@ -599,18 +599,41 @@ def resumen_dashboard(request):
     inicio_semana = hoy - timedelta(days=hoy.weekday())
     inicio_mes = hoy.replace(day=1)
 
-    # Ventas del día (cantidad de boletas y total)
-    boletas_dia = Boleta.objects.filter(fecha__date=hoy)
-    ganancia_dia = sum(b.total for b in boletas_dia)
+    # Boletas del día (estado puede ser 'pagado' si lo tienes definido)
+    boletas_dia = Boleta.objects.filter(fecha__date=hoy, estado='pendiente')
+    items_dia = ItemBoleta.objects.filter(boleta__in=boletas_dia)
 
-    # Ventas de la semana
-    ventas_semana = Boleta.objects.filter(fecha__date__gte=inicio_semana).count()
+    total_ventas_dia = 0
+    ganancia_dia = 0
 
-    # Ventas del mes
-    ventas_mes = Boleta.objects.filter(fecha__date__gte=inicio_mes).count()
+    for item in items_dia:
+        precio_venta = item.valor_unitario
+        cantidad = item.cantidad
+        total_ventas_dia += precio_venta * cantidad
+
+        costo = 0
+        producto = item.content_object
+
+        if producto:
+            if hasattr(producto, 'lunaCosto'):
+                costo = producto.lunaCosto
+            elif hasattr(producto, 'proCosto'):
+                costo = producto.proCosto
+            # Si no tiene campo de costo, asumimos 0
+
+        ganancia_dia += (precio_venta - costo) * cantidad
+
+    # Filtrar boletas de la semana y del mes
+    boletas_semana = Boleta.objects.filter(fecha__date__gte=inicio_semana, estado='pendiente')
+    boletas_mes = Boleta.objects.filter(fecha__date__gte=inicio_mes, estado='pendiente')
+
+    total_ventas_semana = boletas_semana.aggregate(suma=Sum('total'))['suma'] or 0
+    total_ventas_mes = boletas_mes.aggregate(suma=Sum('total'))['suma'] or 0
 
     return Response({
-        'ventas_semana': ventas_semana,
-        'ventas_mes': ventas_mes,
-        'ganancia_dia': ganancia_dia,
+        'ventas_dia_total': float(total_ventas_dia),
+        'ganancia_dia': float(ganancia_dia),
+        'ventas_semana': float(total_ventas_semana),
+        'ventas_mes': float(total_ventas_mes),
+
     })
