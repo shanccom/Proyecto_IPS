@@ -36,8 +36,6 @@ def create_receta(request):
     print(request.data)
     recCod = request.data.get('recCod')
     cliCod = request.data.get('cliCod')
-    
-    rectOpt = request.data.get('rectOpt', False) 
     fecha_str = request.data.get('fecha')  
     
     if fecha_str:
@@ -64,6 +62,7 @@ def create_receta(request):
     recDIPLejos = safe_decimal(request.data.get('recDIPLejos'))
     recDIPCerca = safe_decimal(request.data.get('recDIPCerca'))
     rec_adicion = safe_decimal(request.data.get('rec_adicion'))
+    rectOpt = request.data.get('medicion_propia') 
 
     recObsAdic = request.data.get('recObsAdic')
     if recObsAdic is not None:
