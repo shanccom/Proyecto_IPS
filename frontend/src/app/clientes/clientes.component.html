@@ -1,98 +1,86 @@
-<div class="flex justify-between items-center mb-6 mt-7 ml-[80px] ">
-  
+<!-- Cambios realizados:
+     - Se reemplazaron bg/text fijos por clases temáticas.
+     - Tabla ahora se adapta a claro/oscuro usando variables CSS de Tailwind.
+-->
+
+<div class="flex justify-between items-center mb-6 mt-7 ml-[80px]">
   <input type="text" 
         [(ngModel)]="nombreBuscado"
         (input)="filtrarClientes()"
         placeholder="Buscar cliente por nombre"
-        class="bg-[#292C2D] text-white px-4 py-2 rounded-lg shadow w-80">
-
-
-  <button class="bg-[#A7DCFF] text-black px-4 py-2 rounded-lg shadow hover:bg-[#79A5C3] transition" (click)="abrirFormulario()">
+        class="bg-input text-foreground px-4 py-2 rounded-lg shadow w-80">
+  <button class="bg-primary text-background px-4 py-2 rounded-lg shadow hover:bg-primary-light transition" (click)="abrirFormulario()">
     + Agregar Cliente
   </button>
 </div>
 
-
 <!-- Modal (Formulario) -->
 <div *ngIf="mostrarFormulario" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-  <div class="bg-[#292C2D] rounded-xl shadow-lg p-6 w-full max-w-2xl max-h-full overflow-auto">
-    <h3 class="text-xl font-bold text-white font-medium mb-4">Agregar Cliente</h3>
-    <hr class="border-t-2 border-[#5E5E5E] my-4">
+  <div class="bg-background rounded-xl shadow-lg p-6 w-full max-w-2xl max-h-full overflow-auto">
+    <h3 class="text-xl font-bold text-foreground font-medium mb-4">Agregar Cliente</h3>
+    <hr class="border-t-2 border-border my-4">
 
-    <!--Aquí se carga el formulario de cliente-->
     <app-formulario-cliente 
       *ngIf="mostrarFormulario" 
       (cerrar)="cerrarFormulario()" 
       (guardado)="obtenerClientes()">
     </app-formulario-cliente>
-    
   </div>
 </div>
 
-<!-- Tabla de Clientes-->
+<!-- Tabla de Clientes -->
 <div class="overflow-x-auto ml-[80px]">
-  <table class="w-full text-sm text-white rounded shadow-lg  divide-y divide-[#6B6B6B] ">
-    <thead class="bg-[#292C2D]">
-      <!-- Fila de agrupación -->
-      <tr class=" text-white text-left font-normal">
-
-        <th class="px-4 py-2 text-left text-sm font-normal text-white-700 ">Código</th>
-        <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Nombre</th>
-        <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Tipo Documento</th>
-        <th class="px-4 py-2 text-left text-sm font-normal text-white-700">N° Documento</th>
-        <th class="px-4 py-2 text-left text-sm font-normal text-white-700">N° Celular</th>
-        <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Edad</th>
-        <th class="px-4 py-2 text-center text-sm font-normal text-white-700">Acciones</th>
+  <table class="w-full text-sm text-foreground rounded shadow-lg divide-y divide-border">
+    <thead class="bg-muted">
+      <tr class="text-foreground text-left font-normal">
+        <th class="px-4 py-2 text-left text-sm font-normal">Código</th>
+        <th class="px-4 py-2 text-left text-sm font-normal">Nombre</th>
+        <th class="px-4 py-2 text-left text-sm font-normal">Tipo Documento</th>
+        <th class="px-4 py-2 text-left text-sm font-normal">N° Documento</th>
+        <th class="px-4 py-2 text-left text-sm font-normal">N° Celular</th>
+        <th class="px-4 py-2 text-left text-sm font-normal">Edad</th>
+        <th class="px-4 py-2 text-center text-sm font-normal">Acciones</th>
       </tr>
-
     </thead>
     <tbody>
-        <tr *ngFor="let cliente of clientesFiltrados" class="hover:bg-[#3A3A3A] transition">
-            <td class="px-4 py-2 border-b border-gray-600">{{ cliente.codigo }}</td>
-            <td class="px-4 py-2 border-b border-gray-600">{{ cliente.nombre_completo }}</td>
-            <td class="px-4 py-2 border-b border-gray-600">{{ cliente.tipo_documento }}</td>
-            <td class="px-4 py-2 border-b border-gray-600">{{ cliente.numero_documento }}</td>
-            <td class="px-4 py-2 border-b border-gray-600">{{ cliente.numero_celular }}</td>
-            <td class="px-4 py-2 border-b border-gray-600">{{ cliente.edad }}</td>
-            <td class="px-4 py-2 border-b border-gray-600 text-center">
-                <button (click)="abrirVerReceta(cliente.codigo, cliente.nombre_completo)" class="bg-[#A7DCFF] text-black text-xs px-3 py-1 rounded mr-2">
-                    Ver Recetas
-                </button>
-                <button (click)="abrirAgregarReceta(cliente.codigo)"  class="bg-[#A7DCFF] text-black text-xs px-3 py-1 rounded mr-2">
-                    Agregar Receta
-                </button>
-                <!--
-                <button (click)="onEliminar(producto.codigo)" class="bg-red-500 text-white text-xs px-3 py-1 rounded mr-2">
-                    Agregar Receta
-                </button>
-                -->
-            </td>
-        </tr>
+      <tr *ngFor="let cliente of clientesFiltrados" class="hover:bg-primary-translucent transition">
+        <td class="px-4 py-2 border-b border-border">{{ cliente.codigo }}</td>
+        <td class="px-4 py-2 border-b border-border">{{ cliente.nombre_completo }}</td>
+        <td class="px-4 py-2 border-b border-border">{{ cliente.tipo_documento }}</td>
+        <td class="px-4 py-2 border-b border-border">{{ cliente.numero_documento }}</td>
+        <td class="px-4 py-2 border-b border-border">{{ cliente.numero_celular }}</td>
+        <td class="px-4 py-2 border-b border-border">{{ cliente.edad }}</td>
+        <td class="px-4 py-2 border-b border-border text-center">
+          <button (click)="abrirVerReceta(cliente.codigo, cliente.nombre_completo)" class="bg-primary text-background text-xs px-3 py-1 rounded mr-2">
+            Ver Recetas
+          </button>
+          <button (click)="abrirAgregarReceta(cliente.codigo)" class="bg-primary text-background text-xs px-3 py-1 rounded mr-2">
+            Agregar Receta
+          </button>
+        </td>
+      </tr>
     </tbody>
     <tr *ngIf="clientesFiltrados.length === 0 && nombreBuscado.length > 0">
-      <td colspan="7" class="text-center text-gray-300 py-4">
+      <td colspan="7" class="text-center text-muted-foreground py-4">
         No se encontraron clientes con el nombre "{{ nombreBuscado }}".
       </td>
     </tr>
-
   </table>
 </div>
 
-<!-- Modal de Recetas -->
+<!-- Modal Recetas -->
 <div *ngIf="mostrarRecetasModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-  <div class="bg-[#292C2D] rounded-xl shadow-lg p-6 w-full max-w-6xl h-[80%] flex flex-col justify-between overflow-auto px-4 sm:px-8">
+  <div class="bg-background rounded-xl shadow-lg p-6 w-full max-w-6xl h-[80%] flex flex-col justify-between overflow-auto px-4 sm:px-8">
     <div>
-      <h3 class="text-xl font-bold text-white font-medium mb-4">Recetas de {{ nombreClienteSeleccionado }}</h3>
-      <hr class="border-t-2 border-[#5E5E5E] my-4">
+      <h3 class="text-xl font-bold text-foreground font-medium mb-4">Recetas de {{ nombreClienteSeleccionado }}</h3>
+      <hr class="border-t-2 border-border my-4">
       <app-recetas 
         *ngIf="recetasCliente.length > 0" 
         [recetas]="recetasCliente"
         (editarReceta)="abrirEditarReceta($event)">
       </app-recetas>
-
     </div>
-    <!-- Botón en la parte inferior derecha -->
-    <button (click)="cerrarVerRecetas()" class="bg-red-500 text-white text-xs px-3 py-1 rounded mt-4 ml-auto">
+    <button (click)="cerrarVerRecetas()" class="bg-destructive text-white text-xs px-3 py-1 rounded mt-4 ml-auto">
       Cerrar
     </button>
   </div>
@@ -100,11 +88,10 @@
 
 <!-- Modal (Formulario)Agregar Receta -->
 <div *ngIf="mostrarFormularioReceta" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-  <div class="bg-[#292C2D] rounded-xl shadow-lg p-6 w-full max-w-2xl max-h-full overflow-auto">
-    <h3 class="text-xl font-bold text-white font-medium mb-4">Agregar Receta</h3>
-    <hr class="border-t-2 border-[#5E5E5E] my-4">
+  <div class="bg-background rounded-xl shadow-lg p-6 w-full max-w-2xl max-h-full overflow-auto">
+    <h3 class="text-xl font-bold text-foreground font-medium mb-4">Agregar Receta</h3>
+    <hr class="border-t-2 border-border my-4">
 
-    <!--Aquí se carga el formulario de receta-->
     <app-formulario-receta 
       *ngIf="mostrarFormularioReceta"
       [cliCod]="cliSeleccionado"
@@ -112,7 +99,5 @@
       (cerrar)="cerrarAgregarReceta()" 
       (recetaGuardada)="obtenerRecetas(cliSeleccionado)">
     </app-formulario-receta>
-    
   </div>
-
 </div>

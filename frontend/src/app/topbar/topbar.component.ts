@@ -5,6 +5,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
   import { Subscription } from 'rxjs';
   import { FormsModule } from '@angular/forms';
   import { CommonModule } from '@angular/common';
+  import { TemasService } from '../services/temas.service';
 
   @Component({
     selector: 'app-topbar',
@@ -14,14 +15,19 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
   })
   export class TopbarComponent implements OnInit, OnDestroy {
     pageTitle: string = ''; 
+    temaActual: 'light' | 'dark' = 'light';
+
 
     routerSubscription: Subscription | null = null;
 
     constructor(
       private router: Router,
       private authService: AuthService,
-      private pageTitleService: PageTitleService  // Inyectar el servicio
-    ) {}
+      private pageTitleService: PageTitleService,  // Inyectar el servicio
+      private temasService: TemasService) {
+      const { tema } = this.temasService.obtenerTema();
+      this.temaActual = tema;
+    }
 
     ngOnInit(): void {
       // Al iniciar, obtener el valor del título desde el servicio
@@ -81,4 +87,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
         this.routerSubscription.unsubscribe();
       }
     }
+
+    alternarTema(): void {
+      const nuevoTema = this.temaActual === 'light' ? 'dark' : 'light';
+      this.temasService.cambiarTema(nuevoTema);
+      this.temaActual = nuevoTema;
+    }
+
   }

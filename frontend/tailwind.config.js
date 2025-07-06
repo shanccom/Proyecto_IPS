@@ -3,6 +3,15 @@ module.exports = {
   content: [
     "./src/**/*.{html,ts}",
   ],
+  safelist: [
+    'theme-light',
+    'theme-dark',
+    'theme-colors-blue',
+    'theme-colors-rose',
+    'theme-colors-emerald',
+    'theme-colors-amber',
+    'theme-colors-crimson',
+  ],
   theme: {
     extend: {
       fontFamily: {

@@ -1,70 +1,72 @@
+<!-- Cambios realizados:
+     - Reemplazo de colores fijos por clases basadas en variables CSS
+     - Adaptado a modo claro/oscuro usando bg-muted, text-foreground, etc.
+-->
+
 <div class="overflow-x-auto mt-4 ml-[80px]">
-  <table class="min-w-full divide-y divide-[#6B6B6B] ">
-    <thead class="bg-[#292C2D]">
+  <table class="min-w-full divide-y divide-border">
+    <thead class="bg-muted">
       <tr>
-        <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Código</th>
+        <th class="px-4 py-2 text-left text-sm font-normal text-foreground">Código</th>
 
         <!-- Montura -->
         <ng-container *ngIf="tipo === 'montura'">
-          <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Marca</th>
-          <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Material</th>
-          <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Público</th>
-          <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Color</th>
-          <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Estado</th>
-          <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Precio</th>
-          <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Costo</th>
+          <th class="px-4 py-2 text-left text-sm font-normal text-foreground">Marca</th>
+          <th class="px-4 py-2 text-left text-sm font-normal text-foreground">Material</th>
+          <th class="px-4 py-2 text-left text-sm font-normal text-foreground">Público</th>
+          <th class="px-4 py-2 text-left text-sm font-normal text-foreground">Color</th>
+          <th class="px-4 py-2 text-left text-sm font-normal text-foreground">Estado</th>
+          <th class="px-4 py-2 text-left text-sm font-normal text-foreground">Precio</th>
+          <th class="px-4 py-2 text-left text-sm font-normal text-foreground">Costo</th>
         </ng-container>
 
         <!-- Accesorio -->
         <ng-container *ngIf="tipo === 'accesorio'">
-          <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Nombre del Accesorio</th>
-          <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Descripción</th>
-          <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Costo</th>
-          <th class="px-4 py-2 text-left text-sm font-normal text-white-700">Precio de Venta</th>
+          <th class="px-4 py-2 text-left text-sm font-normal text-foreground">Nombre del Accesorio</th>
+          <th class="px-4 py-2 text-left text-sm font-normal text-foreground">Descripción</th>
+          <th class="px-4 py-2 text-left text-sm font-normal text-foreground">Costo</th>
+          <th class="px-4 py-2 text-left text-sm font-normal text-foreground">Precio de Venta</th>
         </ng-container>
 
-        <th class="px-4 py-2 text-center text-sm font-normal text-white-700">Acciones</th>
+        <th class="px-4 py-2 text-center text-sm font-normal text-foreground">Acciones</th>
       </tr>
     </thead>
 
-    <tbody class="bg-[#3D4142] divide-y divide-[#6B6B6B]">
-      <tr *ngFor="let producto of productos">
-        <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.codigo }}</td>
+    <tbody class="bg-background divide-y divide-border">
+      <tr *ngFor="let producto of productos" class="hover:bg-primary-translucent transition">
+        <td class="px-4 py-2 text-sm font-normal text-foreground">{{ producto.codigo }}</td>
 
         <!-- Montura -->
         <ng-container *ngIf="tipo === 'montura'">
-          <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.marca }}</td>
-          <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.material }}</td>
-          <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.publico }}</td>
-          <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.color }}</td>
-          <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.estado }}</td>
-          <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.precio | currency:'PEN' }}</td>
-          <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.costo | currency:'PEN' }}</td>
+          <td class="px-4 py-2 text-sm font-normal text-foreground">{{ producto.marca }}</td>
+          <td class="px-4 py-2 text-sm font-normal text-foreground">{{ producto.material }}</td>
+          <td class="px-4 py-2 text-sm font-normal text-foreground">{{ producto.publico }}</td>
+          <td class="px-4 py-2 text-sm font-normal text-foreground">{{ producto.color }}</td>
+          <td class="px-4 py-2 text-sm font-normal text-foreground">{{ producto.estado }}</td>
+          <td class="px-4 py-2 text-sm font-normal text-foreground">{{ producto.precio | currency:'PEN' }}</td>
+          <td class="px-4 py-2 text-sm font-normal text-foreground">{{ producto.costo | currency:'PEN' }}</td>
         </ng-container>
 
         <!-- Accesorio -->
         <ng-container *ngIf="tipo === 'accesorio'">
-          <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.nombre }}</td>
-          <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.descripcion }}</td>
-          <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.costo | currency:'PEN' }}</td>
-          <td class="px-4 py-2 text-sm font-normal text-white-700">{{ producto.precio_venta | currency:'PEN' }}</td>
+          <td class="px-4 py-2 text-sm font-normal text-foreground">{{ producto.nombre }}</td>
+          <td class="px-4 py-2 text-sm font-normal text-foreground">{{ producto.descripcion }}</td>
+          <td class="px-4 py-2 text-sm font-normal text-foreground">{{ producto.costo | currency:'PEN' }}</td>
+          <td class="px-4 py-2 text-sm font-normal text-foreground">{{ producto.precio_venta | currency:'PEN' }}</td>
         </ng-container>
 
         <td class="px-4 py-2 text-sm text-center">
-          <button (click)="onEditar(producto)" class="bg-[#A7DCFF] text-black text-xs px-3 py-1 rounded mr-2">
+          <button (click)="onEditar(producto)" class="bg-primary text-background text-xs px-3 py-1 rounded mr-2">
             Editar
           </button>
-          <button (click)="onEliminar(producto.codigo)" class="bg-red-500 text-white text-xs px-3 py-1 rounded mr-2">
+          <button (click)="onEliminar(producto.codigo)" class="bg-destructive text-white text-xs px-3 py-1 rounded mr-2">
             Eliminar
           </button>
-          <!--  CODIGO DE BARRAS -->
-          <button (click)="mostrarCodigo(producto)" class="bg-[#A7DCFF] text-black text-xs px-3 py-1 rounded">
+          <button (click)="mostrarCodigo(producto)" class="bg-primary text-background text-xs px-3 py-1 rounded">
             Ver Código
           </button>
-          <!-- -->
         </td>
       </tr>
     </tbody>
-
   </table>
 </div>
