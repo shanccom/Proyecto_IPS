@@ -12,8 +12,19 @@ urlpatterns = [
     path('boletas/lista/', views.listar_boletas, name='listar_boletas'),
     path('boletas/siguiente-correlativo/<str:serie>/', views.obtener_siguiente_correlativo, name='siguiente_correlativo'),
     path('create_empleado', views.new_empleado, name = 'nuevo empleado'),
+    path('boletas/<int:boleta_id>/eliminar/', views.eliminar_boleta, name='eliminar_boleta'),
 
     # NUEVAS RUTAS PARA SUNAT
     path('boletas/<int:boleta_id>/reenviar-sunat/', views.reenviar_boleta_sunat, name='reenviar_sunat'),
     path('boletas/<int:boleta_id>/descargar-cdr/', views.descargar_cdr, name='descargar_cdr'),
+
+    # Nuevos endpoints para pagos parciales
+    path('boletas/<int:boleta_id>/adelantos/', views.registrar_adelanto, name='registrar_adelanto'),
+    path('boletas/<int:boleta_id>/obtener_adelantos/', views.obtener_adelantos_boleta, name='obtener_adelantos'),
+    path('boletas/<int:boleta_id>/estado-pago/', views.obtener_estado_pago, name='estado_pago'),
+    path('boletas/<int:boleta_id>/procesar-pago/', views.procesar_pago_con_verificacion, name='procesar_pago'),
+    path('boletas/<int:boleta_id>/adelantos/<int:adelanto_id>/', views.eliminar_adelanto, name='eliminar_adelanto'),
+    path('resumen-pagos/', views.obtener_resumen_pagos, name='resumen_pagos'),
+
+
 ]

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Cliente, Luna, ItemBoleta, Boleta, Empleado
+from .models import Cliente, Luna, ItemBoleta, Boleta, Empleado, PagoAdelanto
 
 class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -28,14 +28,26 @@ class ItemBoletaSerializer(serializers.ModelSerializer):
         model = ItemBoleta
         fields = ['content_type', 'object_id', 'cantidad', 'valor_unitario']
 
+class PagoAdelantoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PagoAdelanto
+        fields = ['id', 'boleta', 'monto', 'fecha_pago', 'descripcion', 'metodo_pago']
+        read_only_fields = ['id']
 
 class BoletaSerializer(serializers.ModelSerializer):
     cliente = ClienteSerializer()
     items = ItemBoletaSerializer(many=True)
+    monto_adelantos = serializers.ReadOnlyField()
+    saldo_pendiente = serializers.ReadOnlyField()
+    esta_pagada_completa = serializers.ReadOnlyField()
+    adelantos = PagoAdelantoSerializer(many=True, read_only=True)
 
     class Meta:
         model = Boleta
-        fields = ['serie', 'correlativo', 'cliente', 'items', 'subtotal', 'igv', 'total']
+        fields = ['serie', 'correlativo', 'fecha_emision', 'cliente', 
+          'items', 'subtotal', 'igv', 'total', 'estado', 'url_pdf', 
+          'nombre_cdr', 'monto_adelantos', 'saldo_pendiente', 
+          'esta_pagada_completa', 'adelantos']
 
     def create(self, validated_data):
         cliente_data = validated_data.pop('cliente')
@@ -59,3 +71,4 @@ class BoletaSerializer(serializers.ModelSerializer):
             ItemBoleta.objects.create(boleta=boleta, **item_data)
 
         return boleta
+    

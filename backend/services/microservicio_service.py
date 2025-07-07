@@ -1,8 +1,12 @@
+# services/microservicio_sunat_service.py
 import requests
 import json
 from django.conf import settings
 from django.utils import timezone
 from decimal import Decimal
+import logging
+
+logger = logging.getLogger(__name__)
 
 class MicroservicioSunatService:
     def __init__(self):
@@ -37,6 +41,9 @@ class MicroservicioSunatService:
                 }
                 payload['items'].append(item_data)
             
+            logger.info(f"Enviando boleta {boleta.serie}-{boleta.correlativo} a SUNAT")
+            logger.info(f"Payload: {json.dumps(payload, indent=2)}")
+            
             # Enviar al microservicio
             response = requests.post(
                 f'{self.base_url}/boleta',
@@ -45,19 +52,25 @@ class MicroservicioSunatService:
                 timeout=30
             )
             
+            logger.info(f"Respuesta del microservicio: {response.status_code}")
+            logger.info(f"Contenido de respuesta: {response.text}")
+            
             if response.status_code == 200:
                 resultado = response.json()
                 
                 if resultado.get('success'):
-                    # Actualizar boleta con datos de SUNAT
+                    # ✅ MAPEAR CORRECTAMENTE LOS CAMPOS
                     boleta.enviado_sunat = True
                     boleta.hash_sunat = resultado.get('id', '')
                     boleta.codigo_sunat = resultado.get('codigo', '')
                     boleta.mensaje_sunat = resultado.get('descripcion', '')
+                    # ✅ IMPORTANTE: Mapear el nombre del CDR correctamente
                     boleta.nombre_cdr = resultado.get('nombre_cdr_zip', '')
                     boleta.fecha_envio_sunat = timezone.now()
                     boleta.estado = 'enviada'
                     boleta.save()
+                    
+                    logger.info(f"Boleta {boleta.id} actualizada con CDR: {boleta.nombre_cdr}")
                     
                     return {
                         'success': True,
@@ -65,6 +78,11 @@ class MicroservicioSunatService:
                         'datos_sunat': resultado
                     }
                 else:
+                    # También actualizar el estado si hay error
+                    boleta.mensaje_sunat = resultado.get('error', 'Error desconocido en SUNAT')
+                    boleta.estado = 'error'
+                    boleta.save()
+                    
                     return {
                         'success': False,
                         'error': resultado.get('error', 'Error desconocido en SUNAT')
@@ -76,11 +94,13 @@ class MicroservicioSunatService:
                 }
                 
         except requests.RequestException as e:
+            logger.error(f"Error de conexión: {str(e)}")
             return {
                 'success': False,
                 'error': f'Error de conexión con microservicio: {str(e)}'
             }
         except Exception as e:
+            logger.error(f"Error inesperado: {str(e)}")
             return {
                 'success': False,
                 'error': f'Error inesperado: {str(e)}'

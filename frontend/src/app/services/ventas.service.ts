@@ -34,7 +34,6 @@ export interface BoletaRequest {
   enviar_sunat?: boolean; // Flag para enviar a SUNAT
 }
 
-
 export interface BoletaResponse {
     id: number;
     serie: string;
@@ -45,10 +44,26 @@ export interface BoletaResponse {
     subtotal: number;
     igv: number;
     total: number;
-    estado: 'pendiente' | 'enviada' | 'anulada'; // ✅ Usar 'estado' en lugar de separados
+    estado: 'pendiente' | 'parcial' | 'pagada' | 'enviada' | 'anulada';
     url_pdf?: string;
     nombre_cdr?: string;
+
+    // ✅ NUEVOS CAMPOS PARA PAGOS PARCIALES
+  monto_adelantos?: number;  // Total de adelantos pagados
+  saldo_pendiente?: number;  // Saldo que falta pagar
+  adelantos?: PagoAdelanto[]; // Lista de adelantos realizados
+  esta_pagada_completa?: boolean; // Flag para saber si está pagada completamente
 }
+
+export interface PagoAdelanto {
+  id?: number;
+  boleta_id: number;
+  monto: number;
+  fecha_pago: string;
+  descripcion?: string;
+  metodo_pago?: string; // efectivo, tarjeta, transferencia, etc.
+}
+
 
 
 @Injectable({
@@ -82,6 +97,11 @@ export class VentasService {
   crearBoleta(boletaData: BoletaRequest): Observable<BoletaResponse> {
       return this.http.post<BoletaResponse>(`${this.apiUrl}/ventas/boletas/`, boletaData, this.httpOptions);
   }
+  
+  // Eliminar una boleta
+  eliminarBoleta(boletaId: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/ventas/boletas/${boletaId}/eliminar/`, this.httpOptions);
+  }
 
   // Obtener todas las boletas
   obtenerBoletas(): Observable<{boletas: BoletaResponse[], total_boletas: number}> {
@@ -94,16 +114,97 @@ export class VentasService {
   }
 
   //NUEVOS MÉTODOS PARA SUNAT
-  reenviarBoletaSunat(boletaId: number): Observable<any> {
+  enviarBoletaSunat(boletaId: number): Observable<any> {
       return this.http.post<any>(`${this.apiUrl}/ventas/boletas/${boletaId}/reenviar-sunat/`, {});
   }
 
   descargarCDR(boletaId: number): Observable<Blob> {
-      return this.http.get(`${this.apiUrl}/ventas/boletas/${boletaId}/descargar-cdr/`, {
-          responseType: 'blob'
-      });
+    return this.http.get(`${this.apiUrl}/ventas/boletas/${boletaId}/descargar-cdr/`, {
+        responseType: 'blob'
+    }).pipe(
+        catchError(error => {
+            console.error('Error al descargar CDR:', error);
+            return throwError(error);
+        })
+    );
   }
   
+  /**
+   * Registra un adelanto/pago parcial para una boleta
+   */
+  registrarAdelanto(boletaId: number, monto: number, descripcion?: string, metodoPago?: string): Observable<any> {
+    const adelantoData = {
+      boleta_id: boletaId,
+      monto: monto,
+      fecha_pago: new Date().toISOString(),
+      descripcion: descripcion || 'Pago parcial',
+      metodo_pago: metodoPago || 'efectivo'
+    };
 
+    return this.http.post<any>(`${this.apiUrl}/ventas/boletas/${boletaId}/adelantos/`, adelantoData, this.httpOptions);
+  }
+
+  /**
+   * Obtiene todos los adelantos de una boleta específica
+   */
+  obtenerAdelantosBoleta(boletaId: number): Observable<PagoAdelanto[]> {
+    return this.http.get<PagoAdelanto[]>(`${this.apiUrl}/ventas/boletas/${boletaId}/obtener_adelantos/`)
+      .pipe(
+        map(adelantos => adelantos.map(adelanto => ({
+          ...adelanto,
+          monto: parseFloat(adelanto.monto.toString()) // ✅ Convertir a número
+        })))
+      );
+  }
+
+  /**
+   * Obtiene el estado de pago actual de una boleta
+   */
+  obtenerEstadoPago(boletaId: number): Observable<{
+    total_boleta: number;
+    monto_adelantos: number;
+    saldo_pendiente: number;
+    esta_pagada_completa: boolean;
+    estado: string;
+  }> {
+    return this.http.get<any>(`${this.apiUrl}/ventas/boletas/${boletaId}/estado-pago/`);
+  }
+
+  /**
+   * Procesa un pago y verifica si debe enviarse automáticamente a SUNAT
+   */
+  procesarPagoConVerificacion(boletaId: number, montoPago: number, descripcion?: string, metodoPago?: string): Observable<{
+    pago_registrado: boolean;
+    boleta_completada: boolean;
+    enviado_sunat: boolean;
+    mensaje: string;
+  }> {
+    const pagoData = {
+      monto: montoPago,
+      descripcion: descripcion || 'Pago parcial',
+      metodo_pago: metodoPago || 'efectivo'
+    };
+
+    return this.http.post<any>(`${this.apiUrl}/ventas/boletas/${boletaId}/procesar-pago/`, pagoData, this.httpOptions);
+  }
+
+  /**
+   * Elimina un adelanto específico
+   */
+  eliminarAdelanto(boletaId: number, adelantoId: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/ventas/boletas/${boletaId}/adelantos/${adelantoId}/`);
+  }
+
+  /**
+   * Obtiene un resumen de todas las boletas con sus estados de pago
+   */
+  obtenerResumenPagos(): Observable<{
+    boletas_pendientes: number;
+    boletas_parciales: number;
+    boletas_pagadas: number;
+    total_por_cobrar: number;
+  }> {
+    return this.http.get<any>(`${this.apiUrl}/ventas/resumen-pagos/`);
+  }
 
 }

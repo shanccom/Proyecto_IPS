@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from rest_framework.authtoken.models import Token
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+from decimal import Decimal
 
 class Empleado(models.Model):
     CONDICION_EMPLEADO= [
@@ -80,7 +81,33 @@ class Boleta(models.Model):
     nombre_cdr = models.CharField(max_length=255, blank=True, null=True)
     fecha_envio_sunat = models.DateTimeField(blank=True, null=True)
 
-
+    @property
+    def monto_adelantos(self):
+        return self.adelantos.aggregate(
+            total=models.Sum('monto')
+        )['total'] or Decimal('0.00')
+    
+    @property
+    def saldo_pendiente(self):
+        return self.total - self.monto_adelantos
+    
+    @property
+    def esta_pagada_completa(self):
+        return self.saldo_pendiente <= Decimal('0.00')
+    
+    def actualizar_estado_pago(self):
+        if self.estado == 'anulada':
+            return
+            
+        if self.esta_pagada_completa:
+            if self.estado != 'enviada':
+                self.estado = 'pagada'
+        elif self.monto_adelantos > 0:
+            self.estado = 'parcial'
+        else:
+            self.estado = 'pendiente'
+        
+        self.save()
 
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
@@ -126,3 +153,24 @@ class ItemBoleta(models.Model):
     def subtotal(self):
         """Calcula el subtotal del item"""
         return self.cantidad * self.valor_unitario
+    
+class PagoAdelanto(models.Model):
+    METODO_PAGO_CHOICES = [
+        ('efectivo', 'Efectivo'),
+        ('tarjeta', 'Tarjeta'),
+        ('transferencia', 'Transferencia'),
+        ('deposito', 'Depósito'),
+        ('cheque', 'Cheque'),
+    ]
+    
+    boleta = models.ForeignKey(Boleta, on_delete=models.CASCADE, related_name='adelantos')
+    monto = models.DecimalField(max_digits=10, decimal_places=2)
+    fecha_pago = models.DateTimeField(default=timezone.now)
+    descripcion = models.CharField(max_length=255, blank=True)
+    metodo_pago = models.CharField(max_length=20, choices=METODO_PAGO_CHOICES, default='efectivo')
+    
+    def __str__(self):
+        return f"Adelanto {self.id} - {self.boleta.serie}-{self.boleta.correlativo}"
+    
+    class Meta:
+        ordering = ['-fecha_pago']
