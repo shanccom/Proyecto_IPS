@@ -15,7 +15,7 @@ export class TopProductosComponent implements OnInit {
   constructor(private dashboardService: DashboardService) {}
 
   ngOnInit(): void {
-    this.dashboardService.obtenerTopProductosDelDia().subscribe({
+    this.dashboardService.obtenerProductosDelDia().subscribe({
       next: (data) => {
         this.productos = data;
       },

@@ -23,6 +23,16 @@ import requests
 from django.conf import settings
 from .models import PagoAdelanto
 from django.utils import timezone
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+
+#dashboard
+from django.db.models import Sum
+from django.db.models.functions import TruncDay, TruncMonth, TruncYear
+from django.utils import timezone
+from datetime import timedelta
+#
+
 
 logger = logging.getLogger(__name__)
 
@@ -941,3 +951,192 @@ def eliminar_boleta(request, boleta_id):
         return JsonResponse({'mensaje': 'Boleta eliminada correctamente'})
     except Boleta.DoesNotExist:
         return JsonResponse({'error': 'Boleta no encontrada'}, status=404)
+    
+
+
+#para os graficos:
+# Las ventas
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def ventas_total(request):
+    rango = request.GET.get('rango', 'dia')  # por defecto  día
+
+    if rango == 'dia':
+        boletas = (
+            Boleta.objects
+            .filter(Q(estado='pagada') | Q(estado='enviada'))# cambiar luego para que solo seleccione las pagadas, por ahoar asi 
+            .annotate(fecha_dia=TruncDay('fecha'))
+            .values('fecha_dia')
+            .annotate(total=Sum('total'))
+            .order_by('fecha_dia')
+        )
+        resultado = [{'fecha_dia': b['fecha_dia'].strftime('%Y-%m-%d'), 'total': b['total']} for b in boletas]
+
+    elif rango == 'mes':
+        boletas = (
+            Boleta.objects
+            .filter(Q(estado='pagada') | Q(estado='enviada'))
+            .annotate(fecha_mes=TruncMonth('fecha'))
+            .values('fecha_mes')
+            .annotate(total=Sum('total'))
+            .order_by('fecha_mes')
+        )
+        resultado = [{'fecha_mes': b['fecha_mes'].strftime('%Y-%m'), 'total': b['total']} for b in boletas]
+
+    elif rango == 'anio':
+        boletas = (
+            Boleta.objects
+            .filter(Q(estado='pagada') | Q(estado='enviada'))
+            .annotate(fecha_anio=TruncYear('fecha'))
+            .values('fecha_anio')
+            .annotate(total=Sum('total'))
+            .order_by('fecha_anio')
+        )
+        resultado = [{'fecha_anio': b['fecha_anio'].year, 'total': b['total']} for b in boletas]
+
+    else:
+        return Response({'error': 'Rango inválido'}, status=400)
+
+    return Response(resultado)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def resumen_dashboard(request):
+    hoy = timezone.localtime(timezone.now()).date()  
+    inicio_semana = hoy - timedelta(days=hoy.weekday())
+    inicio_mes = hoy.replace(day=1)
+
+    # Boletas del día (estado puede ser 'pagado' si lo tienes definido)
+    boletas_dia = Boleta.objects.filter(fecha__date=hoy, estado__in=['pagada', 'enviada'])
+    items_dia = ItemBoleta.objects.filter(boleta__in=boletas_dia)
+
+    total_ventas_dia = 0
+    ganancia_dia = 0
+
+    for item in items_dia:
+        precio_venta = item.valor_unitario
+        cantidad = item.cantidad
+        total_ventas_dia += precio_venta * cantidad
+
+        costo = 0
+        producto = item.content_object
+
+        if producto:
+            if hasattr(producto, 'lunaCosto'):
+                costo = producto.lunaCosto
+            elif hasattr(producto, 'proCosto'):
+                costo = producto.proCosto
+            # Si no tiene campo de costo, asumimos 0
+
+        ganancia_dia += (precio_venta - costo) * cantidad
+
+    # Filtrar boletas de la semana y del mes
+    boletas_semana = Boleta.objects.filter(fecha__date__gte=inicio_semana, estado__in=['pagada', 'enviada'])
+    boletas_mes = Boleta.objects.filter(fecha__date__gte=inicio_mes, estado__in=['pagada', 'enviada'])
+
+    total_ventas_semana = boletas_semana.aggregate(suma=Sum('total'))['suma'] or 0
+    total_ventas_mes = boletas_mes.aggregate(suma=Sum('total'))['suma'] or 0
+
+    # Crear las fechas de los rangos
+    fecha_semana = f"{inicio_semana.strftime('%d de %B')} - {hoy.strftime('%d de %B')}"
+    fecha_mes = f"{inicio_mes.strftime('%d de %B')} - {hoy.strftime('%d de %B')}"
+    fecha_dia = f"{hoy.strftime('%d de %B')}"
+
+    return Response({
+        'ventas_dia_total': float(total_ventas_dia),
+        'ganancia_dia': float(ganancia_dia),
+        'ventas_semana': float(total_ventas_semana),
+        'ventas_mes': float(total_ventas_mes),
+        'fecha_semana': fecha_semana,
+        'fecha_mes': fecha_mes,
+        'fecha_dia': fecha_dia,
+    })
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def ultimos_productos_vendidos(request):
+    hoy = timezone.localtime(timezone.now()).date()
+    
+    boletas = Boleta.objects.filter(fecha__date=hoy, estado__in=['pagada', 'enviada']).order_by('-fecha')
+    items = ItemBoleta.objects.filter(boleta__in=boletas).select_related('content_type').order_by('-boleta__fecha')
+    resultado = []
+
+    for item in items:
+        producto = item.content_object
+        if producto:
+            if hasattr(producto, 'lunaCod'):
+                resultado.append({
+                    'codigo': producto.lunaCod,
+                    'descripcion': str(producto),
+                    'tipo': 'Luna',
+                    'cantidad': item.cantidad
+                })
+            elif hasattr(producto, 'monCod'):
+                resultado.append({
+                    'codigo': producto.monCod,
+                    'descripcion': str(producto),
+                    'tipo': 'Montura',
+                    'cantidad': item.cantidad
+                })
+            elif hasattr(producto, 'accCod'):
+                resultado.append({
+                    'codigo': producto.accCod,
+                    'descripcion': str(producto),
+                    'tipo': 'Accesorio',
+                    'cantidad': item.cantidad
+                })
+        else:
+            # Si es producto personalizado
+            resultado.append({
+                'codigo': 'PERSONALIZADO',
+                'descripcion': item.descripcion_personalizada or 'Producto personalizado',
+                'tipo': 'Personalizado',
+                'cantidad': item.cantidad
+            })
+
+    return Response(resultado)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def productos_dia_detalle(request):
+    hoy = timezone.localtime(timezone.now()).date()
+
+    boletas_dia = Boleta.objects.filter(fecha__date=hoy, estado__in=['pagada', 'enviada'])
+    items = ItemBoleta.objects.filter(boleta__in=boletas_dia)
+
+    productos = []
+
+    for item in items:
+        producto = item.content_object
+        if not producto:
+            continue
+
+        nombre = str(producto)
+        tipo = ''
+        codigo = ''
+
+        if hasattr(producto, 'lunaCod'):
+            tipo = 'Luna'
+            codigo = producto.lunaCod
+        elif hasattr(producto, 'monCod'):
+            tipo = 'Montura'
+            codigo = producto.monCod
+        elif hasattr(producto, 'accCod'):
+            tipo = 'Accesorio'
+            codigo = producto.accCod
+
+        productos.append({
+            'codigo': codigo,
+            'nombre': nombre,
+            'tipo': tipo,
+            'cantidad': item.cantidad,
+            'precio_unitario': float(item.valor_unitario),
+            'subtotal': float(item.valor_unitario * item.cantidad)
+        })
+
+    return Response({
+        'fecha': hoy.strftime('%Y-%m-%d'),
+        'productos_vendidos': productos
+    })

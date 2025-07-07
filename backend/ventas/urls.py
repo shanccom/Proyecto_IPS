@@ -14,6 +14,13 @@ urlpatterns = [
     path('create_empleado', views.new_empleado, name = 'nuevo empleado'),
     path('boletas/<int:boleta_id>/eliminar/', views.eliminar_boleta, name='eliminar_boleta'),
 
+
+    path('boletas/ventas/', views.ventas_total, name='ventas_total'),
+    path('resumen_dashboard/', views.resumen_dashboard, name='resumen dashboard'),
+    path('productos-recientes/', views.ultimos_productos_vendidos, name='productos_recientes_dashboard'),
+    path('informes/productos-vendidos-dia/', views.productos_dia_detalle, name='productos_dia_detalle'),
+
+
     # NUEVAS RUTAS PARA SUNAT
     path('boletas/<int:boleta_id>/reenviar-sunat/', views.reenviar_boleta_sunat, name='reenviar_sunat'),
     path('boletas/<int:boleta_id>/descargar-cdr/', views.descargar_cdr, name='descargar_cdr'),

@@ -26,7 +26,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.dashboardService.obtenerResumenDashboard().subscribe({
       next: (resumen) => {
-        //console.log('Dashboard : Datos recibidos del servicio:', resumen);
+        console.log('Dashboard : Datos recibidos del servicio:', resumen);
         this.ventasSemana = resumen.ventas_semana;
         this.ventasMes = resumen.ventas_mes;
         this.gananciaDia = resumen.ganancia_dia;

@@ -22,7 +22,7 @@ export class DashboardService {
     return this.http.get<any>(`${this.baseUrl}resumen_dashboard/`, { headers });
   }
   //Obtener los 6 productos top del dia
-  obtenerTopProductosDelDia(): Observable<any[]> {
+  obtenerProductosDelDia(): Observable<any[]> {
     const headers = this.authService.getAuthHeaders();
     return this.http.get<any[]>(`${this.baseUrl}productos-recientes/`, { headers });
   }
