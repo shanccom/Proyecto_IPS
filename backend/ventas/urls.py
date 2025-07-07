@@ -15,6 +15,8 @@ urlpatterns = [
 
     path('boletas/ventas/', views.ventas_total, name='ventas_total'),
     path('resumen_dashboard/', views.resumen_dashboard, name='resumen dashboard'),
+    path('productos-recientes/', views.ultimos_productos_vendidos, name='productos_recientes_dashboard'),
+    path('informes/productos-vendidos-dia/', views.productos_dia_detalle, name='productos_dia_detalle'),
 
     # RUTAS PARA SUNAT
     path('boletas/<int:boleta_id>/reenviar-sunat/', views.reenviar_boleta_sunat, name='reenviar_sunat'),

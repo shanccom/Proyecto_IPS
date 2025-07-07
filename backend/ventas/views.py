@@ -568,7 +568,7 @@ def ventas_total(request):
         boletas = (
             Boleta.objects
             .filter(estado='pendiente')
-            .annotate(fecha_mes=TruncDay('fecha'))
+            .annotate(fecha_mes=TruncMonth('fecha'))
             .values('fecha_mes')
             .annotate(total=Sum('total'))
             .order_by('fecha_mes')
@@ -595,7 +595,7 @@ def ventas_total(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def resumen_dashboard(request):
-    hoy = timezone.now().date()
+    hoy = timezone.localtime(timezone.now()).date()  
     inicio_semana = hoy - timedelta(days=hoy.weekday())
     inicio_mes = hoy.replace(day=1)
 
@@ -630,10 +630,106 @@ def resumen_dashboard(request):
     total_ventas_semana = boletas_semana.aggregate(suma=Sum('total'))['suma'] or 0
     total_ventas_mes = boletas_mes.aggregate(suma=Sum('total'))['suma'] or 0
 
+    # Crear las fechas de los rangos
+    fecha_semana = f"{inicio_semana.strftime('%d de %B')} - {hoy.strftime('%d de %B')}"
+    fecha_mes = f"{inicio_mes.strftime('%d de %B')} - {hoy.strftime('%d de %B')}"
+    fecha_dia = f"{hoy.strftime('%d de %B')}"
+
     return Response({
         'ventas_dia_total': float(total_ventas_dia),
         'ganancia_dia': float(ganancia_dia),
         'ventas_semana': float(total_ventas_semana),
         'ventas_mes': float(total_ventas_mes),
+        'fecha_semana': fecha_semana,
+        'fecha_mes': fecha_mes,
+        'fecha_dia': fecha_dia,
+    })
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def ultimos_productos_vendidos(request):
+    hoy = timezone.localtime(timezone.now()).date()
+    
+    boletas = Boleta.objects.filter(fecha__date=hoy, estado='pendiente').order_by('-fecha')
+    items = ItemBoleta.objects.filter(boleta__in=boletas).select_related('content_type').order_by('-boleta__fecha')[:6]
+
+    resultado = []
+
+    for item in items:
+        producto = item.content_object
+        if producto:
+            if hasattr(producto, 'lunaCod'):
+                resultado.append({
+                    'codigo': producto.lunaCod,
+                    'descripcion': str(producto),
+                    'tipo': 'Luna',
+                    'cantidad': item.cantidad
+                })
+            elif hasattr(producto, 'monCod'):
+                resultado.append({
+                    'codigo': producto.monCod,
+                    'descripcion': str(producto),
+                    'tipo': 'Montura',
+                    'cantidad': item.cantidad
+                })
+            elif hasattr(producto, 'accCod'):
+                resultado.append({
+                    'codigo': producto.accCod,
+                    'descripcion': str(producto),
+                    'tipo': 'Accesorio',
+                    'cantidad': item.cantidad
+                })
+        else:
+            # Si es producto personalizado
+            resultado.append({
+                'codigo': 'PERSONALIZADO',
+                'descripcion': item.descripcion_personalizada or 'Producto personalizado',
+                'tipo': 'Personalizado',
+                'cantidad': item.cantidad
+            })
+
+    return Response(resultado)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def productos_dia_detalle(request):
+    hoy = timezone.localtime(timezone.now()).date()
+
+    boletas_dia = Boleta.objects.filter(fecha__date=hoy, estado='pendiente')
+    items = ItemBoleta.objects.filter(boleta__in=boletas_dia)
+
+    productos = []
+
+    for item in items:
+        producto = item.content_object
+        if not producto:
+            continue
+
+        nombre = str(producto)
+        tipo = ''
+        codigo = ''
+
+        if hasattr(producto, 'lunaCod'):
+            tipo = 'Luna'
+            codigo = producto.lunaCod
+        elif hasattr(producto, 'monCod'):
+            tipo = 'Montura'
+            codigo = producto.monCod
+        elif hasattr(producto, 'accCod'):
+            tipo = 'Accesorio'
+            codigo = producto.accCod
+
+        productos.append({
+            'codigo': codigo,
+            'nombre': nombre,
+            'tipo': tipo,
+            'cantidad': item.cantidad,
+            'precio_unitario': float(item.valor_unitario),
+            'subtotal': float(item.valor_unitario * item.cantidad)
+        })
+
+    return Response({
+        'fecha': hoy.strftime('%Y-%m-%d'),
+        'productos_vendidos': productos
     })
