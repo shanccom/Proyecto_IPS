@@ -33,7 +33,7 @@ export class ChartVentasComponent implements AfterViewInit{
       data: {
         labels: [],
         datasets: [{
-          label: 'Ganancia Total',
+          label: 'Ventas Total',
           data: [],
           backgroundColor: 'rgba(54, 162, 235, 0.6)',
           borderColor: 'rgba(54, 162, 235, 1)',
@@ -71,7 +71,7 @@ export class ChartVentasComponent implements AfterViewInit{
     
     this.dashboardService.obtenerVentas(this.rango).subscribe(
       (datos) => {
-        console.log('Datos recibidos del backend:', datos);
+        //console.log('Datos recibidos del backend:', datos);
 
         // Detecta el nombre correcto de la propiedad según el rango
         let campoFecha: 'fecha_dia' | 'fecha_mes' | 'fecha_anio';

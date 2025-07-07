@@ -11,4 +11,5 @@ export class StatsCardComponent {
   @Input() icon = '';
   @Input() title = '';
   @Input() value: string | number | null = '';
+  @Input() dateRange: string = ''; 
 }
