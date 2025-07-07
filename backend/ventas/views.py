@@ -1073,16 +1073,18 @@ def ultimos_productos_vendidos(request):
                     'cantidad': item.cantidad
                 })
             elif hasattr(producto, 'monCod'):
+                descripcion = f"{producto.monMarca} - {producto.monMate} - {producto.monColor}"
                 resultado.append({
                     'codigo': producto.monCod,
-                    'descripcion': str(producto),
+                    'descripcion': descripcion,
                     'tipo': 'Montura',
                     'cantidad': item.cantidad
                 })
             elif hasattr(producto, 'accCod'):
+                descripcion = f"{producto.accNombre} - {producto.proDescrip or 'Sin descripción'}"
                 resultado.append({
                     'codigo': producto.accCod,
-                    'descripcion': str(producto),
+                    'descripcion': descripcion,
                     'tipo': 'Accesorio',
                     'cantidad': item.cantidad
                 })

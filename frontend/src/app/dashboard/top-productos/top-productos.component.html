@@ -1,6 +1,6 @@
 <div class="mt-8 w-1/2">
     <div class="bg-[#292C2D] p-6 rounded-2xl shadow-md">
-        <h2 class="text-white text-xl font-semibold mb-4">Top 6 productos vendidos hoy</h2>
+        <h2 class="text-white text-xl font-semibold mb-4">Productos vendidos hoy</h2>
 
         <!-- Tabla sin bordes visibles -->
         <div class="overflow-x-auto">
@@ -8,17 +8,17 @@
             <thead>
             <tr>
                 <th class="text-white text-sm font-semibold p-2 text-left">Descripción</th>
-                <th class="text-white text-sm font-semibold p-2 text-left">Código</th>
-                <th class="text-white text-sm font-semibold p-2 text-left">Tipo</th>
-                <th class="text-white text-sm font-semibold p-2 text-left">Cantidad Vendida</th>
+                <th class="text-white text-sm font-semibold p-2 text-center">Código</th>
+                <th class="text-white text-sm font-semibold p-2 text-center">Tipo</th>
+                <th class="text-white text-sm font-semibold p-2 text-center">Cantidad</th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let prod of productos">
-                <td class="text-gray-300 p-2">{{ prod.descripcion }}</td>
-                <td class="text-gray-300 p-2">{{ prod.codigo }}</td>
-                <td class="text-gray-300 p-2">{{ prod.tipo }}</td>
-                <td class="text-blue-600 p-2 font-semibold">{{ prod.cantidad }}</td>
+                <td class="text-gray-300 p-2 text-left">{{ prod.descripcion }}</td>
+                <td class="text-gray-300 p-2 text-center">{{ prod.codigo }}</td>
+                <td class="text-gray-300 p-2 text-center">{{ prod.tipo }}</td>
+                <td class="text-blue-600 p-2 font-semibold  text-center">{{ prod.cantidad }}</td>
             </tr>
             </tbody>
         </table>

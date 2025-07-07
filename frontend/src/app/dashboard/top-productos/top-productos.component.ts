@@ -10,13 +10,13 @@ import { DashboardService } from '../../services/dashboard.service';
 export class TopProductosComponent implements OnInit {
 
   productos: any[] = [];
-  title ="Ultimos productos vendidos"
 
   constructor(private dashboardService: DashboardService) {}
 
   ngOnInit(): void {
     this.dashboardService.obtenerProductosDelDia().subscribe({
       next: (data) => {
+        console.log('Dashboard : Datos recibidos del servicio:', data);
         this.productos = data;
       },
       error: (error) => {
