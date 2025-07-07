@@ -6,7 +6,8 @@ from .views import (
     change_password,
     list_users,
     update_user_status,
-    verify_token
+    verify_token,
+    perfil,
 )
 
 urlpatterns = [
@@ -20,4 +21,5 @@ urlpatterns = [
     # Administración (solo staff)
     path('admin/users/', list_users, name='list_users'),
     path('admin/users/<int:user_id>/status/', update_user_status, name='update_user_status'),
+    path('perfil/', perfil, name='perfil_user')
 ]

@@ -8,6 +8,9 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.exceptions import ValidationError
 from rest_framework import status
 
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+
 # Validacion de contraseña
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import authenticate
@@ -19,6 +22,30 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# PERFIL - VERSIÓN CORREGIDA
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def perfil(request):
+    try:
+        # Obtener el usuario autenticado 
+        user = request.user
+        
+        # Serializar el usuario actual
+        serializer = UsuarioSerializer(user)
+        
+        return Response({
+            'message': 'Perfil obtenido exitosamente',
+            'user': serializer.data
+        }, status=status.HTTP_200_OK)
+    
+    except Exception as e:
+        logger.error(f"Error durante la recuperación de datos: {str(e)}")
+        return Response({
+            "error": "Ocurrió un error en el servidor.", 
+            "details": str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
 # REGISTER
 @api_view(['POST'])
 def register(request):
@@ -187,6 +214,7 @@ def change_password(request):
 #Usuarios creados
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 @permission_classes([IsAdminUser])  # Solo staff
 def list_users(request):
     try:
@@ -207,6 +235,7 @@ def list_users(request):
 #Modificar actividad de empleados - Solo para staff
 @api_view(['PUT'])
 @authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 @permission_classes([IsAdminUser])  # Solo staff
 def update_user_status(request, user_id):
     try:

@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-  import { AuthService } from '../services/auth.service';
+  import { Component, OnInit, OnDestroy } from '@angular/core';
+  import { AuthService, User } from '../services/auth.service';
   import { NavigationEnd, Router } from '@angular/router';
   import { PageTitleService } from '../services/page-title.service';  // Importar el servicio
   import { Subscription } from 'rxjs';
@@ -16,6 +16,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
   export class TopbarComponent implements OnInit, OnDestroy {
     pageTitle: string = ''; 
     temaActual: 'light' | 'dark' = 'light';
+    user: User | null = null;
 
 
     routerSubscription: Subscription | null = null;
@@ -33,8 +34,21 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
       // Al iniciar, obtener el valor del título desde el servicio
       this.pageTitle = this.pageTitleService.getTitle();
       this.actuTitulo();
-    }
+      if (this.authService.isAuthenticated()) {
+        this.perfil();  // 
+        // solo si el token ya está guardado
+      }
 
+    }
+    perfil(): void{
+      this.authService.perfil().subscribe({
+        next: (data) => {
+          console.log('Perfil recibido:', data); // 👈 Aquí está el log
+          this.user = data.user;
+        },
+        error: (err) => console.error('Error al obtener perfil', err)
+      });
+    }
     actuTitulo(): void {
       this.routerSubscription = this.router.events.subscribe(event => {
         if (event instanceof NavigationEnd) {

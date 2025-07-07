@@ -24,6 +24,8 @@ from django.conf import settings
 from .models import PagoAdelanto
 from django.utils import timezone
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.authtoken.models import Token
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
 #dashboard
@@ -957,6 +959,7 @@ def eliminar_boleta(request, boleta_id):
 #para os graficos:
 # Las ventas
 @api_view(['GET'])
+@authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def ventas_total(request):
     rango = request.GET.get('rango', 'dia')  # por defecto  día
@@ -1001,6 +1004,7 @@ def ventas_total(request):
 
 
 @api_view(['GET'])
+@authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def resumen_dashboard(request):
     hoy = timezone.localtime(timezone.now()).date()  
@@ -1054,6 +1058,7 @@ def resumen_dashboard(request):
     })
 
 @api_view(['GET'])
+@authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def ultimos_productos_vendidos(request):
     hoy = timezone.localtime(timezone.now()).date()
@@ -1101,6 +1106,7 @@ def ultimos_productos_vendidos(request):
 
 
 @api_view(['GET'])
+@authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def productos_dia_detalle(request):
     hoy = timezone.localtime(timezone.now()).date()

@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { ChartVentasComponent } from '../chart-ventas/chart-ventas.component';
 import { DashboardService } from '../../services/dashboard.service';
 import { TopProductosComponent } from '../top-productos/top-productos.component';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,22 +22,25 @@ export class DashboardComponent implements OnInit {
   fechaMes = '';
   fechaDia = '';
 
-  constructor(private dashboardService: DashboardService) {}
+  constructor(private dashboardService: DashboardService , private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.dashboardService.obtenerResumenDashboard().subscribe({
-      next: (resumen) => {
-        console.log('Dashboard : Datos recibidos del servicio:', resumen);
-        this.ventasSemana = resumen.ventas_semana;
-        this.ventasMes = resumen.ventas_mes;
-        this.gananciaDia = resumen.ganancia_dia;
-        this.fechaSemana = resumen.fecha_semana;
-        this.fechaMes = resumen.fecha_mes;
-        this.fechaDia = resumen.fecha_dia;
-      },
-      error: (error) => {
-        console.error('Error al obtener resumen del dashboard:', error);
-      }
-    });
+    if (this.authService.isAuthenticated()) {
+      this.dashboardService.obtenerResumenDashboard().subscribe({
+        next: (resumen) => {
+          console.log('Dashboard : Datos recibidos del servicio:', resumen);
+          this.ventasSemana = resumen.ventas_semana;
+          this.ventasMes = resumen.ventas_mes;
+          this.gananciaDia = resumen.ganancia_dia;
+          this.fechaSemana = resumen.fecha_semana;
+          this.fechaMes = resumen.fecha_mes;
+          this.fechaDia = resumen.fecha_dia;
+        },
+        error: (error) => {
+          console.error('Error al obtener resumen del dashboard:', error);
+        }
+      });
+    }
+    
   }
 }

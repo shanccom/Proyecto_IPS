@@ -50,7 +50,11 @@ export class AuthService {
       }
     }
   }
-
+  perfil(): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.get(`${this.baseUrl}perfil/`, { headers });
+  }
+  
   login(usuarioNom: string, password: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.baseUrl}login/`, { usuarioNom, password });
   }

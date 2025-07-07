@@ -8,7 +8,6 @@ from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
-
 from .models import Montura, Accesorio, Producto
 from .serializers import MonturaSerializer, AccesorioSerializer
 
@@ -20,8 +19,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 #todo
 class ProductosView(APIView):
-    #authentication_classes = [TokenAuthentication]
-    #permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         monturas = MonturaSerializer(Montura.objects.all(), many=True).data
         accesorios = AccesorioSerializer(Accesorio.objects.all(), many=True).data
