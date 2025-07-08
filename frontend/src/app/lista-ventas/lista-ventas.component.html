@@ -21,7 +21,7 @@
   <!-- Boletas List -->
   <div *ngIf="boletas.length > 0" class="space-y-4">
     <div *ngFor="let boleta of boletas" class="bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer"
-         (click)="mostrarDetalles(boleta)">
+         (click)="$event.stopPropagation(); mostrarDetalles(boleta)">
       
       <!-- Header de la boleta -->
       <div class="px-4 py-3" style="background-color: #A7DCFF;">
@@ -92,7 +92,7 @@
 <div 
   *ngIf="modalAbierto === boleta.id" 
   class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
-  (click)="toggleModal(null)">
+  (click)="$event.stopPropagation(); toggleModal(null)">
   
   <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 border border-gray-700" (click)="$event.stopPropagation()">
     <!-- Header del Modal -->
@@ -192,7 +192,7 @@
         <h4 class="text-sm font-medium text-gray-300 uppercase tracking-wider">Pagos</h4>
         
         <button 
-          *ngIf="(boleta.total - (boleta.monto_adelantos || 0)) > 0"
+          *ngIf="(boleta.total - (boleta.monto_adelantos || 0)) > 0 && boleta.estado !== 'enviada'"
           (click)="$event.stopPropagation(); registrarPago(boleta); toggleModal(null);"
           class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-3 rounded-lg flex items-center space-x-3 transition-colors">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -280,7 +280,7 @@
     <div class="flex items-center justify-between p-6 border-b border-gray-700" style="background-color: #A7DCFF;">
       <h3 class="text-lg font-semibold text-black">Detalles de la Boleta</h3>
       <button 
-        (click)="cerrarModalDetalles()"
+        (click)="$event.stopPropagation(); cerrarModalDetalles()"
         class="text-gray-800 hover:text-black transition-colors">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -394,7 +394,7 @@
     <div class="flex items-center justify-between p-6 border-b border-gray-700" style="background-color: #A7DCFF;">
       <h3 class="text-lg font-semibold text-black">Registrar Pago</h3>
       <button 
-        (click)="cerrarModalPago()"
+        (click)="$event.stopPropagation(); cerrarModalPago()"
         class="text-gray-800 hover:text-black transition-colors">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -532,7 +532,7 @@
 <!-- Modal de Historial de Pagos -->
 <div *ngIf="mostrarModalHistorial" 
      class="fixed inset-0 z-50 overflow-y-auto"
-     (click)="cerrarModalHistorial()">
+     (click)="$event.stopPropagation(); cerrarModalHistorial()">
   
   <!-- Backdrop -->
   <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity"></div>

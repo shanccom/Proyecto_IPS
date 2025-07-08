@@ -1,30 +1,42 @@
 <div class="pl-[120px] pr-6 py-6 min-h-screen bg-background text-text font-poppins">
   <div class="dashboard">
 
-    <div class="stats-cards grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <app-stats-card
-        icon="bx bx-bar-chart"
-        title="Ventas de la Semana"
-        [value]="ventasSemana"
-        [dateRange]="fechaSemana">
-      </app-stats-card>
+    <!-- Sección superior: Cards a la izquierda, Chart a la derecha -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      
+      <!-- Cards a la izquierda en una columna -->
+      <div class="stats-cards flex flex-col gap-4">
+        <app-stats-card
+          icon="bx bx-bar-chart"
+          title="Ventas de la Semana"
+          [value]="ventasSemana"
+          [dateRange]="fechaSemana">
+        </app-stats-card>
 
-      <app-stats-card
-        icon="bx bx-calendar"
-        title="Ventas del Mes"
-        [value]="ventasMes"
-        [dateRange]="fechaMes">
-      </app-stats-card>
+        <app-stats-card
+          icon="bx bx-calendar"
+          title="Ventas del Mes"
+          [value]="ventasMes"
+          [dateRange]="fechaMes">
+        </app-stats-card>
 
-      <app-stats-card
-        icon="bx bx-dollar"
-        title="Ganancia del Día"
-        [value]="gananciaDia"
-        [dateRange]="fechaDia">
-      </app-stats-card>
+        <app-stats-card
+          icon="bx bx-dollar"
+          title="Ganancia del Día"
+          [value]="gananciaDia"
+          [dateRange]="fechaDia">
+        </app-stats-card>
+      </div>
+
+      <!-- Chart a la derecha -->
+      <div class="chart-container">
+        <app-chart-ventas></app-chart-ventas>
+      </div>
       
     </div>
-    <div class="flex flex-row gap-4 mt-8">
+
+    <!-- Sección inferior: Top productos y Ventas pendientes -->
+    <div class="flex flex-col lg:flex-row gap-4">
       <div class="flex-1">
         <app-top-productos></app-top-productos>
       </div>
@@ -32,9 +44,6 @@
         <app-ventas-pendientes></app-ventas-pendientes>
       </div>
     </div>
-
-
-    <app-chart-ventas></app-chart-ventas>
 
   </div>
 </div>

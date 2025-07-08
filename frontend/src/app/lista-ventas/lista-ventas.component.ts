@@ -1007,5 +1007,5 @@ obtenerSaldoPendiente(boleta: any): number {
   toggleModal(boletaId: string | null): void {
     this.modalAbierto = this.modalAbierto === boletaId ? null : boletaId;
   }
-
+  
 }
