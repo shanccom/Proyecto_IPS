@@ -71,7 +71,7 @@ export class ChartVentasComponent implements AfterViewInit{
     
     this.dashboardService.obtenerVentas(this.rango).subscribe(
       (datos) => {
-        //console.log('Datos recibidos del backend:', datos);
+        console.log('Datos recibidos del backend:', datos);
 
         // Detecta el nombre correcto de la propiedad según el rango
         let campoFecha: 'fecha_dia' | 'fecha_mes' | 'fecha_anio';
