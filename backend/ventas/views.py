@@ -22,7 +22,7 @@ from services.microservicio_service import MicroservicioSunatService
 import requests
 from django.conf import settings
 from .models import PagoAdelanto
-from django.utils import timezone
+from django.utils.timezone import localtime
 
 logger = logging.getLogger(__name__)
 
@@ -229,7 +229,7 @@ def crear_boleta(request):
             'id': boleta.id,
             'serie': boleta.serie,
             'correlativo': boleta.correlativo,  # ✅ Ahora es igual al ID
-            'fecha_emision': boleta.fecha.strftime('%Y-%m-%d %H:%M:%S'),
+            'fecha_emision': localtime(boleta.fecha).strftime('%Y-%m-%d %H:%M:%S'),
             'cliente': {
                 'tipo_doc': '1',
                 'num_doc': boleta.cliente.cliNumDoc,
@@ -244,6 +244,10 @@ def crear_boleta(request):
             'mensaje': 'Boleta creada exitosamente. Puede enviarla a SUNAT desde la lista de ventas.'
         }
         
+        print("Fecha guardada (UTC):", boleta.fecha)
+        print("Fecha local:", localtime(boleta.fecha).strftime('%Y-%m-%d %H:%M:%S'))
+        print("Fecha sin formato:", boleta.fecha)
+        print("tzinfo:", boleta.fecha.tzinfo)
         print(f"Boleta creada exitosamente: {response_data}")
         return JsonResponse(response_data, status=201)
         
@@ -417,7 +421,7 @@ def crear_boleta(request):
             'id': boleta.id,
             'serie': boleta.serie,
             'correlativo': boleta.correlativo,
-            'fecha_emision': boleta.fecha.strftime('%Y-%m-%d %H:%M:%S'),
+            'fecha_emision': localtime(boleta.fecha).strftime('%Y-%m-%d %H:%M:%S'),
             'cliente': {
                 'tipo_doc': '1',
                 'num_doc': boleta.cliente.cliNumDoc,
@@ -514,7 +518,7 @@ def listar_boletas(request):
                 'id': boleta.id,
                 'serie': boleta.serie,
                 'correlativo': boleta.correlativo,
-                'fecha_emision': boleta.fecha.strftime('%Y-%m-%d %H:%M:%S'),
+                'fecha_emision': localtime(boleta.fecha).strftime('%Y-%m-%d %H:%M:%S'),
                 'cliente': {
                     'tipo_doc': '1',
                     'num_doc': boleta.cliente.cliNumDoc,
@@ -890,7 +894,6 @@ def enviar_boleta_sunat_automatico(boleta):
             'success': True,
             'mensaje': 'Boleta enviada exitosamente a SUNAT',
             'codigo_hash': 'ABC123XYZ789',
-            'fecha_envio': timezone.now().isoformat()
         }
         
         logger.info(f"Boleta {boleta.id} enviada automáticamente a SUNAT")
