@@ -124,6 +124,7 @@ export class ChartVentasComponent implements AfterViewInit{
     
   }
   */
+
   inicializarGrafico() {
     const canvas = document.getElementById('gananciaChart') as HTMLCanvasElement;
     this.chart = new Chart(canvas, {

@@ -5,25 +5,6 @@
     <div class=" pt-[40px]">
       <div class="h-full bg-[#292C2D] py-6 px-4 rounded-[5%]">
         <div class="max-w-4xl mx-auto">
-          
-          <!-- Header -->
-          <div class="pr-6 pl-6 pt-6">
-            <div class="flex items-center justify-between">
-              <div>
-                <h1 class="text-2xl font-bold text-[#A7DCFF] font-poppins">Registro de Boletas</h1>
-                <p class="text-sm text-white mt-2 font-poppins">Escanea productos y registra la venta</p>
-              </div>
-              <div class="flex items-center space-x-4">
-                
-                <button 
-                  routerLink="/listaVentas"
-                  class="bg-[#A7DCFF] text-black px-4 py-2 rounded-lg font-medium">
-                  Ver Lista de Boletas
-                </button>
-              </div>
-            </div>
-          </div>
-
           <!-- Formulario Principal -->
           <form [formGroup]="ventaForm" (ngSubmit)="guardarBoleta()" class="space-y-1">
             
