@@ -1,4 +1,4 @@
-  import { Component, OnInit, OnDestroy } from '@angular/core';
+  import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
   import { AuthService, User } from '../services/auth.service';
   import { NavigationEnd, Router } from '@angular/router';
   import { PageTitleService } from '../services/page-title.service';  // Importar el servicio
@@ -6,17 +6,19 @@
   import { FormsModule } from '@angular/forms';
   import { CommonModule } from '@angular/common';
   import { TemasService } from '../services/temas.service';
+  import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 
   @Component({
     selector: 'app-topbar',
     templateUrl: './topbar.component.html',
     styleUrls: ['./topbar.component.css'],
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive],
   })
   export class TopbarComponent implements OnInit, OnDestroy {
     pageTitle: string = ''; 
     temaActual: 'light' | 'dark' = 'light';
     user: User | null = null;
+    isDropDownOpen = false;
 
 
     routerSubscription: Subscription | null = null;
@@ -40,6 +42,12 @@
       }
 
     }
+    isActive(route: string): boolean {
+      return this.router.url === route;
+    }
+    toggleDropdown() {
+    this.isDropDownOpen = !this.isDropDownOpen;
+    }
     perfil(): void{
       this.authService.perfil().subscribe({
         next: (data) => {
@@ -48,6 +56,15 @@
         },
         error: (err) => console.error('Error al obtener perfil', err)
       });
+    }
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: any) {
+      const target = event.target;
+      const dropdown = document.querySelector('.user-info');
+      
+      if (dropdown && !dropdown.contains(target)) {
+        this.isDropDownOpen = false;
+      }
     }
     actuTitulo(): void {
       this.routerSubscription = this.router.events.subscribe(event => {
@@ -73,6 +90,8 @@
             this.pageTitleService.setTitle('Mi cuenta');
           } else if (path.includes('admin-configuracion')) {
             this.pageTitleService.setTitle('Configuración y Personalización');
+          } else if (path.includes('admin-conexion')) {
+            this.pageTitleService.setTitle('Configurar Conexion con Sunat');
           } else {
             this.pageTitleService.setTitle('');
           }

@@ -6,6 +6,7 @@ import { ClientesService } from '../services/clientes.service';
 import { error } from 'console';
 import { FormularioRecetaComponent } from '../recetas/formulario-receta/formulario-receta.component';
 import { RecetasComponent } from '../recetas/recetas.component';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-clientes',
@@ -26,9 +27,12 @@ export class ClientesComponent implements OnInit {
   clientesFiltrados: any[] = [];
   
   
-  constructor( private clientesService: ClientesService){};
+  constructor( private clientesService: ClientesService, private authService: AuthService){};
   ngOnInit(): void {
-    this.obtenerClientes();
+    if (this.authService.isAuthenticated()) {
+      this.obtenerClientes();
+    }
+    
   }
   obtenerClientes(): void {
     this.clientesService.getClientes().subscribe(

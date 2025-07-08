@@ -1,24 +1,85 @@
-<div class="topbar">
-    <div class ="page-title">
+<div class="topbar fixed top-0 left-0 right-0 ml-[225px] mr-[5px] pt-[25px] flex justify-between items-center h-[60px] px-5 py-2 bg-background shadow-sm z-10">
+    <div class="page-title text-2xl font-bold text-left text-foreground">
         {{pageTitle}}
     </div>
-
-    <div class="topbar-opciones">
-        <i class="bx bx-bell"></i>
-
+         
+    <div class="topbar-opciones flex items-center gap-4">
+        <!-- Icono de notificaciones -->
+        <i class="bx bx-bell text-xl mr-2 cursor-pointer hover:text-primary transition-colors text-foreground"></i>
+                 
         <!-- Botón de cambio de tema -->
-        <i
-          class="bx"
-          [ngClass]="temaActual === 'light' ? 'bx-moon' : 'bx-sun'"
-          (click)="alternarTema()"
-          style="cursor: pointer;"
+        <i 
+            class="bx text-xl cursor-pointer hover:text-primary transition-colors text-foreground"
+            [ngClass]="temaActual === 'light' ? 'bx-moon' : 'bx-sun'"
+            (click)="alternarTema()"
         ></i>
-
-        <button (click)="logout()">Cerrar Sesion</button>
-
-        <div class="user-info">
-            <img src="https://media.istockphoto.com/id/1495088043/es/vector/icono-de-perfil-de-usuario-avatar-o-icono-de-persona-foto-de-perfil-s%C3%ADmbolo-de-retrato.jpg?s=612x612&w=0&k=20&c=mY3gnj2lU7khgLhV6dQBNqomEGj3ayWH-xtpYuCXrzk=" alt="">
-            <span>{{user?.usuarioNom}}</span>
+                  
+        <!-- Dropdown de usuario -->
+        <div class="user-info relative">
+            <div 
+                class="flex items-center gap-2 cursor-pointer hover:bg-muted p-2 rounded-lg transition-colors"
+                (click)="toggleDropdown()"
+            >
+                <img 
+                    src="https://media.istockphoto.com/id/1495088043/es/vector/icono-de-perfil-de-usuario-avatar-o-icono-de-persona-foto-de-perfil-s%C3%ADmbolo-de-retrato.jpg?s=612x612&w=0&k=20&c=mY3gnj2lU7khgLhV6dQBNqomEGj3ayWH-xtpYuCXrzk="
+                    alt="Usuario"
+                    class="w-8 h-8 rounded-full object-cover"
+                >
+                <span class="text-sm font-medium text-foreground">{{user?.usuarioNom}}</span>
+                <i class="bx bx-chevron-down text-sm transition-transform text-foreground"
+                    [ngClass]="{'rotate-180': isDropDownOpen}"></i>
+            </div>
+                         
+            <!-- Dropdown Menu -->
+            <div 
+                class="absolute right-0 top-full mt-2 w-56 bg-background rounded-lg shadow-lg border border-border py-2 z-50"
+                [ngClass]="{'hidden': !isDropDownOpen}"
+            >
+                <a 
+                    routerLink="/admin-cuenta"
+                    routerLinkActive="active"
+                    class="cursor-pointer flex items-center gap-3 px-4 py-2 text-sm text-foreground"
+                >
+                    <i class="bx bx-user text-muted-foreground"></i>
+                    Mi Cuenta
+                </a>
+                                 
+                <a 
+                    routerLink="/admin-usuarios"
+                    routerLinkActive="active"
+                    class="cursor-pointer flex items-center gap-3 px-4 py-2 text-sm text-foreground"
+                >
+                    <i class="bx bx-group text-muted-foreground"></i>
+                    Administrar Usuarios
+                </a>
+                                 
+                <a 
+                    routerLink="/admin-configuracion"
+                    routerLinkActive="active"
+                    class="cursor-pointer flex items-center gap-3 px-4 py-2 text-sm text-foreground"
+                >
+                    <i class="bx bx-cog text-muted-foreground"></i>
+                    Configuración de Sistema
+                </a>
+                                 
+                <hr class="my-1 border-border">
+                                 
+                <a 
+                    routerLink="/admin-conexion"
+                    routerLinkActive="active"
+                    class="cursor-pointer flex items-center gap-3 px-4 py-2 text-sm text-foreground"
+                >
+                    <i class="bx bx-link-external text-muted-foreground"></i>
+                    Conexión con SUNAT
+                </a>
+                <a 
+                    (click)="logout()"
+                    class="cursor-pointer flex items-center gap-3 px-4 py-2 text-sm text-foreground"
+                >
+                    <i class="bx bx-log-out text-muted-foreground"></i>
+                    Cerrar Sesion
+                </a>
+            </div>
         </div>
     </div>
 </div>

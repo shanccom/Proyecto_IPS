@@ -90,6 +90,8 @@ def buscar_producto(codigo_producto):
     return None, None, None
 @csrf_exempt
 @require_http_methods(["POST"])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
 def crear_boleta(request):
     try:
         data = json.loads(request.body)
@@ -267,6 +269,8 @@ def crear_boleta(request):
 
 @csrf_exempt
 @require_http_methods(["POST"])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
 def crear_boleta(request):
     try:
         data = json.loads(request.body)
@@ -479,6 +483,8 @@ def obtener_siguiente_correlativo(request, serie):
         }, status=500)
 
 @require_http_methods(["GET"])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
 def listar_boletas(request):
     try:
         boletas = Boleta.objects.all().prefetch_related('items__content_object').order_by('-fecha')
@@ -553,6 +559,8 @@ def listar_boletas(request):
 # Envia y reenvia
 @csrf_exempt
 @require_http_methods(["POST"])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
 def reenviar_boleta_sunat(request, boleta_id):
     """
     Reenvía una boleta específica a SUNAT
@@ -580,6 +588,8 @@ def reenviar_boleta_sunat(request, boleta_id):
         }, status=500)
     
 @require_http_methods(["GET"])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
 def descargar_cdr(request, boleta_id):
     try:
         boleta = get_object_or_404(Boleta, id=boleta_id)
@@ -628,6 +638,8 @@ def descargar_cdr(request, boleta_id):
         }, status=500)
 
 @api_view(['POST'])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
 def registrar_adelanto(request, boleta_id):
     """
     Registra un adelanto/pago parcial para una boleta específica
@@ -692,6 +704,8 @@ def registrar_adelanto(request, boleta_id):
         )
 
 @api_view(['GET'])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
 def obtener_adelantos_boleta(request, boleta_id):
     """
     Obtiene todos los adelantos de una boleta específica
@@ -711,6 +725,8 @@ def obtener_adelantos_boleta(request, boleta_id):
         )
 
 @api_view(['GET'])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
 def obtener_estado_pago(request, boleta_id):
     """
     Obtiene el estado actual de pago de una boleta
@@ -734,6 +750,8 @@ def obtener_estado_pago(request, boleta_id):
         )
 
 @api_view(['POST'])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
 def procesar_pago_con_verificacion(request, boleta_id):
     """
     Procesa un pago y verifica si debe enviarse automáticamente a SUNAT
@@ -815,6 +833,8 @@ def procesar_pago_con_verificacion(request, boleta_id):
         )
 
 @api_view(['DELETE'])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
 def eliminar_adelanto(request, boleta_id, adelanto_id):
     """
     Elimina un adelanto específico (solo si la boleta no ha sido enviada)
@@ -848,6 +868,8 @@ def eliminar_adelanto(request, boleta_id, adelanto_id):
         )
 
 @api_view(['GET'])
+#@authentication_classes([TokenAuthentication])
+#@permission_classes([IsAuthenticated])
 def obtener_resumen_pagos(request):
     """
     Obtiene un resumen general de los pagos
