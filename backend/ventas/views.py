@@ -35,6 +35,8 @@ from django.utils import timezone
 from datetime import timedelta
 #
 
+#Hora ventas
+from django.utils.timezone import localtime
 
 logger = logging.getLogger(__name__)
 
@@ -240,8 +242,8 @@ def crear_boleta(request):
         response_data = {
             'id': boleta.id,
             'serie': boleta.serie,
-            'correlativo': boleta.correlativo,  # ✅ Ahora es igual al ID
-            'fecha_emision': boleta.fecha.strftime('%Y-%m-%d %H:%M:%S'),
+            'correlativo': boleta.correlativo,
+            'fecha_emision': localtime(boleta.fecha).strftime('%Y-%m-%d %H:%M:%S'),
             'cliente': {
                 'tipo_doc': '1',
                 'num_doc': boleta.cliente.cliNumDoc,
@@ -526,7 +528,7 @@ def listar_boletas(request):
                 'id': boleta.id,
                 'serie': boleta.serie,
                 'correlativo': boleta.correlativo,
-                'fecha_emision': boleta.fecha.strftime('%Y-%m-%d %H:%M:%S'),
+                'fecha_emision': localtime(boleta.fecha).strftime('%Y-%m-%d %H:%M:%S'),
                 'cliente': {
                     'tipo_doc': '1',
                     'num_doc': boleta.cliente.cliNumDoc,
