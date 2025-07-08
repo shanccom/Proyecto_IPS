@@ -5,6 +5,8 @@ import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { BoletaResponse, PagoAdelanto } from '../services/ventas.service';
 import { FormsModule } from '@angular/forms';
+import { GenerarComprobanteSunatService } from '../services/generar-comprobante-sunat.service';
+
 
 @Component({
   selector: 'app-lista-ventas',
@@ -30,8 +32,13 @@ export class ListaVentasComponent implements OnInit{
   mostrarModalComprobante = false;
   datosComprobante: any = null;
   numeroComprobante = '';
+  modalAbierto: string | null = null;
 
-  constructor(private ventasService: VentasService, private router: Router) {}
+  constructor(
+    private ventasService: VentasService, 
+    private router: Router,
+    private comprobanteSunatService: GenerarComprobanteSunatService, 
+  ) {}
 
   ngOnInit(): void {
     this.cargarBoletas();
@@ -500,32 +507,6 @@ getSaldoPendienteSeleccionada(): number {
   }
 
   /**
-   * ✅ ACTUALIZAR BOLETA LOCAL DESPUÉS DE UN PAGO
-   */
-  private actualizarBoletaLocal(boletaId: number): void {
-    this.ventasService.obtenerEstadoPago(boletaId).subscribe({
-      next: (estado) => {
-        const boleta = this.boletas.find(b => b.id === boletaId);
-        if (boleta) {
-          boleta.monto_adelantos = estado.monto_adelantos;
-          boleta.saldo_pendiente = estado.saldo_pendiente;
-          boleta.esta_pagada_completa = estado.esta_pagada_completa;
-          
-          // Actualizar estado según el pago
-          if (estado.esta_pagada_completa) {
-            boleta.estado = boleta.estado === 'enviada' ? 'enviada' : 'pagada';
-          } else if (estado.monto_adelantos > 0) {
-            boleta.estado = 'parcial';
-          }
-        }
-      },
-      error: (error) => {
-        console.error('Error al actualizar boleta local:', error);
-      }
-    });
-  }
-
-  /**
    * ✅ OBTENER CLASE CSS SEGÚN ESTADO DE PAGO
    */
   obtenerClaseEstado(boleta: BoletaResponse): string {
@@ -890,4 +871,142 @@ obtenerSaldoPendiente(boleta: any): number {
   return resultado;
 }
 
+    //Nuevos metodos 
+    generarComprobanteSunat(boleta: BoletaResponse): void {
+      if (boleta.estado !== 'enviada') {
+        alert('Esta boleta aún no ha sido enviada a SUNAT');
+        return;
+      }
+
+      // Generar el comprobante PDF inmediatamente
+      this.comprobanteSunatService.generarComprobanteSunat(boleta);
+    }
+
+    enviarSunatConComprobante(boleta: BoletaResponse): void {
+      // Verificar si está pagada completamente antes de enviar
+      if (boleta.estado === 'pendiente' || boleta.estado === 'parcial') {
+        const saldoPendiente = boleta.total - (boleta.monto_adelantos || 0);
+        
+        if (saldoPendiente > 0) {
+          if (!confirm(`Esta boleta tiene un saldo pendiente de S/. ${saldoPendiente.toFixed(2)}. ¿Está seguro de enviarla a SUNAT?`)) {
+            return;
+          }
+        }
+      }
+      
+      const mensaje = boleta.estado === 'enviada' 
+        ? '¿Está seguro de REenviar esta boleta a SUNAT?' 
+        : '¿Está seguro de enviar esta boleta a SUNAT?';
+        
+      if (confirm(mensaje)) {
+        this.ventasService.enviarBoletaSunat(boleta.id).subscribe({
+          next: (response) => {
+            console.log('Respuesta del servidor:', response);
+            
+            let esExitoso = false;
+            
+            if (typeof response === 'string') {
+              esExitoso = response.toLowerCase().includes('exitosamente') || 
+                          response.toLowerCase().includes('éxito');
+            } else if (typeof response === 'object' && response !== null) {
+              esExitoso = response.success === true;
+            }
+            
+            if (esExitoso) {
+              // ✅ PREGUNTAR SI DESEA GENERAR COMPROBANTE
+              const generarComprobante = confirm('¡Boleta enviada exitosamente a SUNAT!\n\n¿Desea generar el comprobante de envío?');
+              
+              boleta.estado = 'enviada';
+              this.cargarBoletas();
+              
+              if (generarComprobante) {
+                // Esperar un momento para que se actualice la boleta
+                setTimeout(() => {
+                  this.generarComprobanteSunat(boleta);
+                }, 1000);
+              }
+            } else {
+              const errorMsg = typeof response === 'object' && response.error 
+                ? response.error 
+                : 'Error desconocido';
+              alert('Error al enviar: ' + errorMsg);
+            }
+          },
+          error: (error) => {
+            console.error('Error completo:', error);
+            alert('Error de conexión: ' + (error.message || 'Error desconocido'));
+          }
+        });
+      }
+    }
+
+    enviarSunatAutomaticoConComprobante(boleta: BoletaResponse): void {
+      this.ventasService.enviarBoletaSunat(boleta.id).subscribe({
+        next: (response) => {
+          console.log('Respuesta del envío automático:', response);
+          
+          let esExitoso = false;
+          
+          if (typeof response === 'string') {
+            esExitoso = response.toLowerCase().includes('exitosamente') || 
+                        response.toLowerCase().includes('éxito');
+          } else if (typeof response === 'object' && response !== null) {
+            esExitoso = response.success === true;
+          }
+          
+          if (esExitoso) {
+            // ✅ GENERAR COMPROBANTE AUTOMÁTICAMENTE
+            const generarComprobante = confirm('¡Boleta enviada automáticamente a SUNAT tras completar el pago!\n\n¿Desea generar el comprobante de envío?');
+            
+            boleta.estado = 'enviada';
+            this.cargarBoletas();
+            
+            if (generarComprobante) {
+              setTimeout(() => {
+                this.generarComprobanteSunat(boleta);
+              }, 1000);
+            }
+          } else {
+            alert('Pago completado, pero hubo un error al enviar a SUNAT. Puede reenviar manualmente.');
+            boleta.estado = 'pagada';
+          }
+        },
+        error: (error) => {
+          console.error('Error en envío automático:', error);
+          alert('Pago completado, pero hubo un error al enviar a SUNAT. Puede reenviar manualmente.');
+          boleta.estado = 'pagada';
+        }
+      });
+    }
+
+    cerrarModalComprobanteSunat(): void {
+      this.mostrarModalComprobante = false;
+      this.boletaSeleccionada = null;
+    }
+
+    mostrarOpcionesDocumentos(boleta: BoletaResponse): void {
+      this.boletaSeleccionada = boleta;
+      this.mostrarModalComprobante = true;
+    }
+
+    descargarTodosDocumentos(boleta: BoletaResponse): void {
+      // Descargar CDR
+      if (boleta.nombre_cdr) {
+        this.descargarCDR(boleta);
+      }
+      
+      // Generar comprobante
+      if (boleta.estado === 'enviada') {
+        setTimeout(() => {
+          this.generarComprobanteSunat(boleta);
+        }, 1000);
+      }
+      
+      alert('Descargando documentos...');
+      this.cerrarModalComprobante();
+    }
+  
+  toggleModal(boletaId: string | null): void {
+    this.modalAbierto = this.modalAbierto === boletaId ? null : boletaId;
+  }
 }

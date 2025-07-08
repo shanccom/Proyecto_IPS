@@ -53,107 +53,202 @@
         </div>
 
         <!-- Estado SUNAT y Acciones -->
-        <div class="bg-gray-700 p-3 rounded-lg">
-          <h4 class="font-semibold text-gray-200 mb-2 flex items-center">
-            <svg class="w-4 h-4 mr-2" style="color: #A7DCFF;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            Estado SUNAT
-          </h4>
-          
-          <div class="space-y-2">
-            <!-- Estado visual -->
-            <div class="flex items-center space-x-3">
-              <div *ngIf="boleta.estado === 'enviada'" class="flex items-center space-x-2">
-                <div class="w-2 h-2 bg-green-400 rounded-full"></div>
-                <span class="text-green-400 font-medium text-sm">Enviada a SUNAT</span>
-              </div>
-              <div *ngIf="boleta.estado !== 'enviada'" class="flex items-center space-x-2">
-                <div class="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
-                <span class="text-orange-400 font-medium text-sm">Pendiente de envío</span>
-              </div>
-            </div>
-            
-            <!-- Botones de acción -->
-            <div class="flex flex-wrap gap-2 pt-2">
-              <!-- Botón Enviar a SUNAT -->
-              <button 
-                *ngIf="boleta.estado !== 'enviada'"
-                (click)="enviarSunat(boleta); $event.stopPropagation()"
-                class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-md transition-colors duration-200 space-x-1">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                </svg>
-                <span>Enviar</span>
-              </button>
-              
-              <!-- Botón Reenviar -->
-              <button 
-                *ngIf="boleta.estado === 'enviada'"
-                (click)="enviarSunat(boleta); $event.stopPropagation()"
-                class="inline-flex items-center px-3 py-1.5 bg-yellow-600 hover:bg-yellow-700 text-white text-xs font-medium rounded-md transition-colors duration-200 space-x-1">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                </svg>
-                <span>Reenviar</span>
-              </button>
-              
-              <!-- Botón Descargar CDR -->
-              <button 
-                *ngIf="boleta.estado === 'enviada' && boleta.nombre_cdr"
-                (click)="descargarCDR(boleta); $event.stopPropagation()"
-                class="inline-flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-medium rounded-md transition-colors duration-200 space-x-1">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                </svg>
-                <span>CDR</span>
-              </button>
-              
-              <!-- Botón de pago -->
-              <button 
-                *ngIf="boleta.estado !== 'anulada' && (boleta.total - (boleta.monto_adelantos || 0)) > 0"
-                (click)="registrarPago(boleta); $event.stopPropagation()"
-                class="inline-flex items-center px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium rounded-md transition-colors duration-200 space-x-1">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                </svg>
-                <span>Pagar</span>
-              </button>
-              
-              <!-- Botón de historial -->
-              <button 
-                *ngIf="boleta.monto_adelantos && boleta.monto_adelantos > 0"
-                (click)="verHistorialPagos(boleta); $event.stopPropagation()"
-                class="inline-flex items-center px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium rounded-md transition-colors duration-200 space-x-1">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                </svg>
-                <span>Historial</span>
-              </button>
-              
-              <button 
-                *ngIf="puedeGenerarComprobante(boleta)"
-                (click)="generarComprobante(boleta)"
-                class="inline-flex items-center px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium rounded-md transition duration-200 space-x-1"
-                title="Generar Comprobante de Adelanto">
-                <i class="fas fa-receipt w-3 h-3"></i>
-                <span>Comprobante</span>
-              </button>
+<div class="bg-gray-700 p-3 rounded-lg">
+  <h4 class="font-semibold text-gray-200 mb-2 flex items-center">
+    <svg class="w-4 h-4 mr-2" style="color: #A7DCFF;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    Estado SUNAT
+  </h4>
+  
+  <div class="space-y-2">
+    <!-- Estado visual -->
+    <div class="flex items-center space-x-3">
+      <div *ngIf="boleta.estado === 'enviada'" class="flex items-center space-x-2">
+        <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+        <span class="text-green-400 font-medium text-sm">Enviada a SUNAT</span>
+      </div>
+      <div *ngIf="boleta.estado !== 'enviada'" class="flex items-center space-x-2">
+        <div class="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
+        <span class="text-orange-400 font-medium text-sm">Pendiente de envío</span>
+      </div>
+    </div>
+    
+    <!-- Botón único para abrir modal de acciones -->
+    <div class="pt-2">
+      <button 
+        (click)="toggleModal(boleta.id); $event.stopPropagation()"
+        class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors duration-200 space-x-2 w-full justify-center">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+        </svg>
+        <span>Gestionar Boleta</span>
+      </button>
+    </div>
+  </div>
+</div>
 
-              <!-- Botón de Eliminar -->
-              <button
-                *ngIf="boleta.estado === 'pendiente'"
-                (click)="eliminarBoleta(boleta); $event.stopPropagation()"
-                class="inline-flex items-center px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-md transition-colors duration-200 space-x-1">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                </svg>
-                <span>Eliminar</span>
-              </button>
-
-            </div>
-          </div>
+<!-- Modal de Acciones (agregar al final de tu componente) -->
+<div 
+  *ngIf="modalAbierto === boleta.id" 
+  class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+  (click)="toggleModal(null)">
+  
+  <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 border border-gray-700" (click)="$event.stopPropagation()">
+    <!-- Header del Modal -->
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-semibold text-white">Gestionar Boleta</h3>
+      <button 
+        (click)="toggleModal(null)" 
+        class="text-gray-400 hover:text-white transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    
+    <!-- Información rápida de la boleta -->
+    <div class="bg-gray-700 p-3 rounded-lg mb-4 border border-gray-600">
+      <div class="flex justify-between items-center">
+        <div>
+          <p class="text-white font-medium">{{ boleta.serie }}-{{ boleta.correlativo }}</p>
+          <p class="text-gray-300 text-sm">{{ boleta.cliente.rzn_social }}</p>
         </div>
+        <div class="text-right">
+          <p class="text-white font-semibold">S/. {{ boleta.total }}</p>
+          <span 
+            class="px-2 py-1 rounded-full text-xs font-medium"
+            [class.bg-green-800]="boleta.estado === 'enviada'"
+            [class.text-green-200]="boleta.estado === 'enviada'"
+            [class.bg-orange-800]="boleta.estado !== 'enviada'"
+            [class.text-orange-200]="boleta.estado !== 'enviada'">
+            {{ boleta.estado === 'enviada' ? 'Enviada' : 'Pendiente' }}
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Acciones agrupadas -->
+    <div class="space-y-3">
+      
+      <!-- Sección SUNAT -->
+      <div class="space-y-2">
+        <h4 class="text-sm font-medium text-gray-300 uppercase tracking-wider">SUNAT</h4>
+        
+        <button 
+          *ngIf="boleta.estado !== 'enviada'"
+          (click)="enviarSunat(boleta); toggleModal(null);"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg flex items-center space-x-3 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+          </svg>
+          <div class="text-left">
+            <div class="font-medium">Enviar a SUNAT</div>
+            <div class="text-sm opacity-90">Transmitir comprobante</div>
+          </div>
+        </button>
+        
+        <button 
+          *ngIf="boleta.estado === 'enviada'"
+          (click)="enviarSunat(boleta); toggleModal(null);"
+          class="w-full bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-3 rounded-lg flex items-center space-x-3 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          <div class="text-left">
+            <div class="font-medium">Reenviar a SUNAT</div>
+            <div class="text-sm opacity-90">Transmitir nuevamente</div>
+          </div>
+        </button>
+        
+        <button 
+          *ngIf="boleta.estado === 'enviada' && boleta.nombre_cdr"
+          (click)="descargarCDR(boleta); toggleModal(null);"
+          class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg flex items-center space-x-3 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          <div class="text-left">
+            <div class="font-medium">Descargar CDR</div>
+            <div class="text-sm opacity-90">Constancia de Recepción</div>
+          </div>
+        </button>
+        <button 
+          *ngIf="boleta.estado === 'enviada'"
+          (click)="generarComprobanteSunat(boleta); toggleModal(null);"
+          class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-lg flex items-center space-x-3 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          <div class="text-left">
+            <div class="font-medium">Generar Comprobante SUNAT</div>
+            <div class="text-sm opacity-90">Certificado oficial de envío</div>
+          </div>
+        </button>
+      </div>
+      
+      <!-- Sección Pagos (si aplica) -->
+      <div *ngIf="boleta.estado !== 'anulada'" class="space-y-2">
+        <h4 class="text-sm font-medium text-gray-300 uppercase tracking-wider">Pagos</h4>
+        
+        <button 
+          *ngIf="(boleta.total - (boleta.monto_adelantos || 0)) > 0"
+          (click)="registrarPago(boleta); toggleModal(null);"
+          class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-3 rounded-lg flex items-center space-x-3 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+          </svg>
+          <div class="text-left">
+            <div class="font-medium">Registrar Pago</div>
+            <div class="text-sm opacity-90">Pendiente: S/. {{ boleta.total - (boleta.monto_adelantos || 0) }}</div>
+          </div>
+        </button>
+        
+        <button 
+          *ngIf="boleta.monto_adelantos && boleta.monto_adelantos > 0"
+          (click)="verHistorialPagos(boleta); toggleModal(null);"
+          class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-lg flex items-center space-x-3 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          <div class="text-left">
+            <div class="font-medium">Historial de Pagos</div>
+            <div class="text-sm opacity-90">Pagado: S/. {{ boleta.monto_adelantos }}</div>
+          </div>
+        </button>
+        
+        <button 
+          *ngIf="puedeGenerarComprobante(boleta)"
+          (click)="generarComprobante(boleta); toggleModal(null);"
+          class="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-lg flex items-center space-x-3 transition-colors">
+          <i class="fas fa-receipt w-5 h-5"></i>
+          <div class="text-left">
+            <div class="font-medium">Generar Comprobante</div>
+            <div class="text-sm opacity-90">Comprobante de Adelanto</div>
+          </div>
+        </button>
+      </div>
+      
+      <!-- Sección Gestión -->
+      <div *ngIf="boleta.estado === 'pendiente'" class="space-y-2">
+        <h4 class="text-sm font-medium text-gray-300 uppercase tracking-wider">Gestión</h4>
+        
+        <button
+          (click)="eliminarBoleta(boleta); toggleModal(null);"
+          class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg flex items-center space-x-3 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+          </svg>
+          <div class="text-left">
+            <div class="font-medium">Eliminar Boleta</div>
+            <div class="text-sm opacity-90">Acción irreversible</div>
+          </div>
+        </button>
+      </div>
+      
+    </div>
+  </div>
+</div>
 
         <!-- Indicador de items -->
         <div class="flex items-center justify-between text-gray-400 text-sm">

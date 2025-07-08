@@ -129,9 +129,7 @@ export class VentasService {
     );
   }
   
-  /**
-   * Registra un adelanto/pago parcial para una boleta
-   */
+
   registrarAdelanto(boletaId: number, monto: number, descripcion?: string, metodoPago?: string): Observable<any> {
     const adelantoData = {
       boleta_id: boletaId,
@@ -144,22 +142,18 @@ export class VentasService {
     return this.http.post<any>(`${this.apiUrl}/ventas/boletas/${boletaId}/adelantos/`, adelantoData, this.httpOptions);
   }
 
-  /**
-   * Obtiene todos los adelantos de una boleta específica
-   */
+
   obtenerAdelantosBoleta(boletaId: number): Observable<PagoAdelanto[]> {
     return this.http.get<PagoAdelanto[]>(`${this.apiUrl}/ventas/boletas/${boletaId}/obtener_adelantos/`)
       .pipe(
         map(adelantos => adelantos.map(adelanto => ({
           ...adelanto,
-          monto: parseFloat(adelanto.monto.toString()) // ✅ Convertir a número
+          monto: parseFloat(adelanto.monto.toString()) 
         })))
       );
   }
 
-  /**
-   * Obtiene el estado de pago actual de una boleta
-   */
+
   obtenerEstadoPago(boletaId: number): Observable<{
     total_boleta: number;
     monto_adelantos: number;
@@ -170,9 +164,7 @@ export class VentasService {
     return this.http.get<any>(`${this.apiUrl}/ventas/boletas/${boletaId}/estado-pago/`);
   }
 
-  /**
-   * Procesa un pago y verifica si debe enviarse automáticamente a SUNAT
-   */
+
   procesarPagoConVerificacion(boletaId: number, montoPago: number, descripcion?: string, metodoPago?: string): Observable<{
     pago_registrado: boolean;
     boleta_completada: boolean;
@@ -188,16 +180,12 @@ export class VentasService {
     return this.http.post<any>(`${this.apiUrl}/ventas/boletas/${boletaId}/procesar-pago/`, pagoData, this.httpOptions);
   }
 
-  /**
-   * Elimina un adelanto específico
-   */
+
   eliminarAdelanto(boletaId: number, adelantoId: number): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/ventas/boletas/${boletaId}/adelantos/${adelantoId}/`);
   }
 
-  /**
-   * Obtiene un resumen de todas las boletas con sus estados de pago
-   */
+
   obtenerResumenPagos(): Observable<{
     boletas_pendientes: number;
     boletas_parciales: number;
@@ -207,4 +195,14 @@ export class VentasService {
     return this.http.get<any>(`${this.apiUrl}/ventas/resumen-pagos/`);
   }
 
-}
+  // Para el comprobante Sunat 
+  generarComprobanteSunat(boletaId: number): Observable<{
+    boleta: BoletaResponse;
+    fecha_envio: string;
+    estado_envio: string;
+  }> {
+    return this.http.get<any>(`${this.apiUrl}/ventas/boletas/${boletaId}/comprobante-sunat/`);
+  }
+
+
+} 
