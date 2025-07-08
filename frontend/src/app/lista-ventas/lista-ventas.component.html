@@ -89,17 +89,20 @@
 </div>
 
 <!-- Modal de Acciones (agregar al final de tu componente) -->
+<!-- Modal de Acciones - Versión Corregida -->
 <div 
   *ngIf="modalAbierto === boleta.id" 
   class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
-  (click)="$event.stopPropagation(); toggleModal(null)">
+  (click)="toggleModal(null)">
   
-  <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 border border-gray-700" (click)="$event.stopPropagation()">
+  <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 border border-gray-700" 
+       (click)="$event.stopPropagation()">
+    
     <!-- Header del Modal -->
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold text-white">Gestionar Boleta</h3>
       <button 
-        (click)="toggleModal(null)" 
+        (click)="$event.stopPropagation(); toggleModal(null)" 
         class="text-gray-400 hover:text-white transition-colors">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -173,6 +176,7 @@
             <div class="text-sm opacity-90">Constancia de Recepción</div>
           </div>
         </button>
+        
         <button 
           *ngIf="boleta.estado === 'enviada'"
           (click)="$event.stopPropagation(); generarComprobanteSunat(boleta); toggleModal(null);"
@@ -187,7 +191,7 @@
         </button>
       </div>
       
-      <!-- Sección Pagos (si aplica) -->
+      <!-- Sección Pagos -->
       <div *ngIf="boleta.estado !== 'anulada'" class="space-y-2">
         <h4 class="text-sm font-medium text-gray-300 uppercase tracking-wider">Pagos</h4>
         
@@ -234,10 +238,10 @@
         <h4 class="text-sm font-medium text-gray-300 uppercase tracking-wider">Gestión</h4>
         
         <button
-          (click)="eliminarBoleta(boleta); toggleModal(null);"
+          (click)="$event.stopPropagation(); eliminarBoleta(boleta); toggleModal(null);"
           class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg flex items-center space-x-3 transition-colors">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1v3M4 7h16"></path>
           </svg>
           <div class="text-left">
             <div class="font-medium">Eliminar Boleta</div>
@@ -245,7 +249,6 @@
           </div>
         </button>
       </div>
-      
     </div>
   </div>
 </div>
