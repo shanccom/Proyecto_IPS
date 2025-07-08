@@ -1126,6 +1126,23 @@ def ultimos_productos_vendidos(request):
 
     return Response(resultado)
 
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def boletas_pendientes(request):
+    boletas = Boleta.objects.filter(estado='pendiente').order_by('-fecha')
+    data = []
+
+    for b in boletas:
+        data.append({
+            'cliente': b.cliente.cliNom if b.cliente and hasattr(b.cliente, 'cliNom') else 'Cliente no registrado',
+            'fecha': b.fecha.strftime('%d/%m/%Y'),
+            'total': float(b.total)
+        })
+
+    return Response(data)
+
+
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])

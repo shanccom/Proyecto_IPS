@@ -21,10 +21,15 @@ export class DashboardService {
     const headers = this.authService.getAuthHeaders();
     return this.http.get<any>(`${this.baseUrl}resumen_dashboard/`, { headers });
   }
-  //Obtener los 6 productos top del dia
+  //Obtener los productos vendidos del dia
   obtenerProductosDelDia(): Observable<any[]> {
     const headers = this.authService.getAuthHeaders();
     return this.http.get<any[]>(`${this.baseUrl}productos-recientes/`, { headers });
+  }
+
+  obtenerVentasPendientes(): Observable<any[]> {
+    const headers = this.authService.getAuthHeaders();
+    return this.http.get<any[]>(`${this.baseUrl}boletas/pendientes/`, { headers });
   }
 
 

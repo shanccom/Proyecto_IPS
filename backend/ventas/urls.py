@@ -18,7 +18,10 @@ urlpatterns = [
     path('boletas/ventas/', views.ventas_total, name='ventas_total'),
     path('resumen_dashboard/', views.resumen_dashboard, name='resumen dashboard'),
     path('productos-recientes/', views.ultimos_productos_vendidos, name='productos_recientes_dashboard'),
+    path('boletas/pendientes/', views.boletas_pendientes, name ='boletas pendientes'),
+
     path('informes/productos-vendidos-dia/', views.productos_dia_detalle, name='productos_dia_detalle'),
+    
 
 
     # NUEVAS RUTAS PARA SUNAT

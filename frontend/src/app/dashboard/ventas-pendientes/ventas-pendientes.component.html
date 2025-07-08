@@ -1,0 +1,23 @@
+<div class="mt-8 w-full">
+    <div class="bg-[#292C2D] p-6 rounded-2xl shadow-md h-80 overflow-y-auto">
+        <h2 class="text-white text-xl font-semibold mb-4">Ventas pendientes</h2>
+        <div class="overflow-x-auto">
+        <table class="min-w-full table-auto border-separate border-transparent">
+            <thead>
+            <tr>
+                <th class="text-white text-sm font-semibold p-2 text-left">Cliente</th>
+                <th class="text-white text-sm font-semibold p-2 text-center">Fecha</th>
+                <th class="text-white text-sm font-semibold p-2 text-center">Total</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let venta of pendientes">
+                <td class="text-gray-300 p-2 text-left">{{ venta.cliente }}</td>
+                <td class="text-gray-300 p-2 text-center">{{ venta.fecha }}</td>
+                <td class="text-red-500 p-2 font-semibold text-center">S/ {{ venta.total }}</td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>

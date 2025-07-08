@@ -6,11 +6,12 @@ import { ChartVentasComponent } from '../chart-ventas/chart-ventas.component';
 import { DashboardService } from '../../services/dashboard.service';
 import { TopProductosComponent } from '../top-productos/top-productos.component';
 import { AuthService } from '../../services/auth.service';
+import { VentasPendientesComponent } from '../ventas-pendientes/ventas-pendientes.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, StatsCardComponent, RouterModule, ChartVentasComponent, TopProductosComponent],
+  imports: [CommonModule, StatsCardComponent, RouterModule, ChartVentasComponent, TopProductosComponent, VentasPendientesComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
