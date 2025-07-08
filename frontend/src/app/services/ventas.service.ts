@@ -206,4 +206,13 @@ export class VentasService {
     return this.http.get<any>(`${this.apiUrl}/ventas/resumen-pagos/`);
   }
 
+  // Para el comprobante Sunat 
+  generarComprobanteSunat(boletaId: number): Observable<{
+    boleta: BoletaResponse;
+    fecha_envio: string;
+    estado_envio: string;
+  }> {
+    return this.http.get<any>(`${this.apiUrl}/ventas/boletas/${boletaId}/comprobante-sunat/`);
+  }
+
 }
