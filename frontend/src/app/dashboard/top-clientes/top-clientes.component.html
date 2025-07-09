@@ -1,0 +1,21 @@
+<div class="bg-[#292C2D] p-6 rounded-2xl shadow-md  w-full">
+    <h2 class="text-white text-xl font-semibold mb-4">Clientes más frecuentes</h2>
+    <div class="overflow-x-auto max-h-[300px] overflow-y-auto">
+        <table class="min-w-full table-auto border-separate border-transparent">
+        <thead>
+            <tr>
+            <th class="text-white text-sm font-semibold p-2 text-left">Nombre</th>
+            <th class="text-white text-sm font-semibold p-2 text-center">DNI</th>
+            <th class="text-white text-sm font-semibold p-2 text-center">Compras</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let cliente of clientes">
+            <td class="text-gray-300 p-2 text-left">{{ cliente.nombre }}</td>
+            <td class="text-gray-300 p-2 text-center">{{ cliente.dni }}</td>
+            <td class="text-blue-500 p-2 text-center font-semibold">{{ cliente.compras }}</td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+</div>
