@@ -19,7 +19,7 @@ export class VentasPendientesComponent implements OnInit {
     if (this.authService.isAuthenticated()) {
       this.dashboardService.obtenerVentasPendientes().subscribe({
         next: (data) => {
-          console.log('Ventas pendientes:', data);
+          //console.log('Ventas pendientes:', data);
           this.pendientes = data;
         },
         error: (error) => {

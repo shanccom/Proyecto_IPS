@@ -20,7 +20,7 @@ export class TopProductosComponent implements OnInit {
     if (this.authService.isAuthenticated()) {
       this.dashboardService.obtenerProductosDelDia().subscribe({
         next: (data) => {
-          console.log('Dashboard : Datos recibidos del servicio:', data);
+          //console.log('Dashboard : Datos recibidos del servicio:', data);
           this.productos = data;
         },
         error: (error) => {

@@ -5,33 +5,38 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
 
       <!-- Columna izquierda: Stats Cards + Top Clientes (en fila) -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div class="flex flex-col lg:flex-row gap-2">
         <!-- Stats Cards -->
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-4 w-full lg:w-[40%] h-full">
           <app-stats-card
             icon="bx bx-bar-chart"
             title="Ventas de la Semana"
             [value]="ventasSemana"
-            [dateRange]="fechaSemana">
+            [dateRange]="fechaSemana"
+            class="flex-1 h-full">
           </app-stats-card>
 
           <app-stats-card
             icon="bx bx-calendar"
             title="Ventas del Mes"
             [value]="ventasMes"
-            [dateRange]="fechaMes">
+            [dateRange]="fechaMes"
+            class="flex-1 h-full">
           </app-stats-card>
 
           <app-stats-card
             icon="bx bx-dollar"
             title="Ganancia del Día"
             [value]="gananciaDia"
-            [dateRange]="fechaDia">
+            [dateRange]="fechaDia"
+            class="flex-1 h-full">
           </app-stats-card>
         </div>
 
-        <!-- Top Clientes -->
-        <app-top-clientes></app-top-clientes>
+        <!-- Top Clientes (lo hago más ancho pero sin pasar el gráfico) -->
+        <div class="flex-1 lg:w-[60%]">
+          <app-top-clientes></app-top-clientes>
+        </div>
       </div>
 
       <!-- Columna derecha: Gráfico de ventas -->
