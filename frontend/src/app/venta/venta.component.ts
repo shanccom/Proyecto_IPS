@@ -9,6 +9,7 @@ import { of } from 'rxjs';
 import { ReniecService, PersonaReniec } from '../services/reniec.service';
 import { Subject } from 'rxjs';
 import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'app-venta',
@@ -47,7 +48,8 @@ export class VentaComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private ventaService: VentasService,
-    private reniecService: ReniecService
+    private reniecService: ReniecService,
+    private notification: NotificationService
   ) {
     this.ventaForm = this.createForm();
     this.formularioLunaPersonalizada = this.createFormularioLuna();
@@ -111,7 +113,9 @@ export class VentaComponent implements OnInit {
 
   buscarProductoPorCodigo(): void {
     if (!this.codigoBusqueda || this.codigoBusqueda.trim() === '') {
-      alert('Por favor, ingrese un código de producto válido.');
+      this.notification.warning('Por favor, ingrese un código de producto válido.');  // ADICIÓN
+
+      //alert('Por favor, ingrese un código de producto válido.');
       return;
     }
     
@@ -125,11 +129,15 @@ export class VentaComponent implements OnInit {
     this.ventaService.buscarProductoPorCodigo(codigo)
       .pipe(
         catchError(error => {
-          console.error('Error al buscar producto:', error);
+          this.notification.error(`Producto con código ${codigo} no encontrado en el inventario.`);  // ADICIÓN
+
+          //console.error('Error al buscar producto:', error);
           if (error.status === 404) {
-            alert(`Producto con código ${codigo} no encontrado en el inventario.`);
+            this.notification.error(`Producto con código ${codigo} no encontrado en el inventario.`);  // ADICIÓN
+//            alert(`Producto con código ${codigo} no encontrado en el inventario.`);
           } else {
-            alert('Error al buscar el producto. Intente nuevamente.');
+            this.notification.error('Error al buscar el producto. Intente nuevamente.');  // ADICIÓN
+            //alert('Error al buscar el producto. Intente nuevamente.');
           }
           return of(null);
         }),
@@ -141,7 +149,9 @@ export class VentaComponent implements OnInit {
         if (producto) {
           this.agregarProductoAlFormulario(producto);
           this.mostrarScanner = false;
-          console.log(`Producto agregado: ${producto.nombre}`);
+          
+          this.notification.info(`Producto agregado: ${producto.nombre}`);  // ADICIÓN
+          //console.log(`Producto agregado: ${producto.nombre}`);
         }
       });
   }
@@ -160,7 +170,9 @@ export class VentaComponent implements OnInit {
         item.patchValue({ cantidad: cantidadActual + 1 });
         this.calcularSubtotal(itemExistente);
       } else {
-        alert(`Stock insuficiente. Solo hay ${stockDisponible} unidades disponibles.`);
+        this.notification.warning(`Stock insuficiente. Solo hay ${producto.stock} unidades.`);  // ADICIÓN
+
+        //alert(`Stock insuficiente. Solo hay ${stockDisponible} unidades disponibles.`);
       }
     } else {
       const nuevoItem = this.createItemForm(producto);
@@ -188,10 +200,12 @@ export class VentaComponent implements OnInit {
       this.items.push(itemPersonalizado);
       this.calcularSubtotal(this.items.length - 1);
       this.formularioLunaPersonalizada.reset({ cantidad: 1, valor_unitario: 0 });
-      
-      console.log('Luna personalizada agregada:', formValue.descripcion);
+      this.notification.success('Luna personalizada agregada al detalle.');  // ADICIÓN
+
+      //console.log('Luna personalizada agregada:', formValue.descripcion);
     } else {
-      alert('Completa todos los campos para agregar una luna personalizada.');
+      this.notification.info('Completa todos los campos para agregar una luna personalizada.');  // ADICIÓN
+      //alert('Completa todos los campos para agregar una luna personalizada.');
     }
   }
 
@@ -202,12 +216,14 @@ export class VentaComponent implements OnInit {
     console.log('Cliente:', cliente); // DEBUG: Ver qué datos hay
 
     if (!cliente.tipo_doc || !cliente.num_doc || !cliente.rzn_social) {
-      alert('Por favor, complete los datos del cliente.');
+      this.notification.warning('Por favor, complete los datos del cliente.');  // ADICIÓN
+      //('Por favor, complete los datos del cliente.');
       return;
     }
 
     if (productosForm.length === 0) {
-      alert('Debe agregar al menos un producto.');
+      this.notification.warning('Debe agregar al menos un producto.');  // ADICIÓN
+      //alert('Debe agregar al menos un producto.');
       return;
     }
 
@@ -253,7 +269,8 @@ export class VentaComponent implements OnInit {
       .pipe(
         catchError(error => {
           console.error('Error al guardar boleta:', error);
-          alert('Error al guardar la boleta. Intente nuevamente.');
+          this.notification.error('Error al guardar la boleta. Intente nuevamente.');  // ADICIÓN
+          //alert('Error al guardar la boleta. Intente nuevamente.');
           return of(null);
         }),
         finalize(() => {
@@ -263,7 +280,8 @@ export class VentaComponent implements OnInit {
       .subscribe(response => {
         if (response) {
           console.log('Boleta guardada exitosamente:', response);
-          alert(`Boleta ${response.serie}-${response.correlativo} guardada exitosamente`);
+          this.notification.success(`Boleta ${response.serie}-${response.correlativo} guardada exitosamente.`);  // ADICIÓN
+          //alert(`Boleta ${response.serie}-${response.correlativo} guardada exitosamente`);
           this.boletaGuardada = true;
           this.limpiarFormulario();
         }
@@ -290,6 +308,8 @@ export class VentaComponent implements OnInit {
   eliminarItem(index: number): void {
     this.items.removeAt(index);
     this.calcularTotalesCompletos();
+    this.notification.info('Producto eliminado del detalle.');  // ADICIÓN
+
   }
 
   calcularSubtotal(index: number): void {
@@ -302,7 +322,9 @@ export class VentaComponent implements OnInit {
     const tieneProductoId = item.get('producto_id')?.value;
     if (tieneProductoId && cantidad > stockDisponible) {
       item.patchValue({ cantidad: stockDisponible });
-      alert(`No puede exceder el stock disponible (${stockDisponible} unidades)`);
+      //alert(`No puede exceder el stock disponible (${stockDisponible} unidades)`);
+      this.notification.warning(`No puede exceder el stock disponible (${stockDisponible} unidades).`);  // ADICIÓN
+
       return;
     }
     
@@ -439,7 +461,7 @@ export class VentaComponent implements OnInit {
         this.ventaForm.get('cliente.rzn_social')?.disable(); // Deshabilitar edición
         
         // Opcional: mostrar notificación de éxito
-        this.mostrarNotificacion('DNI encontrado en RENIEC', 'success');
+        this.notification.success('DNI encontrado en RENIEC', 'Éxito');  // ADICIÓN
       },
       error: (error) => {
         console.error('Error al consultar DNI:', error);
@@ -449,7 +471,7 @@ export class VentaComponent implements OnInit {
         this.datosPersona = null;
         
         // Mostrar error al usuario
-        this.mostrarNotificacion(error.message || 'Error al consultar DNI', 'error');
+        this.notification.error(error.message || 'Error al consultar DNI', 'Error');  // ADICIÓN
       }
     });
   }
