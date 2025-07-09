@@ -32,6 +32,12 @@ export class DashboardService {
     return this.http.get<any[]>(`${this.baseUrl}boletas/pendientes/`, { headers });
   }
 
+  obtenerTopClientes(): Observable<any[]> {
+    const headers = this.authService.getAuthHeaders();
+    return this.http.get<any[]>(`${this.baseUrl}boletas/top-clientes/`, { headers });
+  }
+
+
 
 
 }

@@ -33,6 +33,7 @@ from django.db.models import Sum
 from django.db.models.functions import TruncDay, TruncMonth, TruncYear
 from django.utils import timezone
 from datetime import timedelta
+from django.db.models import Count
 #
 
 #Hora ventas
@@ -1154,7 +1155,7 @@ def top_clientes_frecuentes(request):
     clientes = (
         Boleta.objects
         .filter(cliente__isnull=False, estado__in=['pagada', 'enviada'])
-        .values('cliente__id', 'cliente__cliNom', 'cliente__cliDni')
+        .values('cliente__id', 'cliente__cliNom', 'cliente__cliNumDoc')
         .annotate(total_compras=Count('id'))
         .order_by('-total_compras')[:6]
     )
@@ -1162,7 +1163,7 @@ def top_clientes_frecuentes(request):
     resultado = [
         {
             'nombre': cliente['cliente__cliNom'],
-            'dni': cliente['cliente__cliDni'],
+            'dni': cliente['cliente__cliNumDoc'],
             'compras': cliente['total_compras'],
         }
         for cliente in clientes
@@ -1170,47 +1171,3 @@ def top_clientes_frecuentes(request):
 
     return Response(resultado)
 
-
-@api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def productos_dia_detalle(request):
-    hoy = timezone.localtime(timezone.now()).date()
-
-    boletas_dia = Boleta.objects.filter(fecha__date=hoy, estado__in=['pagada', 'enviada'])
-    items = ItemBoleta.objects.filter(boleta__in=boletas_dia)
-
-    productos = []
-
-    for item in items:
-        producto = item.content_object
-        if not producto:
-            continue
-
-        nombre = str(producto)
-        tipo = ''
-        codigo = ''
-
-        if hasattr(producto, 'lunaCod'):
-            tipo = 'Luna'
-            codigo = producto.lunaCod
-        elif hasattr(producto, 'monCod'):
-            tipo = 'Montura'
-            codigo = producto.monCod
-        elif hasattr(producto, 'accCod'):
-            tipo = 'Accesorio'
-            codigo = producto.accCod
-
-        productos.append({
-            'codigo': codigo,
-            'nombre': nombre,
-            'tipo': tipo,
-            'cantidad': item.cantidad,
-            'precio_unitario': float(item.valor_unitario),
-            'subtotal': float(item.valor_unitario * item.cantidad)
-        })
-
-    return Response({
-        'fecha': hoy.strftime('%Y-%m-%d'),
-        'productos_vendidos': productos
-    })
