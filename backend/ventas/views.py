@@ -1147,6 +1147,28 @@ def boletas_pendientes(request):
 
     return Response(data)
 
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def top_clientes_frecuentes(request):
+    clientes = (
+        Boleta.objects
+        .filter(cliente__isnull=False, estado__in=['pagada', 'enviada'])
+        .values('cliente__id', 'cliente__cliNom', 'cliente__cliDni')
+        .annotate(total_compras=Count('id'))
+        .order_by('-total_compras')[:6]
+    )
+
+    resultado = [
+        {
+            'nombre': cliente['cliente__cliNom'],
+            'dni': cliente['cliente__cliDni'],
+            'compras': cliente['total_compras'],
+        }
+        for cliente in clientes
+    ]
+
+    return Response(resultado)
 
 
 @api_view(['GET'])

@@ -274,17 +274,16 @@
   </div>
 
 </div>
-
 <!-- ===== MODAL PARA VER DETALLES DE LA BOLETA ===== -->
 <div *ngIf="mostrarModalDetalles" class="fixed inset-0 bg-black bg-opacity-75 overflow-y-auto h-full w-full z-50 flex items-center justify-center">
-  <div class="relative bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+  <div class="relative bg-background rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto border border-border">
     
     <!-- Header del Modal -->
-    <div class="flex items-center justify-between p-6 border-b border-gray-700" style="background-color: #A7DCFF;">
-      <h3 class="text-lg font-semibold text-black">Detalles de la Boleta</h3>
+    <div class="flex items-center justify-between p-6 border-b border-border bg-accent">
+      <h3 class="text-lg font-semibold text-foreground">Detalles de la Boleta</h3>
       <button 
         (click)="$event.stopPropagation(); cerrarModalDetalles()"
-        class="text-gray-800 hover:text-black transition-colors">
+        class="text-foreground hover:text-muted-foreground transition-colors">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
         </svg>
@@ -292,33 +291,33 @@
     </div>
     
     <!-- Body del Modal -->
-    <div class="p-6" *ngIf="boletaSeleccionada">
+    <div class="p-6 bg-background" *ngIf="boletaSeleccionada">
       
       <!-- Información de la boleta -->
-      <div class="bg-gray-700 p-4 rounded-lg mb-6">
-        <h4 class="font-semibold text-white mb-3 flex items-center">
-          <svg class="w-5 h-5 mr-2" style="color: #A7DCFF;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="bg-secondary p-4 rounded-lg mb-6 border border-border">
+        <h4 class="font-semibold text-foreground mb-3 flex items-center">
+          <svg class="w-5 h-5 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
           </svg>
           Boleta {{ boletaSeleccionada.serie }}-{{ boletaSeleccionada.correlativo }}
         </h4>
         <div class="space-y-2 text-sm">
           <div class="flex justify-between">
-            <span class="text-gray-300">Cliente:</span>
-            <span class="text-white font-medium">{{ boletaSeleccionada.cliente.rzn_social }}</span>
+            <span class="text-muted-foreground">Cliente:</span>
+            <span class="text-foreground font-medium">{{ boletaSeleccionada.cliente.rzn_social }}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-gray-300">Documento:</span>
-            <span class="text-white font-medium">{{ boletaSeleccionada.cliente.num_doc }}</span>
+            <span class="text-muted-foreground">Documento:</span>
+            <span class="text-foreground font-medium">{{ boletaSeleccionada.cliente.num_doc }}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-gray-300">Fecha:</span>
-            <span class="text-white font-medium">{{ boletaSeleccionada.fecha_emision }}</span>
+            <span class="text-muted-foreground">Fecha:</span>
+            <span class="text-foreground font-medium">{{ boletaSeleccionada.fecha_emision }}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-gray-300">Estado:</span>
+            <span class="text-muted-foreground">Estado:</span>
             <span class="font-medium" 
-                  [ngClass]="boletaSeleccionada.estado === 'enviada' ? 'text-green-400' : 'text-orange-400'">
+                  [ngClass]="boletaSeleccionada.estado === 'enviada' ? 'text-green-500' : 'text-amber-500'">
               {{ boletaSeleccionada.estado === 'enviada' ? 'Enviada' : 'Pendiente' }}
             </span>
           </div>
@@ -326,25 +325,25 @@
       </div>
 
       <!-- Items de la boleta -->
-      <div class="bg-gray-700 p-4 rounded-lg mb-6">
-        <h4 class="font-semibold text-white mb-4 flex items-center">
-          <svg class="w-5 h-5 mr-2" style="color: #A7DCFF;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="bg-secondary p-4 rounded-lg mb-6 border border-border">
+        <h4 class="font-semibold text-foreground mb-4 flex items-center">
+          <svg class="w-5 h-5 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
           </svg>
           Detalle de Items
         </h4>
         <div class="space-y-3">
-          <div *ngFor="let item of boletaSeleccionada.items" class="flex justify-between items-center p-3 bg-gray-600 rounded-lg hover:bg-gray-500 transition-colors">
+          <div *ngFor="let item of boletaSeleccionada.items" class="flex justify-between items-center p-3 bg-muted rounded-lg hover:bg-muted/70 transition-colors border border-border">
             <div class="flex-1">
-              <p class="font-medium text-white">{{ item.producto_info.tipo }}</p>
-              <p class="text-sm text-gray-300">Código: {{ item.producto_info.codigo }}</p>
+              <p class="font-medium text-foreground">{{ item.producto_info.tipo }}</p>
+              <p class="text-sm text-muted-foreground">Código: {{ item.producto_info.codigo }}</p>
             </div>
             <div class="flex items-center space-x-4 text-right">
-              <div class="text-sm text-gray-300">
+              <div class="text-sm text-muted-foreground">
                 <span class="font-medium">{{ item.cantidad }}</span> x 
                 <span class="font-medium">S/ {{ item.valor_unitario }}</span>
               </div>
-              <div class="font-bold text-green-400 min-w-[80px]">
+              <div class="font-bold text-primary min-w-[80px]">
                 S/ {{ item.subtotal }}
               </div>
             </div>
@@ -353,52 +352,51 @@
       </div>
 
       <!-- Total y resumen -->
-      <div class="bg-gray-700 p-4 rounded-lg">
-        <h4 class="font-semibold text-white mb-3 flex items-center">
-          <svg class="w-5 h-5 mr-2" style="color: #A7DCFF;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="bg-secondary p-4 rounded-lg border border-border">
+        <h4 class="font-semibold text-foreground mb-3 flex items-center">
+          <svg class="w-5 h-5 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
           </svg>
           Resumen de Pagos
         </h4>
         <div class="space-y-2 text-sm">
           <div class="flex justify-between">
-            <span class="text-gray-300">Total:</span>
-            <span class="text-white font-medium">S/ {{ boletaSeleccionada.total.toFixed(2) }}</span>
+            <span class="text-muted-foreground">Total:</span>
+            <span class="text-foreground font-medium">S/ {{ boletaSeleccionada.total.toFixed(2) }}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-gray-300">Adelantos:</span>
-            <span class="text-white font-medium">S/ {{ (boletaSeleccionada.monto_adelantos || 0).toFixed(2) }}</span>
+            <span class="text-muted-foreground">Adelantos:</span>
+            <span class="text-foreground font-medium">S/ {{ (boletaSeleccionada.monto_adelantos || 0).toFixed(2) }}</span>
           </div>
-          <div class="flex justify-between pt-2 border-t border-gray-600">
-            <span class="text-gray-200 font-semibold">Saldo Pendiente:</span>
-            <span class="font-bold" style="color: #A7DCFF;">S/ {{ (boletaSeleccionada.total - (boletaSeleccionada.monto_adelantos || 0)).toFixed(2) }}</span>
+          <div class="flex justify-between pt-2 border-t border-border">
+            <span class="text-foreground font-semibold">Saldo Pendiente:</span>
+            <span class="font-bold text-primary">S/ {{ (boletaSeleccionada.total - (boletaSeleccionada.monto_adelantos || 0)).toFixed(2) }}</span>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Footer del Modal -->
-    <div class="flex justify-end p-6 border-t border-gray-700">
+    <div class="flex justify-end p-6 border-t border-border bg-background">
       <button 
         type="button" 
         (click)="cerrarModalDetalles()"
-        class="px-4 py-2 text-sm font-medium text-gray-300 bg-gray-700 border border-gray-600 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+        class="px-4 py-2 text-sm font-medium text-muted-foreground bg-secondary border border-border rounded-md hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors">
         Cerrar
       </button>
     </div>
   </div>
 </div>
-
 <!-- ===== MODAL PARA REGISTRAR PAGOS PARCIALES ===== -->
 <div *ngIf="mostrarModalPago" class="fixed inset-0 bg-black bg-opacity-75 overflow-y-auto h-full w-full z-50 flex items-center justify-center">
-  <div class="relative bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+  <div class="relative bg-background rounded-lg shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto border border-border">
     
     <!-- Header del Modal -->
-    <div class="flex items-center justify-between p-6 border-b border-gray-700" style="background-color: #A7DCFF;">
-      <h3 class="text-lg font-semibold text-black">Registrar Pago</h3>
+    <div class="flex items-center justify-between p-6 border-b border-border bg-accent">
+      <h3 class="text-lg font-semibold text-foreground">Registrar Pago</h3>
       <button 
         (click)="$event.stopPropagation(); cerrarModalPago()"
-        class="text-gray-800 hover:text-black transition-colors">
+        class="text-foreground hover:text-muted-foreground transition-colors">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
         </svg>
@@ -406,27 +404,27 @@
     </div>
     
     <!-- Body del Modal -->
-    <div class="p-6" *ngIf="boletaSeleccionada">
+    <div class="p-6 bg-background" *ngIf="boletaSeleccionada">
       
       <!-- Información de la boleta -->
-      <div class="bg-gray-700 p-4 rounded-lg mb-6">
-        <h4 class="font-semibold text-white mb-3">Boleta {{ boletaSeleccionada.serie }}-{{ boletaSeleccionada.correlativo }}</h4>
+      <div class="bg-secondary p-4 rounded-lg mb-6 border border-border">
+        <h4 class="font-semibold text-foreground mb-3">Boleta {{ boletaSeleccionada.serie }}-{{ boletaSeleccionada.correlativo }}</h4>
         <div class="space-y-2 text-sm">
           <div class="flex justify-between">
-            <span class="text-gray-300">Cliente:</span>
-            <span class="text-white font-medium">{{ boletaSeleccionada.cliente.rzn_social }}</span>
+            <span class="text-muted-foreground">Cliente:</span>
+            <span class="text-foreground font-medium">{{ boletaSeleccionada.cliente.rzn_social }}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-gray-300">Total:</span>
-            <span class="text-white font-medium">S/ {{ boletaSeleccionada.total.toFixed(2) }}</span>
+            <span class="text-muted-foreground">Total:</span>
+            <span class="text-foreground font-medium">S/ {{ boletaSeleccionada.total.toFixed(2) }}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-gray-300">Adelantos:</span>
-            <span class="text-white font-medium">S/ {{ (boletaSeleccionada.monto_adelantos || 0).toFixed(2) }}</span>
+            <span class="text-muted-foreground">Adelantos:</span>
+            <span class="text-foreground font-medium">S/ {{ (boletaSeleccionada.monto_adelantos || 0).toFixed(2) }}</span>
           </div>
-          <div class="flex justify-between pt-2 border-t border-gray-600">
-            <span class="text-gray-200 font-semibold">Saldo Pendiente:</span>
-            <span class="font-bold" style="color: #A7DCFF;">S/ {{ (boletaSeleccionada.total - (boletaSeleccionada.monto_adelantos || 0)).toFixed(2) }}</span>
+          <div class="flex justify-between pt-2 border-t border-border">
+            <span class="text-foreground font-semibold">Saldo Pendiente:</span>
+            <span class="font-bold text-primary">S/ {{ (boletaSeleccionada.total - (boletaSeleccionada.monto_adelantos || 0)).toFixed(2) }}</span>
           </div>
         </div>
       </div>
@@ -434,8 +432,8 @@
       <!-- Formulario de pago -->
       <div class="space-y-4">
         <div>
-          <label for="montoPago" class="block text-sm font-medium text-gray-300 mb-2">
-            Monto del Pago <span class="text-red-400">*</span>
+          <label for="montoPago" class="block text-sm font-medium text-foreground mb-2">
+            Monto del Pago <span class="text-destructive">*</span>
           </label>
           <input 
             type="number" 
@@ -445,21 +443,21 @@
             min="0"
             step="0.01"
             [max]="boletaSeleccionada.total - (boletaSeleccionada.monto_adelantos || 0)"
-            class="w-full px-3 py-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-700 text-white"
+            class="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-input text-foreground placeholder:text-muted-foreground"
           >
-          <p class="text-xs text-gray-400 mt-1">
+          <p class="text-xs text-muted-foreground mt-1">
             Máximo: S/ {{ (boletaSeleccionada.total - (boletaSeleccionada.monto_adelantos || 0)).toFixed(2) }}
           </p>
         </div>
 
         <div>
-          <label for="metodoPago" class="block text-sm font-medium text-gray-300 mb-2">
+          <label for="metodoPago" class="block text-sm font-medium text-foreground mb-2">
             Método de Pago
           </label>
           <select 
             id="metodoPago" 
             [(ngModel)]="metodoPago" 
-            class="w-full px-3 py-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-700 text-white">
+            class="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-input text-foreground">
             <option value="efectivo">Efectivo</option>
             <option value="tarjeta">Tarjeta</option>
             <option value="transferencia">Transferencia</option>
@@ -469,7 +467,7 @@
         </div>
 
         <div>
-          <label for="descripcionPago" class="block text-sm font-medium text-gray-300 mb-2">
+          <label for="descripcionPago" class="block text-sm font-medium text-foreground mb-2">
             Descripción (Opcional)
           </label>
           <input 
@@ -477,28 +475,28 @@
             id="descripcionPago"
             [(ngModel)]="descripcionPago" 
             placeholder="Ej: Pago parcial - cuota 1"
-            class="w-full px-3 py-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-700 text-white"
+            class="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-input text-foreground placeholder:text-muted-foreground"
           >
         </div>
 
         <!-- Información de advertencia -->
         <div *ngIf="montoPago > 0" class="rounded-md p-4 border" 
-             [ngClass]="montoPago >= (boletaSeleccionada.total - (boletaSeleccionada.monto_adelantos || 0)) ? 'bg-green-900 border-green-600' : 'bg-blue-900 border-blue-600'">
+             [ngClass]="montoPago >= (boletaSeleccionada.total - (boletaSeleccionada.monto_adelantos || 0)) ? 'bg-green-900/20 border-green-500/30' : 'bg-primary/10 border-primary/30'">
           <div class="flex items-start space-x-3">
             <svg *ngIf="montoPago >= (boletaSeleccionada.total - (boletaSeleccionada.monto_adelantos || 0))" 
-                 class="w-5 h-5 text-green-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                 class="w-5 h-5 text-green-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
             </svg>
             <svg *ngIf="montoPago < (boletaSeleccionada.total - (boletaSeleccionada.monto_adelantos || 0))" 
-                 class="w-5 h-5 text-blue-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                 class="w-5 h-5 text-primary mt-0.5" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
             </svg>
             <div class="text-sm">
-              <p *ngIf="montoPago >= (boletaSeleccionada.total - (boletaSeleccionada.monto_adelantos || 0))" class="text-green-300">
+              <p *ngIf="montoPago >= (boletaSeleccionada.total - (boletaSeleccionada.monto_adelantos || 0))" class="text-green-600 dark:text-green-400">
                 <span class="font-medium">Pago Completo:</span> Este pago completará el total de la boleta.
                 <br>La boleta se enviará automáticamente a SUNAT.
               </p>
-              <p *ngIf="montoPago < (boletaSeleccionada.total - (boletaSeleccionada.monto_adelantos || 0))" class="text-blue-300">
+              <p *ngIf="montoPago < (boletaSeleccionada.total - (boletaSeleccionada.monto_adelantos || 0))" class="text-primary">
                 <span class="font-medium">Pago Parcial:</span> 
                 Quedará un saldo de S/ {{ (boletaSeleccionada.total - (boletaSeleccionada.monto_adelantos || 0) - montoPago).toFixed(2) }}
               </p>
@@ -509,11 +507,11 @@
     </div>
 
     <!-- Footer del Modal -->
-    <div class="flex justify-end space-x-3 p-6 border-t border-gray-700">
+    <div class="flex justify-end space-x-3 p-6 border-t border-border bg-background">
       <button 
         type="button" 
         (click)="cerrarModalPago()"
-        class="px-4 py-2 text-sm font-medium text-gray-300 bg-gray-700 border border-gray-600 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+        class="px-4 py-2 text-sm font-medium text-muted-foreground bg-secondary border border-border rounded-md hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors">
         Cancelar
       </button>
       
@@ -521,7 +519,7 @@
         type="button" 
         (click)="procesarPago()"
         [disabled]="!montoPago || montoPago <= 0"
-        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+        class="px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
         {{ 
           montoPago >= ((boletaSeleccionada?.total || 0) - (boletaSeleccionada?.monto_adelantos || 0)) 
             ? 'Completar Pago y Enviar' 
