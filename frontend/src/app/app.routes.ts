@@ -11,7 +11,6 @@ import { ReportesComponent } from './reportes/reportes.component';
 import { CuentaComponent } from './admin/cuenta/cuenta.component';
 import { UsuariosComponent } from './admin/usuarios/usuarios.component';
 import { ConfiguracionComponent } from './admin/configuracion/configuracion.component';
-import { ConexionComponent } from './admin/conexion/conexion.component';
 
 //Importación de los guards
 import { AuthGuard } from './guards/auth.guard';
@@ -33,6 +32,5 @@ export const routes: Routes = [
   { path: 'admin-cuenta', component:CuentaComponent, canActivate: [AdminGuard] },
   { path: 'admin-usuarios', component:UsuariosComponent, canActivate: [AdminGuard] },
   { path: 'admin-configuracion', component:ConfiguracionComponent, canActivate: [AdminGuard] },
-  { path: 'admin-conexion', component:ConexionComponent, canActivate: [AdminGuard] },
   { path: '**', redirectTo: 'login' }
 ];

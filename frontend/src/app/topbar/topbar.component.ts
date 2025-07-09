@@ -90,8 +90,6 @@
             this.pageTitleService.setTitle('Mi cuenta');
           } else if (path.includes('admin-configuracion')) {
             this.pageTitleService.setTitle('Configuración y Personalización');
-          } else if (path.includes('admin-conexion')) {
-            this.pageTitleService.setTitle('Configurar Conexion con Sunat');
           } else {
             this.pageTitleService.setTitle('');
           }
