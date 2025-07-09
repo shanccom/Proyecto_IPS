@@ -1,19 +1,25 @@
 <!-- usuarios.component.html -->
-<div class="justify-between items-center mb-6 mt-7 ml-[80px]">
-<div class="min-h-screen bg-background text-foreground p-6 font-poppins">
+<div class="justify-between items-center mb-6 mt-7 ml-[90px]">
   <div class="max-w-7xl mx-auto">
     <!-- Header -->
     <div class="mb-8">
-      <h1 class="text-3xl font-bold text-foreground mb-2">Gestión de Usuarios</h1>
-      <p class="text-muted-foreground">Administra los usuarios del sistema</p>
-      <!-- Agregar el boton agregar empleado... ns porque se borra al recargar -->
-      <button (click)="newColaborator()"
-                          class="bg-destructive hover:bg-destructive/90 text-destructive-foreground px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 flex items-center border border-destructive">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                    </svg>
-                    Registrar Empleado
-      </button>
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-3xl font-bold text-foreground mb-2">Gestión de Usuarios</h1>
+          <p class="text-muted-foreground">Administra los usuarios del sistema</p>
+        </div>
+        <!-- Botón Registrar Empleado mejorado -->
+        <button
+          (click)="abrirModalRegistrar()"
+          class="bg-[rgb(var(--primary-light)/1)] hover:bg-[rgb(var(--primary-light)/0.9)] text-white px-6 py-3 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg"
+        >
+          <!-- Icono + -->
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+          </svg>
+          Registrar Empleado
+        </button>
+      </div>
     </div>
 
     <!-- Tabla de usuarios -->
@@ -116,6 +122,106 @@
   </div>
 </div>
 
+<!-- Modal para registrar empleado -->
+<div *ngIf="mostrarModalRegistrar" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+  <div class="bg-background border border-border rounded-lg p-6 w-full max-w-md mx-4 shadow-xl">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-xl font-bold text-foreground">Registrar Nuevo Empleado</h2>
+      <button (click)="cerrarModalRegistrar()" class="text-muted-foreground hover:text-foreground transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    
+    <form (ngSubmit)="registrarEmpleado()" class="space-y-4">
+      <!-- Código del empleado -->
+      <div>
+        <label class="block text-sm font-medium text-foreground mb-2">
+          Código del Empleado
+        </label>
+        <input
+          type="text"
+          [(ngModel)]="emplCod"
+          name="emplCod"
+          required
+          class="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          placeholder="Ingrese el código del empleado"
+        />
+      </div>
+
+      <!-- Nombre del empleado -->
+      <div>
+        <label class="block text-sm font-medium text-foreground mb-2">
+          Nombre del Empleado
+        </label>
+        <input
+          type="text"
+          [(ngModel)]="emplNom"
+          name="emplNom"
+          required
+          class="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          placeholder="Ingrese el nombre completo"
+        />
+      </div>
+
+      <!-- Cargo del empleado -->
+      <div>
+        <label class="block text-sm font-medium text-foreground mb-2">
+          Cargo
+        </label>
+        <select
+          [(ngModel)]="emplCarg"
+          name="emplCarg"
+          required
+          class="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+        >
+          <option value="">Seleccione un cargo</option>
+          <option value="gerente">Gerente</option>
+          <option value="vendedor">Vendedor</option>
+          <option value="administrador">Administrador</option>
+          <option value="asistente">Asistente</option>
+        </select>
+      </div>
+
+      <!-- Condición del empleado -->
+      <div>
+        <label class="block text-sm font-medium text-foreground mb-2">
+          Condición
+        </label>
+        <select
+          [(ngModel)]="emplCond"
+          name="emplCond"
+          required
+          class="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+        >
+          <option value="">Seleccione una condición</option>
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+          <option value="suspendido">Suspendido</option>
+        </select>
+      </div>
+
+      <!-- Botones del formulario -->
+      <div class="flex space-x-3 pt-4">
+        <button
+          type="submit"
+          class="flex-1 bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-md font-medium transition-colors duration-200 border border-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        >
+          Registrar Empleado
+        </button>
+        <button
+          type="button"
+          (click)="cerrarModalRegistrar()"
+          class="flex-1 bg-secondary hover:bg-secondary/80 text-secondary-foreground py-2 px-4 rounded-md font-medium transition-colors duration-200 border border-border focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        >
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- Modal para editar usuario -->
 <div *ngIf="mostrarModalEditar" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
   <div class="bg-background border border-border rounded-lg p-6 w-full max-w-md mx-4 shadow-xl">
@@ -184,4 +290,4 @@
     </div>
   </div>
 </div>
-</div>
+<!--Falta lista de empleados con su cod-->
