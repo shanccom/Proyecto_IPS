@@ -1155,7 +1155,7 @@ def top_clientes_frecuentes(request):
     clientes = (
         Boleta.objects
         .filter(cliente__isnull=False, estado__in=['pagada', 'enviada'])
-        .values('cliente__id', 'cliente__cliNom', 'cliente__cliDni')
+        .values('cliente__id', 'cliente__cliNom', 'cliente__cliNumDoc')
         .annotate(total_compras=Count('id'))
         .order_by('-total_compras')[:6]
     )
@@ -1163,7 +1163,7 @@ def top_clientes_frecuentes(request):
     resultado = [
         {
             'nombre': cliente['cliente__cliNom'],
-            'dni': cliente['cliente__cliDni'],
+            'dni': cliente['cliente__cliNumDoc'],
             'compras': cliente['total_compras'],
         }
         for cliente in clientes
