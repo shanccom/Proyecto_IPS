@@ -89,6 +89,7 @@ export class VentaComponent implements OnInit {
       subtotal: [{ value: producto?.precio || 0, disabled: true }],
       stock_disponible: [{ value: producto?.stock || 0, disabled: true }]
     });
+    
   }
 
   createFormularioLuna(): FormGroup {
@@ -226,7 +227,7 @@ export class VentaComponent implements OnInit {
           return {
             producto_id: null, // Agregamos producto_id como null
             codigo: item.codigo || 'LUNA-CUSTOM',
-            descripcion: item.descripcion || item.nombre || 'Producto personalizado',
+            descripcion: item.nombre || item.descripcion || 'Producto personalizado',
             cantidad: item.cantidad,
             valor_unitario: item.valor_unitario
           };
@@ -245,17 +246,7 @@ export class VentaComponent implements OnInit {
       igv: this.igv,
       total: this.totalConIgv
     };
-
-    // DEBUG: Verificar qué se está enviando
-    console.log('=== DEBUG BOLETA REQUEST ===');
-    console.log('Items enviados:', JSON.stringify(boletaRequest.items, null, 2));
-    console.log('Productos form raw:', itemsParaEnviar.map(item => ({
-      producto_id: item.producto_id,
-      codigo: item.codigo,
-      descripcion: item.descripcion
-    })));
-    console.log('===============================');
-
+    
     this.guardandoBoleta = true;
 
     this.ventaService.crearBoleta(boletaRequest)
