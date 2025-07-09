@@ -1,22 +1,23 @@
 <div class="mt-8 w-full">
-    <div class="bg-[#292C2D] p-6 rounded-2xl shadow-md h-80 overflow-y-auto">
-        <h2 class="text-white text-xl font-semibold mb-4">Productos vendidos hoy</h2>
+    <div class="bg-secondary p-6 rounded-2xl shadow-md h-80 overflow-y-auto">
+        <h2 class="text-foreground text-xl font-semibold mb-4">Productos vendidos hoy</h2>
         <div class="overflow-x-auto">
         <table class="min-w-full table-auto border-separate border-transparent">
             <thead>
             <tr>
-                <th class="text-white text-sm font-semibold p-2 text-left">Descripción</th>
-                <th class="text-white text-sm font-semibold p-2 text-center">Código</th>
-                <th class="text-white text-sm font-semibold p-2 text-center">Tipo</th>
-                <th class="text-white text-sm font-semibold p-2 text-center">Cantidad</th>
+                <th class="bg-input text-foreground text-sm font-semibold p-2 text-left">Descripción</th>
+                <th class="bg-input text-foreground text-sm font-semibold p-2 text-center">Código</th>
+                <th class="bg-input text-foreground text-sm font-semibold p-2 text-center">Tipo</th>
+                <th class="bg-input text-foreground text-sm font-semibold p-2 text-center">Cantidad</th>
             </tr>
+
             </thead>
             <tbody>
             <tr *ngFor="let prod of productos">
-                <td class="text-gray-300 p-2 text-left">{{ prod.descripcion }}</td>
-                <td class="text-gray-300 p-2 text-center">{{ prod.codigo }}</td>
-                <td class="text-gray-300 p-2 text-center">{{ prod.tipo }}</td>
-                <td class="text-blue-600 p-2 font-semibold  text-center">{{ prod.cantidad }}</td>
+                <td class="text-foreground p-2 text-left">{{ prod.descripcion }}</td>
+                <td class="text-foreground p-2 text-center">{{ prod.codigo }}</td>
+                <td class="text-foreground p-2 text-center">{{ prod.tipo }}</td>
+                <td class="text-primary p-2 font-semibold text-center">{{ prod.cantidad }}</td>
             </tr>
             </tbody>
         </table>
