@@ -59,6 +59,7 @@
     }
     @HostListener('document:click', ['$event'])
     onDocumentClick(event: any) {
+      console.log('click document')
       const target = event.target;
       const dropdown = document.querySelector('.user-info');
       
@@ -69,6 +70,7 @@
     actuTitulo(): void {
       this.routerSubscription = this.router.events.subscribe(event => {
         if (event instanceof NavigationEnd) {
+          this.isDropDownOpen = false;
           const path = this.router.url;
 
           // Actualizar el título en el servicio según la ruta

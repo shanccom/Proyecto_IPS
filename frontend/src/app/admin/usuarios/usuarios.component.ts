@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { VentasService } from '../../services/ventas.service';
 @Component({
   selector: 'app-usuarios',
   imports: [CommonModule],
@@ -13,8 +14,12 @@ export class UsuariosComponent implements OnInit {
   usuarios: any[] = [];
   usuarioSeleccionado: any;
   mostrarModalEditar: boolean = false; // Nueva propiedad
+  emplCod = " ";
+  emplNom = " ";
+  emplCarg = " ";
+  emplCond = " ";
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private ventasService: VentasService) {}
 
   ngOnInit(): void {
     if (this.authService.isAuthenticated()) {
@@ -25,11 +30,21 @@ export class UsuariosComponent implements OnInit {
   obtenerUsuarios(): void {
     this.authService.listUsers().subscribe(
       data => {
-        this.usuarios = data;
-        console.log('Usuarios obtenidos:', this.usuarios);
+        console.log('Respuesta de listUsers:', data);
+        
+        // Aseguramos que 'usuarios' siempre sea un array
+        if (Array.isArray(data)) {
+          this.usuarios = data;
+        } else if (Array.isArray(data.results)) {
+          this.usuarios = data.results;
+        } else {
+          this.usuarios = []; // Por si acaso
+          console.warn('La respuesta no contiene un array válido de usuarios');
+        }
       },
       error => {
         console.error('Error al obtener los usuarios:', error);
+        this.usuarios = []; // Evitar que quede undefined
       }
     );
   }
@@ -62,6 +77,17 @@ export class UsuariosComponent implements OnInit {
       },
       error => {
         console.error('Error al modificar usuario:', error);
+      }
+    );
+  }
+  newColaborator(): void{
+    this.ventasService.newColaborator(this.emplCod, this.emplNom, this.emplCarg, this.emplCond).subscribe(
+      data => {
+        console.log('Respuesta...', data);
+      },
+      error => {
+        console.error('Error al obtener los usuarios:', error);
+        this.usuarios = []; // Evitar que quede undefined
       }
     );
   }

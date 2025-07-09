@@ -59,7 +59,8 @@ class LunaViewSet(viewsets.ModelViewSet):
         
 # Recuperar
 # Verificaciones 
-# añadir empleado
+
+
 def buscar_producto(codigo_producto):
 
     if str(codigo_producto).isdigit():
@@ -90,6 +91,7 @@ def buscar_producto(codigo_producto):
         pass
     
     return None, None, None
+
 @csrf_exempt
 @require_http_methods(["POST"])
 #@authentication_classes([TokenAuthentication])
@@ -946,6 +948,7 @@ def enviar_boleta_sunat_automatico(boleta):
 @api_view(['POST'])
 #@authentication_classes([TokenAuthentication])
 #@permission_classes([IsAuthenticated])
+#@permission_clases([IsAdminUser])
 # Editar condicion de empleado
 def new_empleado(request):
     emplCod = request.data.get('emplCod')

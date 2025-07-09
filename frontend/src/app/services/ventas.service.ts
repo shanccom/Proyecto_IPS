@@ -215,4 +215,16 @@ export class VentasService {
     return this.http.get<any>(`${this.apiUrl}/ventas/boletas/${boletaId}/comprobante-sunat/`);
   }
 
+  /* -------------------------Empleados-------------------------------------*/
+  newColaborator(emplCod: string, emplNom: string, emplCarg: string, emplCond: string): Observable<any> {
+  const payload = {
+    emplCod,
+    emplNom,
+    emplCarg,
+    emplCond
+  };
+
+  return this.http.post<any>(`${this.apiUrl}/create_empleado/`, payload, this.httpOptions);
+}
+
 }
