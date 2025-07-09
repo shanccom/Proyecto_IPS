@@ -1,0 +1,226 @@
+FabbPP (74):
+      Add reference of python v compatible with the requirements
+      Avance de tablas del backend
+      Ya modelos completados
+      Serializador cliente y receta
+      Serializadores de todo
+      Anticipo para una nueva tabla Usuario instalando apps token y usuario de defecto
+      Me olvide migrar
+      Modelo Usuario
+      Migrar
+      Solucion pk productos serializadores venta y primer endpoint busqueda
+      Serializador con publico y atributo estado a vendido, avance de view
+      Endpoint y url de recuperar por Cod, crear y listar Monturas
+      Borrado de bd :´v
+      Pequeña corrección desde ahora subire sin base de datoss
+      Arreglo minimo y arreglo de autenticacion por tokens
+      Integración views de dolly
+      Integración views de dolly
+      Inicio de usuario tokens y endpoints validate contraseña etc
+      Merge branch 'main' of https://github.com/shanccom/Proyecto_IPS
+      Quitar la autorizacion
+      BD
+      Usuario app
+      App Usuario
+      Serializador de empleado
+      Merge
+      Merge a pull
+      Usuario views urls permisos, y eliminacion de Lunas en inventario
+      Correccion de PK de Montura
+      Modelos correctos en ventas, correcion errores
+      Sin BD
+      Merge
+      Merge branch 'main' of https://github.com/shanccom/Proyecto_IPS
+      creo creo que usuario
+      Modelo de Inventario como antes
+      Serializadores y modelos inv restaurado
+      merge
+      Merge
+      merge
+      merge
+      merge
+      Corrección de codigo montura
+      Urls de inventario
+      Eliminacion de productos-falta autorizacion admin
+      Merge branch 'main' of https://github.com/shanccom/Proyecto_IPS
+      Merge branch 'main' of https://github.com/shanccom/Proyecto_IPS
+      Merge branch 'main' of https://github.com/shanccom/Proyecto_IPS
+      Boton corregido
+      Cambios en formulario receta y sidebar cliente , Denise
+      Servicios Receta y empleado a la mitad
+      Servicios empleado
+      Subida del front
+      Login... Primer registro sin emplCod creara el adminuser
+      Cambios de estilo en login/reg
+      Merge branch 'main' of https://github.com/shanccom/Proyecto_IPS
+      Estilos y colores globales
+      Encabezados homogeneos en todas las paginas y estilo global cargado en style y tailwind config
+      Icons
+      Sidebar con colores globales
+      Autenticación para carga de pagina en el front
+      Autenticación por token para cada endpoint/backend
+      Login y register con Tailwind y colores globales
+      Nuevos Componentes y lista de pendientes para backend
+      Rutas y Nombres de paginas
+      actualizacion de readme
+      EmplCod corregido generaba errores en el login
+      Cerrar sesion
+      Receta propia corregida
+      backend del anterior commit
+      Restauración de dashboard que Sergio elimino, top->all
+      Arreglos visual del dashboard
+      Correccion de autenticacion
+      Top bar y componentes nuevos de administracion
+      Merge branch 'main' of https://github.com/shanccom/Proyecto_IPS
+      Merge branch 'main' of https://github.com/shanccom/Proyecto_IPS
+
+DeniseHuacani (65):
+      Actualizacion del Angular, iniciar sesion, formulario de facturacion, falta corregir errores
+      Angular nombreUsuario : admin, contraseña : 1234
+      Corrección y mejora del formulario de login
+      Se mejoro la interfaz del sidebar
+      Se realizo la barra de arriba que contiene el usuario, etc
+      dashboard: Se implemento cards de estadísticas (ventas y ganancia), falta integrar backend
+      Correcion : Implementar servicio  para gestionar el título de la página y asi esvitar reinicializacion del titulo de la pagina
+      Se creo el componente Inventario, agregar a las rutas, tabla de productos y filtros
+      Configurar API para inventario con productos (accesorios, lunas, monturas)
+      Frontend: Recibir respuesta correctamente desde la API
+      Corrección de serializadores para estructurar los datos correctamente y que se muestren bien en la tabla de Angular
+      Añadir estilos  a la interfaz de inventario tabla
+      Se agrego la lógica backend para aplicar filtros en inventario
+      Correcion del backend
+      Recibir y mostrar datos del backend en el HTML
+      Añadimos estilos a los filtros
+      Correccion del metodo aplicar filtros
+      Subir avance de agregar producto
+      Correcion de estilos de los formularios
+      Agregar archivos .pyc y carpetas __pycache__ al .gitignore
+      Resuelto conflicto
+      Resuelto conflicto de fusión entre main y frontend-denise
+      Correccion de pequeños errores
+      Correcion de errore en agregar producto, falta corregir lunas
+      Eliminamos opcion de agregar lunas
+      Correcion de inventario para mostrar las tablas y filtros segun el producto
+      Correcion de vews en inventario
+      Correcion de la vista monturas
+      Corecion de componente filtros
+      Merge branch 'main' of https://github.com/shanccom/Proyecto_IPS
+      Creacion de componente recetas y ajuste en sidebar
+      Subiendo el formulario de accesorio
+      Correccion de los estilos del formulario
+      Correcion de pequeños errores, creacionde servicio y del componente recetas
+      Correcion de la tabla inventario
+      Actualiacion del formulario rectas
+      Correccion de filtro
+      Creacion del componente clientes, actualizacion del sidebar
+      Creacion de el boton, y la tabla clientes, no esta conectada a el backend
+      Creacion de la vista obtenercliente
+      Creacion del servicio y prueba para clientes
+      Creacion de vista para crear cliente, y se añadio el servicio correspondiente
+      Creacion del formulario y conexion con backend
+      Correccion del añadircliente para que se actualize
+      Correccion de el backend  para crear una receta , se modifico un poco la parte del modelo de receta
+      Creacion del boton formulario receta , y conexion con el backend , si se envia pero tiene errores  en el backend con los valores decimales
+      Subiendo la parte del frontend de clientes y agregar recetas
+      Correccion de el backend para que funcione el agregar recetas
+      Implementacion del boton ver recetas
+      Correccion de la tabal de recetas, creacion de boton editar
+      Modificar FormularioRecetaComponent para soportar tanto creación como edición. Emitir evento desde RecetasComponent para abrir el formulario con los datos de la receta seleccionada
+      Agregar vista para actualizar receta y ajustar el guardado para actualizar la tabla.
+      Creacion del filtro busqueda de cliente por nombres
+      Creacion de filtro de recetas por fecha
+      Crear vista para recibir ganancias totales por día, mes y año, y creacion de  servicio
+      Implementar recepción de datos de ganancias desde el backend y creación del gráfico
+      Creacion de otra view obtener resumen dashboard, ventas de la semana,etc. Creacion del servicio
+      Correcion de validaciones
+      Merge branch 'main' of https://github.com/shanccom/Proyecto_IPS
+      Correcion de la vista para calcular los datos para el dashboard
+      Mostrar resumen de ventas y ganancias en el dashboard con datos del backend, creacion de validaciones de rectas
+      Correcion de vistas, y creacion de vistas para obtener los ultimos productos comprados del dia
+      Creacion de servicio, de componente para mas opciones del dashboard
+      Creacion de la vista para obtener las ventas pendintes de pago
+      CReacion del servicio, el componente de el ventas pendientes en el dahsboard
+
+sdhm (56):
+      Estructura inicial
+      readme
+      Primera estructura del proyecto - Django + Angular
+      Correcion de la estructura
+      Nuevo Readme
+      Creacion del Microservicio - Greenter
+      App Clientes
+      Apps: Productos - Ventas
+      Avance de Apps funcional con conexion a Sunat
+      Subo los archivos generados por sunat como muestra del funcionamiento y tambien los archivos importantes que son config.php, microservicio.php y certificado.pem
+      Eliminacion del backend
+      Instalar Tailwind CSS y configuracion de Angular
+      Creacion del componente Venta
+      Requirements
+      Implementacion de la app scanner - Falta configurar algunos detalles, ademas que no funciona muy bien con la camara de laptop se tiene que usar una externa, si es webcam es dificil enfocar en cambio si es de celular es mas facil
+      Primeros avances del componente venta
+      Componente Ventas
+      Correcion de errores
+      Modificacion en el componente scanner
+      Actualizacion del repositorio
+      Eliminacion de base de datos
+      Mejora en gitignore
+      El componente ventas lee el codigo a traves del componente scanner que usa la libreria Zxing para la lectura, ademas que se corrigio algunas cosas - por el momento se deshabilito la autentificacion
+      Eliminar
+      Se restaura con npm install
+      Se restaura con npm install
+      gitignore actualizado
+      Correcion del servicio ventas y el componente ventas
+      Resuelto conflicto al hacer merge con main
+      Avance del modelo cliente y el modelo Luna en la app ed ventas
+      Merge remote-tracking branch 'origin/main' into dev-s
+      Merge completo
+      WIP: cambios antes de checkout
+      Correccion del merge
+      Correccion
+      Correccion de errores para la generacion del codigo
+      Sin BD
+      Merge
+      Correcion Merge
+      Creacion de JSON para las boletas
+      Lista de Ventas funcional
+      Correcion de diseño
+      Correcciones
+      Correcion version 2
+      Implementacion de codigo de barras con la libreria jsbarcode, ademas del uso de la libreria jsPDF
+      Implementacion de productos personalizados - Luna - En la parte de venta
+      Integracion de la conexion a la SUNAT - se tuvo que comentar los tokens de autentificacion
+      Mejora en el estado de envio de la SUNAT, ademas de que ahora se implemento la busqueda por DNI
+      Correcion de estilos
+      Implementacion de pago por partes, descarga de CDR, descarga de comprobantes en el main
+      Correcion de hora al crear una boleta
+      Nuevo Modal para un mejor manejo
+      Se pusieron datos simulados de venta solo para Dia
+      Cambios en algunos estilos
+      Cambio de distribucion en el dashboard
+      Correcion ed modales en lista-ventas
+
+Sergio Danilo Hancco Mullisaca (20):
+      Create README.md
+      Delete
+      Delete frontend/.vscode directory
+      Merge pull request #1 from shanccom/dev-s
+      Merge pull request #2 from shanccom/main
+      Merge branch 'main' into dev-s
+      Merge pull request #3 from shanccom/dev-s
+      Merge pull request #4 from shanccom/main
+      Merge pull request #5 from shanccom/main
+      Merge pull request #6 from shanccom/main
+      Merge pull request #7 from shanccom/main
+      Merge pull request #8 from shanccom/main
+      Merge branch 'dev-s' into Final
+      Merge pull request #10 from shanccom/Final
+      Merge pull request #14 from shanccom/dev-s
+      Merge branch 'main' into dev-s
+      Merge pull request #16 from shanccom/dev-s
+      Merge pull request #18 from shanccom/dev-s
+      Merge branch 'main' into dev-s
+      Merge pull request #19 from shanccom/dev-s
+
+Usuario (1):
+      Implementacion de temas
+
