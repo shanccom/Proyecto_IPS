@@ -19,6 +19,7 @@ export class TopClientesComponent implements OnInit {
       this.dashboardService.obtenerTopClientes().subscribe({
         next: (data) => {
           this.clientes = data;
+          console.log("Clientes",data);
         },
         error: (error) => {
           console.error('Error al obtener clientes frecuentes:', error);
