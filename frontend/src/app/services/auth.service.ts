@@ -143,4 +143,9 @@ export class AuthService {
     localStorage.setItem('user', JSON.stringify(user));
     this.currentUserSubject.next(user);
   }
+  deleteUser(userId: number): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.get(`${this.baseUrl}admin/users/${userId}`, { headers });
+  }
+
 }

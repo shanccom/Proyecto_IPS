@@ -51,7 +51,7 @@
     perfil(): void{
       this.authService.perfil().subscribe({
         next: (data) => {
-          console.log('Perfil recibido:', data); // 👈 Aquí está el log
+          console.log('Perfil recibido:', data); // Aquí está el log
           this.user = data.user;
         },
         error: (err) => console.error('Error al obtener perfil', err)

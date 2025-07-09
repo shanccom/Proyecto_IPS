@@ -210,7 +210,7 @@ def change_password(request):
             "details": str(e)
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-#---------------Administracion de usuarios
+#---------------Administracion de usuarios-------------------
 #Usuarios creados
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
@@ -232,7 +232,7 @@ def list_users(request):
             "details": str(e)
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-#Modificar actividad de empleados - Solo para staff
+#aDesactivar de empleados - Solo para staff
 @api_view(['PUT'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -280,7 +280,36 @@ def update_user_status(request, user_id):
             "error": "Error al actualizar usuario", 
             "details": str(e)
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+# Eliminar usuario - Solo para staff
+@api_view(['DELETE'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+@permission_classes([IsAdminUser])  # Solo staff
+def delete_user(request, user_id):
+    try:
+        usuario = Usuario.objects.get(id=user_id)
 
+        # No permitir que se elimine a sí mismo
+        if usuario == request.user:
+            return Response({
+                'error': 'No puedes eliminar tu propia cuenta'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        usuario.delete()
+        return Response({
+            'message': 'Usuario eliminado exitosamente'
+        }, status=status.HTTP_204_NO_CONTENT)
+
+    except Usuario.DoesNotExist:
+        return Response({
+            'error': 'Usuario no encontrado'
+        }, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        logger.error(f"Error al eliminar usuario: {str(e)}")
+        return Response({
+            "error": "Error al eliminar usuario",
+            "details": str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 # VERIFY TOKEN 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])

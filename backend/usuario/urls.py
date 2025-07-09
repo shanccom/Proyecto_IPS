@@ -8,6 +8,8 @@ from .views import (
     update_user_status,
     verify_token,
     perfil,
+    delete_user
+    
 )
 
 urlpatterns = [
@@ -21,5 +23,6 @@ urlpatterns = [
     # Administración (solo staff)
     path('admin/users/', list_users, name='list_users'),
     path('admin/users/<int:user_id>/status/', update_user_status, name='update_user_status'),
-    path('perfil/', perfil, name='perfil_user')
+    path('perfil/', perfil, name='perfil_user'),
+    path('admin/users/<int:user_id>', delete_user, name='delete_user')
 ]
