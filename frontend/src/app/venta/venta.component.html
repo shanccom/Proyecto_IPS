@@ -1,8 +1,8 @@
-<div class="pl-[120px]">
+<div class="pl-[95px]">
   
   <div class="grid grid-cols-2 w-full h-[calc(95vh-60px)]">
     <!-- Panel Izquierdo - Formulario -->
-    <div class="pt-[40px]">
+    <div class="pt-[10px]">
       <div class="h-full bg-secondary py-6 px-4 rounded-[5%]">
         <div class="max-w-4xl mx-auto">
           <!-- Formulario Principal -->
@@ -377,42 +377,42 @@
     </div>
 
     <!-- Panel Derecho - Vista Previa de Boleta -->
-    <div class="p-10">
-      <div class="bg-secondary h-full rounded-[5%] overflow-hidden">
-        <div class="p-8 pt-[60px] h-full overflow-y-auto">
+    <div class="px-10 pt-[10px]">
+      <div class=" h-full rounded-[5%] overflow-hidden">
+        <div class="p-8 h-full overflow-y-auto">
           
           <!-- Simulador de Boleta -->
-          <div class="bg-background border border-border p-6 rounded-lg shadow-lg font-mono text-sm">
+          <div class="bg-white border border-border p-6 rounded-lg shadow-lg font-mono text-sm">
             
             <!-- Header de la Empresa -->
             <div class="text-center pb-4 mb-4 border-b border-border">
-              <h1 class="font-bold text-lg text-foreground">VISION IDEAL S.A.C.</h1>
-              <p class="text-xs text-muted-foreground">RUC: 20123456789</p>
-              <p class="text-xs text-muted-foreground">Jr. Ejemplo 123 - Arequipa</p>
-              <p class="text-xs text-muted-foreground">Tel: (054) 123-4567</p>
+              <h1 class="font-bold text-lg text-black">VISION IDEAL S.A.C.</h1>
+              <p class="text-xs text-black">RUC: 20123456789</p>
+              <p class="text-xs text-black">Jr. Ejemplo 123 - Arequipa</p>
+              <p class="text-xs text-black">Tel: (054) 123-4567</p>
             </div>
 
             <!-- Tipo de Documento -->
             <div class="text-center mb-4">
-              <div class="border-2 border-foreground p-2 rounded">
-                <p class="font-bold text-foreground">
+              <div class="border-2 border-black p-2 rounded">
+                <p class="font-bold text-black">
                   {{ventaForm.get('serie')?.value === 'B001' ? 'BOLETA DE VENTA ELECTRÓNICA' : 'FACTURA ELECTRÓNICA'}}
                 </p>
-                <p class="font-bold text-lg text-primary">
+                <p class="font-bold text-lg text-black">
                   {{ventaForm.get('serie')?.value}}-{{ventaForm.get('correlativo')?.value || '00000001'}}
                 </p>
               </div>
             </div>
 
             <!-- Fecha y Hora -->
-            <div class="mb-4 text-xs text-muted-foreground">
+            <div class="mb-4 text-xs text-black">
               <p><strong>Fecha:</strong> {{fechaActual | date:'dd/MM/yyyy'}}</p>
               <p><strong>Hora:</strong> {{fechaActual | date:'HH:mm:ss'}}</p>
             </div>
 
             <!-- Datos del Cliente -->
             <div class="border-t border-b border-dashed border-border py-3 mb-4 text-xs">
-              <p class="text-foreground font-bold">CLIENTE:</p>
+              <p class="text-black font-bold">CLIENTE:</p>
               <p *ngIf="ventaForm.get('cliente.rzn_social')?.value; else sinCliente" class="text-foreground">
                 {{ventaForm.get('cliente.rzn_social')?.value}}
               </p>
@@ -429,7 +429,7 @@
             <!-- Detalle de Productos -->
             <div class="mb-4">
               <div class="border-b border-border pb-2 mb-2">
-                <div class="grid grid-cols-12 gap-1 text-xs font-bold text-foreground">
+                <div class="grid grid-cols-12 gap-1 text-xs font-bold text-black">
                   <div class="col-span-1">CANT</div>
                   <div class="col-span-6">DESCRIPCIÓN</div>
                   <div class="col-span-2">P.UNIT</div>
@@ -486,7 +486,7 @@
 
             <!-- Footer -->
             <div class="mt-6 text-center text-xs border-t border-dashed border-border pt-3">
-              <p class="mb-2 text-foreground">¡Gracias por su compra!</p>
+              <p class="mb-2 text-black">¡Gracias por su compra!</p>
               <p class="text-muted-foreground">Representación impresa de Comprobante Electrónico</p>
             </div>
           </div>
