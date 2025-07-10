@@ -37,6 +37,11 @@ export class DashboardService {
     return this.http.get<any[]>(`${this.baseUrl}boletas/top-clientes/`, { headers });
   }
 
+  obtenerTodosProductosVendidos(): Observable<any[]> {
+    const headers = this.authService.getAuthHeaders();
+    return this.http.get<any[]>(`${this.baseUrl}boletas/todos-productos/`, { headers });
+  }
+
 
 
 
