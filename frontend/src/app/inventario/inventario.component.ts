@@ -61,6 +61,7 @@ export class InventarioComponent implements OnInit {
     marca: [],
     material: [],
     color: [],
+    publico:[],
     estado: [],
     precio: { min: null, max: null }
   };
@@ -74,15 +75,18 @@ export class InventarioComponent implements OnInit {
     const materialFiltro = (filtrosAplicados.material || []).map((v: string) => v.toLowerCase());
     const colorFiltro = (filtrosAplicados.color || []).map((v: string) => v.toLowerCase());
     const publicoFiltro = (filtrosAplicados.publico || []).map((v: string) => v.toLowerCase());
+    const estadoFiltro = (filtrosAplicados.estado || []).map((v: string) => v.toLowerCase());
     
 
-    console.log('Filtros recibidos:', filtrosAplicados.data);
+    console.log('Filtros recibidos: ', filtrosAplicados);
     if (this.authService.isAuthenticated()) {
       this.productosFiltrados = this.productos.filter(producto => {
         const tipoProducto = (producto.tipo || '').toLowerCase();
         const marcaProducto = (producto.marca || '').toLowerCase();
         const materialProducto = (producto.material || '').toLowerCase();
         const colorProducto = (producto.color || '').toLowerCase();
+        const publicoProducto = (producto.publico || '').toLowerCase();
+        const estadoProducto = (producto.estado || '').toLowerCase(); 
         const precio = producto.proPrecioVenta ?? 0;
 
 
@@ -90,12 +94,14 @@ export class InventarioComponent implements OnInit {
         const marcaPasa = marcaFiltro.length === 0 || marcaFiltro.includes(marcaProducto);
         const materialPasa = materialFiltro.length === 0 || materialFiltro.includes(materialProducto);
         const colorPasa = colorFiltro.length === 0 || colorFiltro.includes(colorProducto);
+        const estadoPasa = estadoFiltro.length === 0 || estadoFiltro.includes(estadoProducto);
+        const publicoPasa = publicoFiltro.length===0 || publicoFiltro.includes(publicoProducto);
         const precioMinPasa = this.filtros.precio.min == null || precio >= this.filtros.precio.min;
         const precioMaxPasa = this.filtros.precio.max == null || precio <= this.filtros.precio.max;
 
-        const pasaFiltro = tipoPasa && marcaPasa && materialPasa && colorPasa && precioMinPasa && precioMaxPasa
+        const pasaFiltro = tipoPasa && marcaPasa && materialPasa && colorPasa && precioMinPasa && precioMaxPasa &&publicoPasa   && estadoPasa;
 
-        console.log(`Producto: ${producto.nombre} | Tipo: ${producto.tipo} => pasa: ${pasaFiltro}`);
+        //console.log(`Producto: ${producto.nombre} | Estado: ${producto.estado} => pasa: ${pasaFiltro}`);
         
         return pasaFiltro;
       });

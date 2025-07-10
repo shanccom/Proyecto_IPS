@@ -69,7 +69,7 @@ export class InventarioFiltrosComponent implements OnInit, OnChanges {
         this.opcionesFiltros.publico = res.publicos;
         this.opcionesFiltros.material = res.materiales;
         this.opcionesFiltros.color = res.colores;
-        this.opcionesFiltros.estado = ['Vendido', 'No vendido'];
+        this.opcionesFiltros.estado = ['Disponible', 'Vendido'];
       } else if (this.tipo === 'accesorio') {
         this.campos = []; // No mostramos checkboxes
         this.opcionesFiltros = {
