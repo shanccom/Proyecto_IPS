@@ -62,4 +62,7 @@ export class TemasService {
       paleta: this.paletaActual,
     };
   }
+  get isDarkMode(): boolean {
+    return this.temaActual === 'dark';
+  }
 }

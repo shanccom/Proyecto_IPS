@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
+import { DATOS_REGISTRAMEYA } from '../constants/registrame.constants';
+import { TemasService } from '../services/temas.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -11,8 +13,13 @@ import { Router } from '@angular/router';
   styleUrl: './sidebar.component.css'
 })
 export class SidebarComponent {
-  constructor(private router: Router) {}
+  
+  constructor(private router: Router, public temasService: TemasService) {}
   isActive(route: string): boolean {
     return this.router.url === route;
   }
+  get isDarkMode(): boolean {
+    return this.temasService.isDarkMode;
+  }
+  datos = DATOS_REGISTRAMEYA;
 }

@@ -1,9 +1,19 @@
 <nav class="fixed top-0 left-0 w-[220px] bg-secondary text-foreground h-screen pt-5 pb-5 rounded-tr-[25px] rounded-br-[25px]">
-  <ul class="list-none p-5 space-y-4 pt-[60px]">
-
-    <p class="flex justify-center items-center font-poppins font-bold pb-[70px]">VISION IDEAL</p>
+  <ul class="list-none p-5 space-y-4 pt-[30px]">
+<img
+  *ngIf="!temasService.isDarkMode"
+  [src]="datos.LOGO_EMPRESA_CLARO"
+  alt="Logo"
+  class="h-[150px] mx-auto"
+/>
+<img
+  *ngIf="temasService.isDarkMode"
+  [src]="datos.LOGO_EMPRESA_OSCURO"
+  alt="Logo"
+  class="h-[130px] mx-auto"
+/>
     
-    <!---->
+    <!----> 
     <li
       class="flex flex-col items-center justify-center rounded-lg transition-colors duration-300 ease-in-out cursor-pointer h-[90px]"
       routerLinkActive="active"
