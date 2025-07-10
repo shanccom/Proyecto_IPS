@@ -38,7 +38,7 @@ urlpatterns = [
     
     # Empleados
     path('create_empleado/', views.new_empleado, name = 'nuevo_empleado'),
-    path('delete_empleado/', views.delete_empleado, name = 'borrar_empleado'),
+    path('delete_empleado/<str:emplCod>/', views.delete_empleado, name='delete_empleado'),
     path('list_empleados/', views.list_empleados, name = 'Lista_empleados'),
     path('empleado_info/', views.empleado_info, name = 'informacion_empleado'),
     path('update_empleado/', views.update_empleado, name = 'editar_empleado'),

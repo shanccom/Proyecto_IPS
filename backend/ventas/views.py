@@ -1357,12 +1357,12 @@ def new_empleado(request):
 @permission_classes([IsAdminUser])  # Solo staff
 def delete_empleado(request, emplCod):
     try:
-        empleado = Empleado.object.get(emplCod)
-        # No permitir que se elimine a sí mismo
-        if empleado == request.empleado:
-            return Response({
-                'error': 'No puedes eliminar tu propio registro'
-            }, status=status.HTTP_400_BAD_REQUEST)
+        empleado = Empleado.objects.get(emplCod=emplCod)
+        #No permitir que se elimine a sí mismo hubo problemas con esta linea asi que se comento 
+        #if empleado == request.empleado:
+         #   return Response({
+          #      'error': 'No puedes eliminar tu propio registro'
+           # }, status=status.HTTP_400_BAD_REQUEST)
 
         empleado.delete()
         return Response({

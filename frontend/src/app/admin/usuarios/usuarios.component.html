@@ -129,28 +129,22 @@
           </div>
         </div>
   </div>
-  <!-- Tabla de empleados (falta) -->
-   <!-- Tabla de empleados (falta ajustar con el ts)-->
+  <!-- Tabla de empleados  -->
   <div class="bg-muted rounded-lg shadow-xl overflow-hidden border border-border">
     <div class="overflow-x-auto">
       <table class="w-full">
         <thead class="bg-secondary">
           <tr>
-            <th class="px-6 py-4 text-left text-xs font-medium text-secondary-foreground uppercase tracking-wider">ID</th>
             <th class="px-6 py-4 text-left text-xs font-medium text-secondary-foreground uppercase tracking-wider">Código</th>
             <th class="px-6 py-4 text-left text-xs font-medium text-secondary-foreground uppercase tracking-wider">Nombre</th>
             <th class="px-6 py-4 text-left text-xs font-medium text-secondary-foreground uppercase tracking-wider">Cargo</th>
             <th class="px-6 py-4 text-left text-xs font-medium text-secondary-foreground uppercase tracking-wider">Condición</th>
-            <th class="px-6 py-4 text-left text-xs font-medium text-secondary-foreground uppercase tracking-wider">Usuario Asociado</th>
             <th class="px-6 py-4 text-left text-xs font-medium text-secondary-foreground uppercase tracking-wider">Acciones</th>
           </tr>
         </thead>
         <tbody class="bg-muted divide-y divide-border">
           <tr *ngFor="let empleado of empleados || []; let i = index" 
               class="hover:bg-accent/10 transition-colors duration-200">
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-              {{ empleado.id }}
-            </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-foreground font-medium">
               {{ empleado.emplCod }}
             </td>
@@ -184,14 +178,6 @@
                 {{ empleado.emplCond }}
               </span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-              <span *ngIf="empleado.usuario_asociado" class="px-2 py-1 text-xs bg-green-100 text-green-800 border border-green-300 rounded-full">
-                {{ empleado.usuario_asociado }}
-              </span>
-              <span *ngIf="!empleado.usuario_asociado" class="px-2 py-1 text-xs bg-gray-100 text-gray-600 border border-gray-300 rounded-full">
-                Sin usuario
-              </span>
-            </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
               <div class="flex space-x-2">
                 <button (click)="abrirModalEditarEmpleado(empleado)"
@@ -201,7 +187,7 @@
                   </svg>
                   Editar
                 </button>
-                <button (click)="deleteColaborator(empleado.id)"
+                <button (click)="deleteColaborator(empleado.emplCod)"
                         class="bg-destructive hover:bg-destructive/90 text-destructive-foreground px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 flex items-center border border-destructive">
                   <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>

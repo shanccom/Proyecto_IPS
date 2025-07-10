@@ -185,6 +185,7 @@ export class UsuariosComponent implements OnInit {
   getColaborators(): void {
     this.ventasService.listColaborators().subscribe(
       data => {
+        console.log("Empleado ejemplo:", this.empleados[0]);
         console.log('Respuesta de listColaborators:', data);
         
         if (Array.isArray(data)) {
