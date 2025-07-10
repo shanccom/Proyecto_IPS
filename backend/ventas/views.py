@@ -1380,22 +1380,21 @@ def delete_empleado(request, emplCod):
             "error": "Error al eliminar empleado",
             "details": str(e)
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-# Empleados creados
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-@permission_classes([IsAdminUser])  # Solo staff
-def list_empleado(request):
+@permission_classes([IsAuthenticated, IsAdminUser])  # Puedes combinar en una sola línea
+def list_empleados(request):
     try:
         empleados = Empleado.objects.all()
         serializer = EmpleadoSerializer(empleados, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)  # <- ESTA LÍNEA FALTABA
     except Exception as e:
-        logger.error(f"Error al listar usuarios: {str(e)}")
+        logger.error(f"Error al listar empleados: {str(e)}")
         return Response({
-            "error": "Error al obtener usuarios", 
+            "error": "Error al obtener empleados", 
             "details": str(e)
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+        
 # Informacion Empleado
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])

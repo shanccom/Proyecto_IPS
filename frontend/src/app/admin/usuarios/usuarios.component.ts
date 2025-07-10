@@ -15,6 +15,8 @@ export class UsuariosComponent implements OnInit {
   usuarioSeleccionado: any;
   mostrarModalEditar: boolean = false;
   empleados: any[] = []
+  empleadoSeleccionado: any;
+  mostrarModalEditarEmpleado: boolean = false;
   mostrarModalRegistrar: boolean = false; // Nueva propiedad para el modal de registro
   
   // Propiedades para el formulario de registro
@@ -28,6 +30,7 @@ export class UsuariosComponent implements OnInit {
   ngOnInit(): void {
     if (this.authService.isAuthenticated()) {
       this.obtenerUsuarios();
+      this.getColaborators();
     }
   }
 
@@ -41,8 +44,8 @@ export class UsuariosComponent implements OnInit {
           this.usuarios = data;
         } else if (Array.isArray(data.users)) {
           this.usuarios = data.users;
-          console.log('usuarios:', JSON.stringify(this.usuarios, null, 2));
-          console.log('Usuarios:', this.usuarios);
+          //console.log('usuarios:', JSON.stringify(this.usuarios, null, 2));
+          //console.log('Usuarios:', this.usuarios);
         } else {
           this.usuarios = []; // Por si acaso
           console.warn('La respuesta no contiene un array válido de usuarios');
@@ -59,6 +62,11 @@ export class UsuariosComponent implements OnInit {
   abrirModalEditar(usuario: any): void {
     this.usuarioSeleccionado = { ...usuario }; // Crear una copia para no modificar el original
     this.mostrarModalEditar = true;
+  }
+  //Modal de empleado
+  abrirModalEditarEmpleado(empleado: any): void {
+    this.empleadoSeleccionado = { ...empleado }; 
+    this.mostrarModalEditarEmpleado = true;
   }
 
   // Método para cerrar el modal de edición

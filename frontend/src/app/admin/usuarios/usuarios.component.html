@@ -60,8 +60,8 @@
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                 <span class="px-2 py-1 text-xs font-medium rounded-full border border-border"
-                      [class]="usuario.emplCod?.emplCarg === 'gerente' ? 'bg-primary/20 text-primary border-primary/30' : 
-                               usuario.emplCod?.emplCarg === 'vendedor' ? 'bg-accent/20 text-accent border-accent/30' : 
+                      [class]="usuario.empleado_cargo === 'gerente' ? 'bg-primary/20 text-primary border-primary/30' : 
+                               usuario.empleado_cargo === 'vendedor' ? 'bg-accent/20 text-accent border-accent/30' : 
                                'bg-muted text-muted-foreground border-border'">
                   {{ usuario.empleado_cargo || 'N/A' }}
                 </span>
@@ -345,8 +345,8 @@
       <div class="bg-muted p-4 rounded-lg border border-border">
         <h3 class="font-medium text-foreground mb-2">Información del Usuario</h3>
         <p class="text-sm text-muted-foreground">Usuario: <span class="text-foreground font-medium">{{ usuarioSeleccionado?.usuarioNom }}</span></p>
-        <p class="text-sm text-muted-foreground">Empleado: <span class="text-foreground font-medium">{{ usuarioSeleccionado?.emplCod?.emplNom }}</span></p>
-        <p class="text-sm text-muted-foreground">Cargo: <span class="text-foreground font-medium">{{ usuarioSeleccionado?.emplCod?.emplCarg }}</span></p>
+        <p class="text-sm text-muted-foreground">Empleado: <span class="text-foreground font-medium">{{ usuarioSeleccionado?.empleado_nombre }}</span></p>
+        <p class="text-sm text-muted-foreground">Cargo: <span class="text-foreground font-medium">{{ usuarioSeleccionado?.empleado_cargo }}</span></p>
       </div>
 
       <!-- Controles de estado -->
