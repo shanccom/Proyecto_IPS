@@ -37,8 +37,9 @@ urlpatterns = [
     path('resumen-pagos/', views.obtener_resumen_pagos, name='resumen_pagos'),
     
     # Empleados
-    path('create_empleado/', views.new_empleado, name = 'nuevo empleado'),
-    path('delete_empleado/', views.delete_empleado, name = 'borrar empleado'),
-    path('list-empleados/', views.list_empleado, name = 'Lista de empleados'),
-    path('empleado-info/', views.empleado_info, name = 'informacion empleado'),
+    path('create_empleado/', views.new_empleado, name = 'nuevo_empleado'),
+    path('delete_empleado/', views.delete_empleado, name = 'borrar_empleado'),
+    path('list_empleados/', views.list_empleado, name = 'Lista_empleados'),
+    path('empleado_info/', views.empleado_info, name = 'informacion_empleado'),
+    path('update_empleado/', views.update_empleado, name = 'editar_empleado'),
 ]

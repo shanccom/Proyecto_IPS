@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { AuthService } from './auth.service';
 
 export interface Producto {
   id?: number;
@@ -77,7 +78,7 @@ export class VentasService {
       })
   };
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   buscarProductoPorCodigo(codigo: string): Observable<Producto> {
     return this.http.get<any>(`${this.apiUrl}/productos/buscar?codigo=${codigo}`)
@@ -217,6 +218,7 @@ export class VentasService {
 
   /* -------------------------Empleados-------------------------------------*/
   newColaborator(emplCod: string, emplNom: string, emplCarg: string, emplCond: string): Observable<any> {
+    const headers = this.authService.getAuthHeaders();
     const payload = {
       emplCod,
       emplNom,
@@ -224,18 +226,25 @@ export class VentasService {
       emplCond
     };
 
-    return this.http.post<any>(`${this.apiUrl}/ventas/create_empleado/`, payload, this.httpOptions);
+    return this.http.post<any>(`${this.apiUrl}/ventas/create_empleado/`, payload, {headers});
   }
-  deleteColaborator(emplCod: string, emplNom: string, emplCarg: string, emplCond: string): Observable<any> {
-    const payload = {
-      emplCod,
-      emplNom,
-      emplCarg,
-      emplCond
-    };
-
-    return this.http.post<any>(`${this.apiUrl}/ventas/create_empleado/`, payload, this.httpOptions);
+  deleteColaborator(emplCod: string): Observable<any> {
+      const headers = this.authService.getAuthHeaders();
+      
+      return this.http.delete<any>(`${this.apiUrl}/ventas/delete_empleado/${emplCod}/`, {headers});
   }
-  listColaborator(){}
 
+  listColaborators(): Observable<any> {
+      const headers = this.authService.getAuthHeaders();
+      return this.http.get<any>(`${this.apiUrl}/ventas/list_empleados/`, {headers});
+  }
+
+  infoColaborator(): Observable<any> {
+      const headers = this.authService.getAuthHeaders();
+      return this.http.get<any>(`${this.apiUrl}/ventas/empleado_info/`, {headers});
+  }
+  updateColaborator(emplCod: string, data: any): Observable<any> {
+      const headers = this.authService.getAuthHeaders();
+      return this.http.put<any>(`${this.apiUrl}/ventas/update_empleado/${emplCod}/`, data, { headers });
+  }
 }

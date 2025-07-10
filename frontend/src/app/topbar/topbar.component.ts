@@ -59,7 +59,6 @@
     }
     @HostListener('document:click', ['$event'])
     onDocumentClick(event: any) {
-      console.log('click document')
       const target = event.target;
       const dropdown = document.querySelector('.user-info');
       

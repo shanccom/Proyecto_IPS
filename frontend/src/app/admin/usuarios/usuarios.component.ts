@@ -14,6 +14,7 @@ export class UsuariosComponent implements OnInit {
   usuarios: any[] = [];
   usuarioSeleccionado: any;
   mostrarModalEditar: boolean = false;
+  empleados: any[] = []
   mostrarModalRegistrar: boolean = false; // Nueva propiedad para el modal de registro
   
   // Propiedades para el formulario de registro
@@ -38,8 +39,10 @@ export class UsuariosComponent implements OnInit {
         // Aseguramos que 'usuarios' siempre sea un array
         if (Array.isArray(data)) {
           this.usuarios = data;
-        } else if (Array.isArray(data.results)) {
-          this.usuarios = data.results;
+        } else if (Array.isArray(data.users)) {
+          this.usuarios = data.users;
+          console.log('usuarios:', JSON.stringify(this.usuarios, null, 2));
+          console.log('Usuarios:', this.usuarios);
         } else {
           this.usuarios = []; // Por si acaso
           console.warn('La respuesta no contiene un array válido de usuarios');
@@ -152,4 +155,61 @@ export class UsuariosComponent implements OnInit {
       );
     }
   }
+
+  //Empleados
+  // Método para eliminar empleado
+  deleteColaborator(empleadoId: string): void {
+    if (confirm('¿Estás seguro de que deseas eliminar este empleado?')) {
+      this.ventasService.deleteColaborator(empleadoId).subscribe(
+        data => {
+          console.log('Empleado eliminado exitosamente:', data);
+          alert('Empleado eliminado exitosamente');
+          this.getColaborators();
+        },
+        error => {
+          console.error('Error al eliminar empleado:', error);
+          alert('Error al eliminar empleado. Por favor, inténtelo nuevamente.');
+        }
+      );
+    }
+  }
+  // Nuevo método para obtener empleados
+  getColaborators(): void {
+    this.ventasService.listColaborators().subscribe(
+      data => {
+        console.log('Respuesta de listColaborators:', data);
+        
+        if (Array.isArray(data)) {
+          this.empleados = data;
+        } else if (Array.isArray(data.colaborators)) {
+          this.empleados = data.colaborators;
+        } else if (Array.isArray(data.empleados)) {
+          this.empleados = data.empleados;
+        } else {
+          this.empleados = [];
+          console.warn('La respuesta no contiene un array válido de empleados');
+        }
+        console.log('Empleados:', this.empleados);
+      },
+      error => {
+        console.error('Error al obtener los empleados:', error);
+        this.empleados = [];
+      }
+    );
+  }
+  // Editar empleado
+  updateColaborator(emplCod: string, cambios: any): void {
+  this.ventasService.updateColaborator(emplCod, cambios).subscribe(
+    response => {
+      console.log('Empleado actualizado correctamente:', response);
+      //refrescar la lista
+      this.getColaborators();
+    },
+    error => {
+      console.error('Error al actualizar el empleado:', error);
+    }
+  );
+}
+
+
 }
