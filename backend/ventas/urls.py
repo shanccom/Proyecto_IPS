@@ -16,6 +16,7 @@ urlpatterns = [
 
 
     path('boletas/ventas/', views.ventas_total, name='ventas_total'),
+    path('boletas/compras-total/', views.compras_total, name='compras-total'),
     path('resumen_dashboard/', views.resumen_dashboard, name='resumen dashboard'),
     path('productos-recientes/', views.ultimos_productos_vendidos, name='productos_recientes_dashboard'),
     path('boletas/pendientes/', views.boletas_pendientes, name ='boletas pendientes'),

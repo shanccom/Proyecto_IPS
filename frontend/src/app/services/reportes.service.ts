@@ -15,4 +15,9 @@ export class ReportesService {
       const headers = this.authService.getAuthHeaders();
       return this.http.get<{ total_ventas: number, total_compras: number }>(`${this.baseUrl}boletas/resumen_reportes/`, { headers });
     }
+    obtenerComprasPorRango(rango: 'dia' | 'mes' | 'anio'): Observable<any[]> {
+      const headers = this.authService.getAuthHeaders();
+      return this.http.get<any[]>(`${this.baseUrl}boletas/compras-total/?rango=${rango}`,{ headers }
+      );
+    }
 }

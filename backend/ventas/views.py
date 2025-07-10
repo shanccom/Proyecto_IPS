@@ -1034,6 +1034,80 @@ def ventas_total(request):
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
+def compras_total(request):
+    rango = request.GET.get('rango', 'dia')
+
+    boletas = Boleta.objects.filter(estado__in=['pagada', 'enviada'])
+    items = ItemBoleta.objects.filter(boleta__in=boletas)
+
+    resultado = {}
+
+    if rango == 'dia':
+        for item in items:
+            fecha = item.boleta.fecha.date()
+            fecha_str = fecha.strftime('%Y-%m-%d')
+            cantidad = item.cantidad
+
+            costo = 0
+            producto = item.content_object
+
+            if producto:
+                if hasattr(producto, 'lunaCosto'):
+                    costo = producto.lunaCosto
+                elif hasattr(producto, 'proCosto'):
+                    costo = producto.proCosto
+
+            resultado[fecha_str] = resultado.get(fecha_str, 0) + (costo * cantidad)
+
+        datos = [{'fecha_dia': k, 'total': round(v, 2)} for k, v in sorted(resultado.items())]
+
+    elif rango == 'mes':
+        for item in items:
+            fecha = item.boleta.fecha
+            fecha_str = fecha.strftime('%B')  # Nombre del mes
+            cantidad = item.cantidad
+
+            costo = 0
+            producto = item.content_object
+
+            if producto:
+                if hasattr(producto, 'lunaCosto'):
+                    costo = producto.lunaCosto
+                elif hasattr(producto, 'proCosto'):
+                    costo = producto.proCosto
+
+            resultado[fecha_str] = resultado.get(fecha_str, 0) + (costo * cantidad)
+
+        datos = [{'fecha_mes': k, 'total': round(v, 2)} for k, v in sorted(resultado.items())]
+
+    elif rango == 'anio':
+        for item in items:
+            fecha = item.boleta.fecha
+            fecha_str = str(fecha.year)
+            cantidad = item.cantidad
+
+            costo = 0
+            producto = item.content_object
+
+            if producto:
+                if hasattr(producto, 'lunaCosto'):
+                    costo = producto.lunaCosto
+                elif hasattr(producto, 'proCosto'):
+                    costo = producto.proCosto
+
+            resultado[fecha_str] = resultado.get(fecha_str, 0) + (costo * cantidad)
+
+        datos = [{'fecha_anio': k, 'total': round(v, 2)} for k, v in sorted(resultado.items())]
+
+    else:
+        return Response({'error': 'Rango inválido'}, status=400)
+
+    return Response(datos)
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def resumen_dashboard(request):
     hoy = timezone.localtime(timezone.now()).date()  
     inicio_semana = hoy - timedelta(days=hoy.weekday())
