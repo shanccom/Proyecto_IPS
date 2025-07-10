@@ -224,7 +224,7 @@ export class VentasService {
     emplCond
   };
 
-  return this.http.post<any>(`${this.apiUrl}/create_empleado/`, payload, this.httpOptions);
+  return this.http.post<any>(`${this.apiUrl}/ventas/create_empleado/`, payload, this.httpOptions);
 }
 
 }

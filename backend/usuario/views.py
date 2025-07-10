@@ -57,14 +57,13 @@ def register(request):
             try:
                 token = Token.objects.create(user=user)
             except Exception as token_error:
-                logger.error(f"Error creando token: {token_error}")
-                # Si falla el token, al menos el usuario se creó
+                logger.error(f"Error creando token: {token_error}") # Si falla el token, al menos el usuario se creó
                 token = None
             
             user_data = {
                 'id': user.id,
                 'usuarioNom': user.usuarioNom,
-                'emplCod': user.emplCod.emplCod if user.emplCod else None,  # CAMBIO: usar .emplCod en lugar del objeto
+                'emplCod': user.emplCod.emplCod if user.emplCod else None, 
                 'empleado_nombre': user.emplCod.emplNom if user.emplCod else None,
                 'empleado_cargo': user.emplCod.emplCarg if user.emplCod else None,
                 'is_active': user.is_active,
@@ -232,7 +231,7 @@ def list_users(request):
             "details": str(e)
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-#aDesactivar de empleados - Solo para staff
+#Desactivar de empleados - Solo para staff
 @api_view(['PUT'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
