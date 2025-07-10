@@ -1171,3 +1171,35 @@ def top_clientes_frecuentes(request):
 
     return Response(resultado)
 
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def resumen_reportes(request):
+    # Obtener todas las boletas pagadas/enviadas de todos los tiempos
+    boletas = Boleta.objects.filter(estado__in=['pagada', 'enviada'])
+    items = ItemBoleta.objects.filter(boleta__in=boletas)
+
+    total_ventas = 0
+    total_compras = 0
+
+    for item in items:
+        precio_venta = item.valor_unitario
+        cantidad = item.cantidad
+        total_ventas += precio_venta * cantidad
+
+        costo = 0
+        producto = item.content_object
+
+        if producto:
+            if hasattr(producto, 'lunaCosto'):
+                costo = producto.lunaCosto
+            elif hasattr(producto, 'proCosto'):
+                costo = producto.proCosto
+
+        total_compras += costo * cantidad
+
+    return Response({
+        'total_ventas': float(total_ventas),
+        'total_compras': float(total_compras),
+    })
