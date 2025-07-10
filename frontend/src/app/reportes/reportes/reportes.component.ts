@@ -3,10 +3,11 @@ import { StatsCardComponent } from '../../dashboard/stats-card/stats-card.compon
 import { ChartVentasComponent } from '../../dashboard/chart-ventas/chart-ventas.component';
 import { ReportesService } from '../../services/reportes.service';
 import { AuthService } from '../../services/auth.service';
+import { ChartComprasComponent } from '../../dashboard/chart-compras/chart-compras.component';
 
 @Component({
   selector: 'app-reportes',
-  imports: [StatsCardComponent,ChartVentasComponent ],
+  imports: [StatsCardComponent,ChartVentasComponent, ChartComprasComponent ],
   templateUrl: './reportes.component.html',
   styleUrl: './reportes.component.css'
 })
