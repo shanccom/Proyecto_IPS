@@ -1277,3 +1277,31 @@ def resumen_reportes(request):
         'total_ventas': float(total_ventas),
         'total_compras': float(total_compras),
     })
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def productos_vendidos(request):
+    items = ItemBoleta.objects.filter(boleta__estado__in=['pagada', 'enviada'])
+
+    resultados = []
+    for item in items:
+        producto = item.content_object
+        if producto:
+            nombre = getattr(producto, 'proNombre', None) or getattr(producto, 'lunNombre', None) or 'Desconocido'
+            precio = item.valor_unitario
+            cantidad = item.cantidad
+            total = precio * cantidad
+            fecha = item.boleta.fecha.strftime('%Y-%m-%d')
+            resultados.append({
+                'codigo': producto.codigo,
+                'nombre': nombre,
+                'cantidad': cantidad,
+                'precio': float(precio),
+                'total': float(total),
+                'fecha': fecha
+            })
+
+    return Response(resultados)
+
