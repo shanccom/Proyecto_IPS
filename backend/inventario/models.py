@@ -62,7 +62,7 @@ class Montura(Producto):
             ultimo = self.__class__.objects.filter(monCod__startswith=codigo_base).count() + 1
             
             # Calcular cuántos dígitos necesitamos para alcanzar 15 caracteres
-            digitos_necesarios = 15 - len(codigo_base)
+            digitos_necesarios = 10 - len(codigo_base)
             
             # Rellenar con ceros a la izquierda para alcanzar la longitud requerida
             numero_formateado = str(ultimo).zfill(digitos_necesarios)
