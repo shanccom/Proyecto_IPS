@@ -166,66 +166,66 @@ export class ChartVentasComponent implements AfterViewInit{
   }
 
   cargarDatos() {    
-  this.dashboardService.obtenerVentas(this.rango).subscribe(
-    (datosReales) => {
-      console.log('Datos reales del backend:', datosReales);
-      
-      // Completar con datos históricos ficticios
-      const datos = this.completarDatosHistoricos(datosReales);
-      console.log('Datos completos:', datos);
+    this.dashboardService.obtenerVentas(this.rango).subscribe(
+      (datosReales) => {
+        console.log('Datos reales del backend:', datosReales);
+        
+        // Completar con datos históricos ficticios
+        const datos = this.completarDatosHistoricos(datosReales);
+        console.log('Datos completos:', datos);
 
-      // Detecta el nombre correcto de la propiedad según el rango
-      let campoFecha: 'fecha_dia' | 'fecha_mes' | 'fecha_anio';
+        // Detecta el nombre correcto de la propiedad según el rango
+        let campoFecha: 'fecha_dia' | 'fecha_mes' | 'fecha_anio';
 
-      if (this.rango === 'dia') campoFecha = 'fecha_dia';
-      else if (this.rango === 'mes') campoFecha = 'fecha_mes';
-      else campoFecha = 'fecha_anio';
+        if (this.rango === 'dia') campoFecha = 'fecha_dia';
+        else if (this.rango === 'mes') campoFecha = 'fecha_mes';
+        else campoFecha = 'fecha_anio';
 
-      const etiquetasOriginales = datos.map(item => item[campoFecha]);
-      const valoresOriginales = datos.map(item => item.total);
+        const etiquetasOriginales = datos.map(item => item[campoFecha]);
+        const valoresOriginales = datos.map(item => item.total);
 
-      let etiquetas = [...etiquetasOriginales];
-      let valores = [...valoresOriginales];
+        let etiquetas = [...etiquetasOriginales];
+        let valores = [...valoresOriginales];
 
-      if (datos.length === 1) {
-        etiquetas = [
-          ' ', 
-          etiquetasOriginales[0], 
-          '  ' 
-        ];
-        valores = [
-          null,
-          valoresOriginales[0], 
-          null 
-        ];
+        if (datos.length === 1) {
+          etiquetas = [
+            ' ', 
+            etiquetasOriginales[0], 
+            '  ' 
+          ];
+          valores = [
+            null,
+            valoresOriginales[0], 
+            null 
+          ];
+        }
+
+        this.chart.data.labels = etiquetas;
+        this.chart.data.datasets[0].data = valores;
+
+        const maxValor = Math.max(...valores.filter(v => v !== null));
+        const margen = 10; 
+        const valorMaximoEjeY = Math.ceil((maxValor + margen) / 10) * 10; 
+
+        this.chart.options.scales.y.max = valorMaximoEjeY;
+
+        this.chart.update();
+      },
+      (error) => {
+        console.error('Error al cargar datos de ganancia:', error);
+        // En caso de error, usar datos ficticios
+        const datosFicticios = this.generarDatosFicticios();
+        this.procesarDatosError(datosFicticios);
       }
-
-      this.chart.data.labels = etiquetas;
-      this.chart.data.datasets[0].data = valores;
-
-      const maxValor = Math.max(...valores.filter(v => v !== null));
-      const margen = 10; 
-      const valorMaximoEjeY = Math.ceil((maxValor + margen) / 10) * 10; 
-
-      this.chart.options.scales.y.max = valorMaximoEjeY;
-
-      this.chart.update();
-    },
-    (error) => {
-      console.error('Error al cargar datos de ganancia:', error);
-      // En caso de error, usar datos ficticios
-      const datosFicticios = this.generarDatosFicticios();
-      this.procesarDatosError(datosFicticios);
-    }
-  );
-}
-cambiarRangoManual(nuevoRango: 'dia' | 'mes' | 'anio') {
-    if (this.rango !== nuevoRango) {
-      this.rango = nuevoRango;
-      this.cargarDatos();
-    }
-    
+    );
   }
+  cambiarRangoManual(nuevoRango: 'dia' | 'mes' | 'anio') {
+      if (this.rango !== nuevoRango) {
+        this.rango = nuevoRango;
+        this.cargarDatos();
+      }
+      
+    }
 
 private procesarDatosError(datos: any[]) {
   let campoFecha: 'fecha_dia' | 'fecha_mes' | 'fecha_anio';
@@ -375,80 +375,80 @@ private generarValorRealista(datosReales: any[], rango: 'dia' | 'mes' | 'anio'):
   return Math.max(valorFinal, minimoAbsoluto);
 }
 
-private generarDatosFicticios(): any[] {
-  let datos: any[] = [];
-  
-  if (this.rango === 'dia') {
-    // Generar datos para los últimos 14 días con más variación
-    const valorBase = 600;
-    for (let i = 13; i >= 0; i--) {
-      const fecha = new Date();
-      fecha.setDate(fecha.getDate() - i);
-      
-      // Simular patrones realistas: fines de semana más bajos, algunos días picos
-      const diaSemana = fecha.getDay(); // 0 = domingo, 6 = sábado
-      let multiplicador = 1;
-      
-      if (diaSemana === 0 || diaSemana === 6) {
-        multiplicador = 0.6 + Math.random() * 0.3; // Fines de semana: 60%-90%
-      } else if (diaSemana === 5) {
-        multiplicador = 0.9 + Math.random() * 0.4; // Viernes: 90%-130%
-      } else {
-        multiplicador = 0.7 + Math.random() * 0.6; // Otros días: 70%-130%
+  private generarDatosFicticios(): any[] {
+    let datos: any[] = [];
+    
+    if (this.rango === 'dia') {
+      // Generar datos para los últimos 14 días con más variación
+      const valorBase = 600;
+      for (let i = 13; i >= 0; i--) {
+        const fecha = new Date();
+        fecha.setDate(fecha.getDate() - i);
+        
+        // Simular patrones realistas: fines de semana más bajos, algunos días picos
+        const diaSemana = fecha.getDay(); // 0 = domingo, 6 = sábado
+        let multiplicador = 1;
+        
+        if (diaSemana === 0 || diaSemana === 6) {
+          multiplicador = 0.6 + Math.random() * 0.3; // Fines de semana: 60%-90%
+        } else if (diaSemana === 5) {
+          multiplicador = 0.9 + Math.random() * 0.4; // Viernes: 90%-130%
+        } else {
+          multiplicador = 0.7 + Math.random() * 0.6; // Otros días: 70%-130%
+        }
+        
+        const valorFinal = Math.floor(valorBase * multiplicador + (Math.random() - 0.5) * 300);
+        
+        datos.push({
+          fecha_dia: fecha.toISOString().split('T')[0],
+          total: Math.max(valorFinal, 100), // Mínimo 100
+          esFicticio: true
+        });
       }
+    } else if (this.rango === 'mes') {
+      const meses = ['Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+                    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'];
+      const valorBase = 3000;
       
-      const valorFinal = Math.floor(valorBase * multiplicador + (Math.random() - 0.5) * 300);
-      
-      datos.push({
-        fecha_dia: fecha.toISOString().split('T')[0],
-        total: Math.max(valorFinal, 100), // Mínimo 100
-        esFicticio: true
+      datos = meses.map((mes, index) => {
+        // Simular estacionalidad: diciembre alto, enero-febrero bajos, etc.
+        let multiplicadorEstacional = 1;
+        
+        if (mes === 'Diciembre') multiplicadorEstacional = 1.4; // Navidad
+        else if (mes === 'Enero' || mes === 'Febrero') multiplicadorEstacional = 0.7; // Enero/Feb bajos
+        else if (mes === 'Noviembre') multiplicadorEstacional = 1.2; // Pre-navidad
+        else if (mes === 'Julio' || mes === 'Agosto') multiplicadorEstacional = 1.1; // Vacaciones
+        else multiplicadorEstacional = 0.8 + Math.random() * 0.4; // Otros meses
+        
+        const variacionAleatoria = 0.7 + Math.random() * 0.6; // 70%-130%
+        const valorFinal = Math.floor(valorBase * multiplicadorEstacional * variacionAleatoria);
+        
+        return {
+          fecha_mes: mes,
+          total: Math.max(valorFinal, 800), // Mínimo 800
+          esFicticio: true
+        };
       });
+    } else {
+      const anioActual = new Date().getFullYear();
+      const valorBase = 25000;
+      
+      for (let i = 4; i >= 0; i--) {
+        // Simular crecimiento con variaciones
+        const factorCrecimiento = Math.pow(1.15, 4 - i); // Crecimiento del 15% anual promedio
+        const variacionAleatoria = 0.8 + Math.random() * 0.4; // 80%-120%
+        const valorFinal = Math.floor(valorBase * factorCrecimiento * variacionAleatoria);
+        
+        datos.push({
+          fecha_anio: (anioActual - i).toString(),
+          total: Math.max(valorFinal, 10000), // Mínimo 10000
+          esFicticio: true
+        });
+      }
     }
-  } else if (this.rango === 'mes') {
-    const meses = ['Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
-                   'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'];
-    const valorBase = 3000;
     
-    datos = meses.map((mes, index) => {
-      // Simular estacionalidad: diciembre alto, enero-febrero bajos, etc.
-      let multiplicadorEstacional = 1;
-      
-      if (mes === 'Diciembre') multiplicadorEstacional = 1.4; // Navidad
-      else if (mes === 'Enero' || mes === 'Febrero') multiplicadorEstacional = 0.7; // Enero/Feb bajos
-      else if (mes === 'Noviembre') multiplicadorEstacional = 1.2; // Pre-navidad
-      else if (mes === 'Julio' || mes === 'Agosto') multiplicadorEstacional = 1.1; // Vacaciones
-      else multiplicadorEstacional = 0.8 + Math.random() * 0.4; // Otros meses
-      
-      const variacionAleatoria = 0.7 + Math.random() * 0.6; // 70%-130%
-      const valorFinal = Math.floor(valorBase * multiplicadorEstacional * variacionAleatoria);
-      
-      return {
-        fecha_mes: mes,
-        total: Math.max(valorFinal, 800), // Mínimo 800
-        esFicticio: true
-      };
-    });
-  } else {
-    const anioActual = new Date().getFullYear();
-    const valorBase = 25000;
-    
-    for (let i = 4; i >= 0; i--) {
-      // Simular crecimiento con variaciones
-      const factorCrecimiento = Math.pow(1.15, 4 - i); // Crecimiento del 15% anual promedio
-      const variacionAleatoria = 0.8 + Math.random() * 0.4; // 80%-120%
-      const valorFinal = Math.floor(valorBase * factorCrecimiento * variacionAleatoria);
-      
-      datos.push({
-        fecha_anio: (anioActual - i).toString(),
-        total: Math.max(valorFinal, 10000), // Mínimo 10000
-        esFicticio: true
-      });
-    }
+    return datos;
   }
-  
-  return datos;
-}
 
 }
 
