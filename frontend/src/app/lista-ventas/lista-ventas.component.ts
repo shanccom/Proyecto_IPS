@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { BoletaResponse, PagoAdelanto } from '../services/ventas.service';
 import { FormsModule } from '@angular/forms';
 import { GenerarComprobanteSunatService } from '../services/generar-comprobante-sunat.service';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'app-lista-ventas',
@@ -35,7 +36,7 @@ export class ListaVentasComponent implements OnInit{
   // Modal General
   modalAbierto: string | null = null;
 
-  constructor(private ventasService: VentasService, private router: Router, private comprobanteSunatService: GenerarComprobanteSunatService) {}
+  constructor(private ventasService: VentasService, private router: Router, private comprobanteSunatService: GenerarComprobanteSunatService, private notification: NotificationService) {}
 
   ngOnInit(): void {
     this.cargarBoletas();
@@ -72,6 +73,8 @@ private actualizarSaldosPendientes(): void {
           estado: boleta.estado,
           pagada_completa: boleta.esta_pagada_completa
         });
+          this.notification.success(`Boleta ${boleta.serie}-${boleta.correlativo} actualizada`);
+
       },
       error: (error) => {
         console.error(`❌ Error al obtener estado de boleta ${boleta.id}:`, error);
@@ -102,6 +105,8 @@ private actualizarSaldosPendientes(): void {
       error: (err) => {
         this.error = 'Error al cargar boletas';
         this.loading = false;
+        this.notification.error('Error al cargar las boletas', 'Intenta nuevamente');
+
         console.error('❌ Error cargando boletas:', err);
       }
     });
@@ -112,23 +117,36 @@ private actualizarSaldosPendientes(): void {
     // El backend retorna 'estado', no 'enviado_sunat'
     if (boleta.estado === 'enviada') {
       return 'Enviada a SUNAT';
+
     } else if (boleta.estado === 'pendiente') {
       return 'Pendiente SUNAT';
+
     } else if (boleta.estado === 'anulada') {
       return 'Anulada';
     }
+    this.notification.error('Estado desconocido de la boleta', 'Error');
     return 'Estado desconocido';
   }
 
   // ✅ MÉTODO AUXILIAR CORREGIDO para verificar si puede reenviar
   puedeReenviar(boleta: any): boolean {
     // Puede reenviar si NO está enviada (pendiente o anulada)
-    return boleta.estado !== 'enviada';
+    const puedeReenviar = boleta.estado !== 'enviada';
+    if (!puedeReenviar) {
+      // Notificación si no puede reenviar
+      this.notification.warning('La boleta ya ha sido enviada, no puede reenviarse', 'Reenvío no permitido');
+    }
+    return puedeReenviar;
   }
 
   // ✅ MÉTODO AUXILIAR CORREGIDO para verificar si está enviada
   estaEnviada(boleta: any): boolean {
-    return boleta.estado === 'enviada';
+    const estaEnviada = boleta.estado === 'enviada';
+    if (estaEnviada) {
+      // Notificación si la boleta ya está enviada
+      this.notification.success('La boleta ya ha sido enviada a SUNAT', 'Enviada');
+    }
+    return estaEnviada;
   }
 
   // ✅ MÉTODO AUXILIAR CORREGIDO para verificar si tiene CDR
@@ -142,7 +160,8 @@ private actualizarSaldosPendientes(): void {
   //METODOS PARA DESCARGAR
   descargarCDR(boleta: BoletaResponse): void {
   if (!boleta.nombre_cdr) {
-    alert('Esta boleta no tiene CDR disponible');
+    this.notification.warning('Esta boleta no tiene CDR disponible', 'Advertencia');
+    //alert('Esta boleta no tiene CDR disponible');
     return;
   }
 
@@ -161,16 +180,18 @@ private actualizarSaldosPendientes(): void {
     error: (error) => {
       console.error('Error al descargar CDR:', error);
       if (error.status === 404) {
-        alert('CDR no encontrado');
+        // Notificación si no se encuentra el CDR
+        this.notification.error('CDR no encontrado', 'Error 404');
       } else if (error.status === 500) {
-        alert('Error del servidor al obtener el CDR');
+        // Notificación de error del servidor
+        this.notification.error('Error del servidor al obtener el CDR', 'Error 500');
       } else {
-        alert('Error al descargar el CDR');
+        // Notificación de error general
+        this.notification.error('Error al descargar el CDR', 'Error');
       }
     }
   });
 }
-
 /**
  * ✅ MÉTODO PRINCIPAL: Registrar un pago parcial
  */
@@ -190,7 +211,8 @@ registrarPago(boleta: BoletaResponse): void {
  */
 procesarPago(): void {
   if (!this.boletaSeleccionada || this.montoPago <= 0) {
-    alert('Por favor, ingrese un monto válido');
+    //alert('Por favor, ingrese un monto válido');
+    this.notification.warning('Por favor, ingrese un monto válido', 'Advertencia');    
     return;
   }
 
@@ -220,7 +242,8 @@ procesarPago(): void {
           }
         }
         
-        alert(mensaje);
+        //alert(mensaje);
+        this.notification.success(mensaje, 'Éxito');
 
         // 🔧 ACTUALIZAR EL ESTADO LOCAL DE LA BOLETA ANTES DE CERRAR MODAL
         if (this.boletaSeleccionada) {
@@ -262,12 +285,14 @@ procesarPago(): void {
         }
         
       } else {
-        alert('Error al procesar el pago: ' + response.mensaje);
+        this.notification.error('Error al procesar el pago: ' + response.mensaje, 'Error');        
+        //alert('Error al procesar el pago: ' + response.mensaje);
       }
     },
     error: (error) => {
       console.error('Error al procesar pago:', error);
-      alert('Error de conexión al procesar el pago');
+      this.notification.error('Error de conexión al procesar el pago', 'Error');      
+      //alert('Error de conexión al procesar el pago');
     }
   });
 }
@@ -300,7 +325,8 @@ getSaldoPendienteSeleccionada(): number {
    */
   registrarPagoSimple(): void {
     if (!this.boletaSeleccionada || this.montoPago <= 0) {
-      alert('Por favor, ingrese un monto válido');
+      //alert('Por favor, ingrese un monto válido');
+      this.notification.warning('Por favor, ingrese un monto válido', 'Advertencia');  
       return;
     }
 
@@ -311,7 +337,8 @@ getSaldoPendienteSeleccionada(): number {
       this.metodoPago
     ).subscribe({
       next: (response) => {
-        alert(`Adelanto de S/. ${this.montoPago.toFixed(2)} registrado exitosamente`);
+        //alert(`Adelanto de S/. ${this.montoPago.toFixed(2)} registrado exitosamente`);
+        this.notification.success(`Adelanto de S/. ${this.montoPago.toFixed(2)} registrado exitosamente`, 'Éxito');
         
         // Verificar si ahora está pagada completamente
         this.verificarEstadoPago(this.boletaSeleccionada!.id);
@@ -321,7 +348,8 @@ getSaldoPendienteSeleccionada(): number {
       },
       error: (error) => {
         console.error('Error al registrar adelanto:', error);
-        alert('Error al registrar el adelanto');
+        this.notification.error('Error al registrar el adelanto', 'Error');    
+        // alert('Error al registrar el adelanto');
       }
     });
   }
@@ -340,7 +368,8 @@ getSaldoPendienteSeleccionada(): number {
           
           if (boleta && boleta.estado !== 'enviada') {
             const mensaje = `¡Boleta pagada completamente! (S/. ${estado.total_boleta.toFixed(2)})\n¿Desea enviarla automáticamente a SUNAT?`;
-            
+            this.notification.info(mensaje, 'Boleta completada');
+
             if (confirm(mensaje)) {
               this.enviarSunatAutomatico(boleta);
             } else {
@@ -349,11 +378,14 @@ getSaldoPendienteSeleccionada(): number {
               boleta.monto_adelantos = estado.monto_adelantos;
               boleta.saldo_pendiente = estado.saldo_pendiente;
               boleta.esta_pagada_completa = true;
+              this.notification.success('Boleta marcada como pagada', 'Estado actualizado');        
+
             }
           }
         }
       },
       error: (error) => {
+        this.notification.error('Error al verificar el estado de pago', 'Error');   
         console.error('Error al verificar estado:', error);
       }
     });
@@ -377,17 +409,20 @@ getSaldoPendienteSeleccionada(): number {
         }
         
         if (esExitoso) {
-          alert('¡Boleta enviada automáticamente a SUNAT tras completar el pago!');
+          this.notification.success('¡Boleta enviada automáticamente a SUNAT tras completar el pago!', 'Éxito');        
+          //alert('¡Boleta enviada automáticamente a SUNAT tras completar el pago!');
           boleta.estado = 'enviada';
           this.cargarBoletas();
         } else {
-          alert('Pago completado, pero hubo un error al enviar a SUNAT. Puede reenviar manualmente.');
+          //alert('Pago completado, pero hubo un error al enviar a SUNAT. Puede reenviar manualmente.');
+          this.notification.error('Pago completado, pero hubo un error al enviar a SUNAT. Puede reenviar manualmente.', 'Error al enviar a SUNAT');        
           boleta.estado = 'pagada';
         }
       },
       error: (error) => {
         console.error('Error en envío automático:', error);
-        alert('Pago completado, pero hubo un error al enviar a SUNAT. Puede reenviar manualmente.');
+        //alert('Pago completado, pero hubo un error al enviar a SUNAT. Puede reenviar manualmente.');
+        this.notification.error('Pago completado, pero hubo un error al enviar a SUNAT. Puede reenviar manualmente.', 'Error');      
         boleta.estado = 'pagada';
       }
     });
@@ -402,6 +437,8 @@ getSaldoPendienteSeleccionada(): number {
       const saldoPendiente = boleta.total - (boleta.monto_adelantos || 0);
       
       if (saldoPendiente > 0) {
+        this.notification.warning(`Esta boleta tiene un saldo pendiente de S/. ${saldoPendiente.toFixed(2)}. ¿Está seguro de enviarla a SUNAT?`, 'Advertencia');
+
         if (!confirm(`Esta boleta tiene un saldo pendiente de S/. ${saldoPendiente.toFixed(2)}. ¿Está seguro de enviarla a SUNAT?`)) {
           return;
         }
@@ -427,19 +464,24 @@ getSaldoPendienteSeleccionada(): number {
           }
           
           if (esExitoso) {
-            alert('Boleta enviada exitosamente a SUNAT');
+            this.notification.success('Boleta enviada exitosamente a SUNAT', 'Éxito');
+            //alert('Boleta enviada exitosamente a SUNAT');
             boleta.estado = 'enviada';
             this.cargarBoletas();
           } else {
             const errorMsg = typeof response === 'object' && response.error 
               ? response.error 
               : 'Error desconocido';
-            alert('Error al enviar: ' + errorMsg);
+
+            this.notification.error('Error al enviar: ' + errorMsg, 'Error');
+            //alert('Error al enviar: ' + errorMsg);
           }
         },
         error: (error) => {
           console.error('Error completo:', error);
-          alert('Error de conexión: ' + (error.message || 'Error desconocido'));
+          //alert('Error de conexión: ' + (error.message || 'Error desconocido'));
+          this.notification.error('Error de conexión: ' + (error.message || 'Error desconocido'), 'Error de conexión');
+        
         }
       });
     }
@@ -549,7 +591,8 @@ obtenerSaldoPendiente(boleta: any): number {
       this.ventasService.eliminarBoleta(boleta.id).subscribe({
         next: (response) => {
           // Mostrar mensaje de éxito
-          alert('Boleta eliminada correctamente');
+          //alert('Boleta eliminada correctamente');
+          this.notification.success('Boleta eliminada correctamente', 'Éxito');
           
           // Actualizar la lista de boletas
           this.cargarBoletas();
@@ -559,7 +602,8 @@ obtenerSaldoPendiente(boleta: any): number {
         },
         error: (error) => {
           console.error('Error al eliminar boleta:', error);
-          alert('Error al eliminar');
+          //alert('Error al eliminar');
+          this.notification.error('Error al eliminar la boleta', 'Error');
         }
       });
     }
@@ -595,11 +639,15 @@ obtenerSaldoPendiente(boleta: any): number {
         ventana.document.write(html);
         ventana.document.close();
         ventana.print();
+        this.notification.success('Comprobante generado correctamente', 'Éxito');
+      
       } else {
-        alert('No se pudo abrir la ventana para imprimir');
+        this.notification.error('No se pudo abrir la ventana para imprimir', 'Error');
+        //alert('No se pudo abrir la ventana para imprimir');
       }
     },
-    error: () => alert('No se pudo cargar los adelantos')
+    error: () => this.notification.error('No se pudo cargar los adelantos', 'Error')
+
   });
 }
 
@@ -872,12 +920,15 @@ obtenerSaldoPendiente(boleta: any): number {
   //Nuevos metodos 
     generarComprobanteSunat(boleta: BoletaResponse): void {
       if (boleta.estado !== 'enviada') {
-        alert('Esta boleta aún no ha sido enviada a SUNAT');
+        //alert('Esta boleta aún no ha sido enviada a SUNAT');
+        this.notification.warning('Esta boleta aún no ha sido enviada a SUNAT', 'Advertencia');    
         return;
       }
 
       // Generar el comprobante PDF inmediatamente
       this.comprobanteSunatService.generarComprobanteSunat(boleta);
+      this.notification.success('Comprobante generado correctamente', 'Éxito');
+
     }
 
     enviarSunatConComprobante(boleta: BoletaResponse): void {
@@ -885,6 +936,7 @@ obtenerSaldoPendiente(boleta: any): number {
       if (boleta.estado === 'pendiente' || boleta.estado === 'parcial') {
         const saldoPendiente = boleta.total - (boleta.monto_adelantos || 0);
         
+        this.notification.warning(`Esta boleta tiene un saldo pendiente de S/. ${saldoPendiente.toFixed(2)}. ¿Está seguro de enviarla a SUNAT?`, 'Advertencia');
         if (saldoPendiente > 0) {
           if (!confirm(`Esta boleta tiene un saldo pendiente de S/. ${saldoPendiente.toFixed(2)}. ¿Está seguro de enviarla a SUNAT?`)) {
             return;
@@ -912,6 +964,8 @@ obtenerSaldoPendiente(boleta: any): number {
             
             if (esExitoso) {
               // ✅ PREGUNTAR SI DESEA GENERAR COMPROBANTE
+              this.notification.success('¡Boleta enviada exitosamente a SUNAT!', 'Éxito');
+              
               const generarComprobante = confirm('¡Boleta enviada exitosamente a SUNAT!\n\n¿Desea generar el comprobante de envío?');
               
               boleta.estado = 'enviada';
@@ -927,12 +981,15 @@ obtenerSaldoPendiente(boleta: any): number {
               const errorMsg = typeof response === 'object' && response.error 
                 ? response.error 
                 : 'Error desconocido';
-              alert('Error al enviar: ' + errorMsg);
+                this.notification.error('Error al enviar: ' + errorMsg, 'Error');
+              
+                //alert('Error al enviar: ' + errorMsg);
             }
           },
           error: (error) => {
             console.error('Error completo:', error);
-            alert('Error de conexión: ' + (error.message || 'Error desconocido'));
+            this.notification.error('Error de conexión: ' + (error.message || 'Error desconocido'), 'Error de conexión');        
+            // alert('Error de conexión: ' + (error.message || 'Error desconocido'));
           }
         });
       }
@@ -965,13 +1022,15 @@ obtenerSaldoPendiente(boleta: any): number {
               }, 1000);
             }
           } else {
-            alert('Pago completado, pero hubo un error al enviar a SUNAT. Puede reenviar manualmente.');
+            //alert('Pago completado, pero hubo un error al enviar a SUNAT. Puede reenviar manualmente.');
+            this.notification.error('Pago completado, pero hubo un error al enviar a SUNAT. Puede reenviar manualmente.', 'Error');        
             boleta.estado = 'pagada';
           }
         },
         error: (error) => {
           console.error('Error en envío automático:', error);
-          alert('Pago completado, pero hubo un error al enviar a SUNAT. Puede reenviar manualmente.');
+          this.notification.error('Pago completado, pero hubo un error al enviar a SUNAT. Puede reenviar manualmente.', 'Error de conexión');      
+          //alert('Pago completado, pero hubo un error al enviar a SUNAT. Puede reenviar manualmente.');
           boleta.estado = 'pagada';
         }
       });
@@ -1000,7 +1059,8 @@ obtenerSaldoPendiente(boleta: any): number {
         }, 1000);
       }
       
-      alert('Descargando documentos...');
+      this.notification.info('Descargando documentos...', 'Proceso en curso');  
+      //alert('Descargando documentos...');
       this.cerrarModalComprobante();
     }
   
