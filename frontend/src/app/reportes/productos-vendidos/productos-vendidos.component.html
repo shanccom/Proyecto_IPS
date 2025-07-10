@@ -1,0 +1,36 @@
+<div class="bg-secondary p-6 rounded-2xl shadow-md mt-10">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold">Productos Vendidos</h2>
+        <div class="flex space-x-2">
+        <button class="bg-blue-500 text-white px-4 py-1 rounded" (click)="exportarCSV()">CSV</button>
+        <button class="bg-green-500 text-white px-4 py-1 rounded" (click)="exportarPDF()">PDF</button>
+        </div>
+    </div>
+
+    <div class="overflow-auto max-h-[400px]">
+        <table class="min-w-full table-auto border-separate border-transparent">
+        <thead>
+            <tr class="text-left border-b border-gray-300">
+            <th class="bg-input px-4 py-2">Código</th>
+            <th class="bg-input px-4 py-2">Descripción</th>
+            <th class="bg-input px-4 py-2">Producto</th>
+            <th class="bg-input px-4 py-2">Cantidad</th>
+            <th class="bg-input px-4 py-2">Precio Unitario</th>
+            <th class="bg-input px-4 py-2">Total</th>
+            <th class="bg-input px-4 py-2">Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let producto of productosVendidos" class="border-b border-gray-200">
+            <td class="px-4 py-2">{{ producto.codigo }}</td>
+            <td class="px-4 py-2">{{ producto.descripcion }}</td>
+            <td class="px-4 py-2">{{ producto.tipo }}</td>
+            <td class="px-4 py-2">{{ producto.cantidad }}</td>
+            <td class="px-4 py-2">{{ producto.precio | currency:'PEN' }}</td>
+            <td class="px-4 py-2">{{ producto.total | currency:'PEN' }}</td>
+            <td class="px-4 py-2">{{ producto.fecha }}</td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+</div>

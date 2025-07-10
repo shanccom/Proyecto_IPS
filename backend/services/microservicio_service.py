@@ -84,25 +84,42 @@ class MicroservicioSunatService:
                     
                     return {
                         'success': False,
-                        'error': resultado.get('error', 'Error desconocido en SUNAT')
+                        'error': resultado.get('error', 'No se pudo enviar la boleta a SUNAT')
                     }
             else:
+                # Actualizar estado de error
+                boleta.mensaje_sunat = 'No se pudo enviar la boleta a SUNAT'
+                boleta.estado = 'error'
+                boleta.save()
+                
                 return {
                     'success': False,
-                    'error': f'Error HTTP {response.status_code}: {response.text}'
+                    'error': 'No se pudo enviar la boleta a SUNAT. Intente nuevamente más tarde.'
                 }
                 
         except requests.RequestException as e:
             logger.error(f"Error de conexión: {str(e)}")
+            
+            # Actualizar estado de error
+            boleta.mensaje_sunat = 'No se pudo enviar la boleta a SUNAT'
+            boleta.estado = 'error'
+            boleta.save()
+            
             return {
                 'success': False,
-                'error': f'Error de conexión con microservicio: {str(e)}'
+                'error': 'No se pudo enviar la boleta a SUNAT. Verifique su conexión a internet.'
             }
         except Exception as e:
             logger.error(f"Error inesperado: {str(e)}")
+            
+            # Actualizar estado de error
+            boleta.mensaje_sunat = 'No se pudo enviar la boleta a SUNAT'
+            boleta.estado = 'error'
+            boleta.save()
+            
             return {
                 'success': False,
-                'error': f'Error inesperado: {str(e)}'
+                'error': 'No se pudo enviar la boleta a SUNAT. Intente nuevamente más tarde.'
             }
     
     def _obtener_codigo_item(self, item):

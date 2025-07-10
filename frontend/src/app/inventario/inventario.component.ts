@@ -76,27 +76,29 @@ export class InventarioComponent implements OnInit {
     
 
     console.log('Filtros recibidos:', tiposFiltro);
-    this.productosFiltrados = this.productos.filter(producto => {
-      const tipoProducto = (producto.tipo || '').toLowerCase();
-      const marcaProducto = (producto.marca || '').toLowerCase();
-      const materialProducto = (producto.material || '').toLowerCase();
-      const colorProducto = (producto.color || '').toLowerCase();
-      const precio = producto.proPrecioVenta ?? 0;
+    if (this.authService.isAuthenticated()) {
+      this.productosFiltrados = this.productos.filter(producto => {
+        const tipoProducto = (producto.tipo || '').toLowerCase();
+        const marcaProducto = (producto.marca || '').toLowerCase();
+        const materialProducto = (producto.material || '').toLowerCase();
+        const colorProducto = (producto.color || '').toLowerCase();
+        const precio = producto.proPrecioVenta ?? 0;
 
 
-      const tipoPasa = tiposFiltro.length === 0 || tiposFiltro.includes(tipoProducto);
-      const marcaPasa = marcaFiltro.length === 0 || marcaFiltro.includes(marcaProducto);
-      const materialPasa = materialFiltro.length === 0 || materialFiltro.includes(materialProducto);
-      const colorPasa = colorFiltro.length === 0 || colorFiltro.includes(colorProducto);
-      const precioMinPasa = this.filtros.precio.min == null || precio >= this.filtros.precio.min;
-      const precioMaxPasa = this.filtros.precio.max == null || precio <= this.filtros.precio.max;
+        const tipoPasa = tiposFiltro.length === 0 || tiposFiltro.includes(tipoProducto);
+        const marcaPasa = marcaFiltro.length === 0 || marcaFiltro.includes(marcaProducto);
+        const materialPasa = materialFiltro.length === 0 || materialFiltro.includes(materialProducto);
+        const colorPasa = colorFiltro.length === 0 || colorFiltro.includes(colorProducto);
+        const precioMinPasa = this.filtros.precio.min == null || precio >= this.filtros.precio.min;
+        const precioMaxPasa = this.filtros.precio.max == null || precio <= this.filtros.precio.max;
 
-      const pasaFiltro = tipoPasa && marcaPasa && materialPasa && colorPasa && precioMinPasa && precioMaxPasa
+        const pasaFiltro = tipoPasa && marcaPasa && materialPasa && colorPasa && precioMinPasa && precioMaxPasa
 
-      console.log(`Producto: ${producto.nombre} | Tipo: ${producto.tipo} => pasa: ${pasaFiltro}`);
-      
-      return pasaFiltro;
-    });
+        console.log(`Producto: ${producto.nombre} | Tipo: ${producto.tipo} => pasa: ${pasaFiltro}`);
+        
+        return pasaFiltro;
+      });
+    }
 
     console.log('Productos filtrados:', this.productosFiltrados);
   }
