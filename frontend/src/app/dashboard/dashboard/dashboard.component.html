@@ -13,6 +13,8 @@
             title="Ventas de la Semana"
             [value]="ventasSemana"
             [dateRange]="fechaSemana"
+            [width]="'w-[200px]'" 
+            [height]="'min-h-[150px]'"
             class="flex-1 h-full">
           </app-stats-card>
 
@@ -21,6 +23,8 @@
             title="Ventas del Mes"
             [value]="ventasMes"
             [dateRange]="fechaMes"
+            [width]="'w-[200px]'" 
+            [height]="'min-h-[150px]'"
             class="flex-1 h-full">
           </app-stats-card>
 
@@ -29,7 +33,9 @@
             title="Ganancia del Día"
             [value]="gananciaDia"
             [dateRange]="fechaDia"
-            class="flex-1 h-full">
+            [width]="'w-[200px]'" 
+            [height]="'min-h-[150px]'"
+            class="flex-1 h-full"> 
           </app-stats-card>
         </div>
 

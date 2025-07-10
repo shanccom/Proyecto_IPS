@@ -12,4 +12,8 @@ export class StatsCardComponent {
   @Input() title = '';
   @Input() value: string | number | null = '';
   @Input() dateRange: string = ''; 
+  //Inputs para cambiar tamaño desde fuera
+  @Input() width: string = 'w-full';
+  @Input() height: string = 'h-auto';
+
 }
