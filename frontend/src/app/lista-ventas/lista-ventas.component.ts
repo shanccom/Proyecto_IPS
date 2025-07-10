@@ -431,18 +431,33 @@ getSaldoPendienteSeleccionada(): number {
   /**
    * ✅ MÉTODO ACTUALIZADO PARA ENVÍO MANUAL A SUNAT
    */
-  enviarSunat(boleta: BoletaResponse): void {
+  /*enviarSunat(boleta: BoletaResponse): void {
     // Verificar si está pagada completamente antes de enviar
     if (boleta.estado === 'pendiente' || boleta.estado === 'parcial') {
       const saldoPendiente = boleta.total - (boleta.monto_adelantos || 0);
       
       if (saldoPendiente > 0) {
-        this.notification.warning(`Esta boleta tiene un saldo pendiente de S/. ${saldoPendiente.toFixed(2)}. ¿Está seguro de enviarla a SUNAT?`, 'Advertencia');
+        //this.notification.warning(`Esta boleta tiene un saldo pendiente de S/. ${saldoPendiente.toFixed(2)}. ¿Está seguro de enviarla a SUNAT?`, 'Advertencia');
 
-        if (!confirm(`Esta boleta tiene un saldo pendiente de S/. ${saldoPendiente.toFixed(2)}. ¿Está seguro de enviarla a SUNAT?`)) {
+       /* if (!confirm(`Esta boleta tiene un saldo pendiente de S/. ${saldoPendiente.toFixed(2)}. ¿Está seguro de enviarla a SUNAT?`)) {
+          return;
+        }*//*
+       this.notification.confirm({
+        title: 'Confirmar Envío a SUNAT',
+        text: `Esta boleta tiene un saldo pendiente de S/. ${saldoPendiente.toFixed(2)}. ¿Está seguro de enviarla a SUNAT?`,
+        confirmButtonText: 'Sí, enviar',
+        cancelButtonText: 'Cancelar',
+        onConfirm: () => {
+          // Si el usuario confirma, continuar con el envío a SUNAT
+        },
+        onCancel: () => {
+          // Si el usuario cancela, no hacer nada
+          console.log('El usuario canceló el envío.');
           return;
         }
+      });
       }
+     
     }
     
     const mensaje = boleta.estado === 'enviada' 
@@ -485,8 +500,102 @@ getSaldoPendienteSeleccionada(): number {
         }
       });
     }
+  }*/
+
+//NUEVO
+enviarSunat(boleta: BoletaResponse): void {
+  // Verificar si está pagada completamente antes de enviar
+  if (boleta.estado === 'pendiente' || boleta.estado === 'parcial') {
+    const saldoPendiente = boleta.total - (boleta.monto_adelantos || 0);
+
+    // Mostrar advertencia si tiene saldo pendiente
+    this.notification.warning(`Esta boleta tiene un saldo pendiente de S/. ${saldoPendiente.toFixed(2)}. ¿Está seguro de enviarla a SUNAT?`, 'Advertencia');
+
+    // Usamos la notificación de confirmación en lugar de confirm() tradicional
+    this.notification.confirm({
+      title: 'Confirmar Envío a SUNAT',
+      text: `Esta boleta tiene un saldo pendiente de S/. ${saldoPendiente.toFixed(2)}. ¿Está seguro de enviarla a SUNAT?`,
+      confirmButtonText: 'Sí, enviar',
+      cancelButtonText: 'Cancelar',
+      onConfirm: () => {
+        // Si el usuario confirma, continuar con el envío a SUNAT
+        this.procederConEnvioSunat(boleta);  // Llamar al método para proceder con el envío
+      },
+      onCancel: () => {
+        console.log('El usuario canceló el envío.');
+      }
+    });
+    return; // Salir del método si se ha mostrado la confirmación
   }
 
+  // Si no hay saldo pendiente, continuar con el envío de la boleta a SUNAT
+  this.procederConEnvioSunatDiferente(boleta);
+}
+
+// Método que maneja el envío de la boleta a SUNAT
+procederConEnvioSunatDiferente(boleta: BoletaResponse): void {
+  // Usamos la notificación de confirmación para confirmar el envío a SUNAT
+  this.notification.confirm({
+    title: 'Confirmación de Envío a SUNAT',
+    text: '¿Está seguro de enviar esta boleta a SUNAT?',
+    confirmButtonText: 'Sí, enviar',
+    cancelButtonText: 'Cancelar',
+    onConfirm: () => {
+      this.ventasService.enviarBoletaSunat(boleta.id).subscribe({
+        next: (response) => {
+          console.log('Respuesta del servidor:', response);
+
+          let esExitoso = false;
+
+          if (typeof response === 'string') {
+            esExitoso = response.toLowerCase().includes('exitosamente') || 
+                        response.toLowerCase().includes('éxito');
+          } else if (typeof response === 'object' && response !== null) {
+            esExitoso = response.success === true;
+          }
+
+          if (esExitoso) {
+            // Notificación de éxito al enviar a SUNAT
+            this.notification.success('¡Boleta enviada exitosamente a SUNAT!', 'Éxito');
+            boleta.estado = 'enviada';
+            this.cargarBoletas();
+
+            // Preguntar si desea generar el comprobante
+            this.notification.confirm({
+              title: 'Generar Comprobante',
+              text: '¡Boleta enviada exitosamente a SUNAT! ¿Desea generar el comprobante de envío?',
+              confirmButtonText: 'Sí, generar comprobante',
+              cancelButtonText: 'No, gracias',
+              onConfirm: () => {
+                // Esperar un momento para que se actualice la boleta
+                setTimeout(() => {
+                  this.generarComprobanteSunat(boleta);
+                }, 1000);
+              },
+              onCancel: () => {
+                console.log('El usuario decidió no generar el comprobante.');
+              }
+            });
+          } else {
+            const errorMsg = typeof response === 'object' && response.error 
+              ? response.error 
+              : 'Error desconocido';
+            this.notification.error('Error al enviar: ' + errorMsg, 'Error');
+          }
+        },
+        error: (error) => {
+          console.error('Error completo:', error);
+          this.notification.error('Error de conexión: ' + (error.message || 'Error desconocido'), 'Error de conexión');
+        }
+      });
+    },
+    onCancel: () => {
+      console.log('El usuario canceló el envío.');
+    }
+  });
+}
+
+//NUEVO
   /**
    * ✅ VER HISTORIAL DE PAGOS - Nueva versión con modal
    */
@@ -931,7 +1040,7 @@ obtenerSaldoPendiente(boleta: any): number {
 
     }
 
-    enviarSunatConComprobante(boleta: BoletaResponse): void {
+    /*enviarSunatConComprobante(boleta: BoletaResponse): void {
       // Verificar si está pagada completamente antes de enviar
       if (boleta.estado === 'pendiente' || boleta.estado === 'parcial') {
         const saldoPendiente = boleta.total - (boleta.monto_adelantos || 0);
@@ -993,7 +1102,98 @@ obtenerSaldoPendiente(boleta: any): number {
           }
         });
       }
+    }*/
+   enviarSunatConComprobante(boleta: BoletaResponse): void {
+    // Verificar si está pagada completamente antes de enviar
+    if (boleta.estado === 'pendiente' || boleta.estado === 'parcial') {
+      const saldoPendiente = boleta.total - (boleta.monto_adelantos || 0);
+
+      // Notificación de advertencia si tiene saldo pendiente
+      this.notification.warning(`Esta boleta tiene un saldo pendiente de S/. ${saldoPendiente.toFixed(2)}. ¿Está seguro de enviarla a SUNAT?`, 'Advertencia');
+      
+      // Usamos la notificación de confirmación en lugar de confirm() tradicional
+      this.notification.confirm({
+        title: 'Confirmar Envío a SUNAT',
+        text: `Esta boleta tiene un saldo pendiente de S/. ${saldoPendiente.toFixed(2)}. ¿Está seguro de enviarla a SUNAT?`,
+        confirmButtonText: 'Sí, enviar',
+        cancelButtonText: 'Cancelar',
+        onConfirm: () => {
+          this.procederConEnvioSunat(boleta);  // Llamar al método para proceder con el envío
+        },
+        onCancel: () => {
+          console.log('El usuario canceló el envío a SUNAT');
+        }
+      });
+      return; // Salir del método si se ha mostrado la confirmación
     }
+
+    // Si no hay saldo pendiente, continuar con el envío de la boleta a SUNAT
+    this.procederConEnvioSunat(boleta);
+  }
+
+  // Método que maneja el envío de la boleta a SUNAT
+  procederConEnvioSunat(boleta: BoletaResponse): void {
+  // Usamos la notificación de confirmación para confirmar el envío a SUNAT
+  this.notification.confirm({
+    title: 'Confirmación de Envío a SUNAT',
+    text: '¿Está seguro de enviar esta boleta a SUNAT?',
+    confirmButtonText: 'Sí, enviar',
+    cancelButtonText: 'Cancelar',
+      onConfirm: () => {
+        this.ventasService.enviarBoletaSunat(boleta.id).subscribe({
+          next: (response) => {
+            console.log('Respuesta del servidor:', response);
+
+            let esExitoso = false;
+
+            if (typeof response === 'string') {
+              esExitoso = response.toLowerCase().includes('exitosamente') || 
+                          response.toLowerCase().includes('éxito');
+            } else if (typeof response === 'object' && response !== null) {
+              esExitoso = response.success === true;
+            }
+
+            if (esExitoso) {
+              // Notificación de éxito al enviar a SUNAT
+              this.notification.success('¡Boleta enviada exitosamente a SUNAT!', 'Éxito');
+              boleta.estado = 'enviada';
+              this.cargarBoletas();
+
+              // Preguntar si desea generar el comprobante
+              this.notification.confirm({
+                title: 'Generar Comprobante',
+                text: '¡Boleta enviada exitosamente a SUNAT! ¿Desea generar el comprobante de envío?',
+                confirmButtonText: 'Sí, generar comprobante',
+                cancelButtonText: 'No, gracias',
+                onConfirm: () => {
+                  // Esperar un momento para que se actualice la boleta
+                  setTimeout(() => {
+                    this.generarComprobanteSunat(boleta);
+                  }, 1000);
+                },
+                onCancel: () => {
+                  console.log('El usuario decidió no generar el comprobante.');
+                }
+              });
+            } else {
+              const errorMsg = typeof response === 'object' && response.error 
+                ? response.error 
+                : 'Error desconocido';
+              this.notification.error('Error al enviar: ' + errorMsg, 'Error');
+            }
+          },
+          error: (error) => {
+            console.error('Error completo:', error);
+            this.notification.error('Error de conexión: ' + (error.message || 'Error desconocido'), 'Error de conexión');
+          }
+        });
+      },
+      onCancel: () => {
+        console.log('El usuario canceló el envío.');
+      }
+    });
+  }
+///NUEVO AGREGADO 
 
     enviarSunatAutomaticoConComprobante(boleta: BoletaResponse): void {
       this.ventasService.enviarBoletaSunat(boleta.id).subscribe({
@@ -1058,7 +1258,7 @@ obtenerSaldoPendiente(boleta: any): number {
           this.generarComprobanteSunat(boleta);
         }, 1000);
       }
-      
+
       this.notification.info('Descargando documentos...', 'Proceso en curso');  
       //alert('Descargando documentos...');
       this.cerrarModalComprobante();

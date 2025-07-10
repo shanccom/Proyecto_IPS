@@ -1,7 +1,3 @@
-// src/app/services/notification.service.ts
-
-// Servicio de notificaciones usando SweetAlert2 puro,
-// sin necesidad de módulos de Angular.
 import { Injectable } from '@angular/core';
 import Swal, { SweetAlertIcon, SweetAlertPosition } from 'sweetalert2';
 
@@ -41,5 +37,31 @@ export class NotificationService {
 
   warning(title: string, text?: string) {
     this.fire('warning', title, text);
+  }
+
+  // Nuevo método para confirmaciones
+  confirm(options: {
+    title: string;
+    text: string;
+    confirmButtonText?: string;
+    cancelButtonText?: string;
+    onConfirm?: () => void;
+    onCancel?: () => void;
+  }) {
+    Swal.fire({
+      title: options.title,
+      text: options.text,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: options.confirmButtonText || 'Sí, enviar',
+      cancelButtonText: options.cancelButtonText || 'Cancelar',
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed && options.onConfirm) {
+        options.onConfirm();
+      } else if (options.onCancel) {
+        options.onCancel();
+      }
+    });
   }
 }
