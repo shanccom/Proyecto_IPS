@@ -108,7 +108,7 @@ export class UsuariosComponent implements OnInit {
         console.log('Empleado registrado exitosamente:', data);
         alert('Empleado registrado exitosamente');
         this.cerrarModalRegistrar(); // Cerrar el modal
-        this.obtenerUsuarios(); // Refrescar la lista de usuarios
+        this.getColaborators(); // Refrescar la lista de usuarios
       },
       error => {
         console.error('Error al registrar empleado:', error);
