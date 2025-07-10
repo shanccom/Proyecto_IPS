@@ -217,14 +217,25 @@ export class VentasService {
 
   /* -------------------------Empleados-------------------------------------*/
   newColaborator(emplCod: string, emplNom: string, emplCarg: string, emplCond: string): Observable<any> {
-  const payload = {
-    emplCod,
-    emplNom,
-    emplCarg,
-    emplCond
-  };
+    const payload = {
+      emplCod,
+      emplNom,
+      emplCarg,
+      emplCond
+    };
 
-  return this.http.post<any>(`${this.apiUrl}/ventas/create_empleado/`, payload, this.httpOptions);
-}
+    return this.http.post<any>(`${this.apiUrl}/ventas/create_empleado/`, payload, this.httpOptions);
+  }
+  deleteColaborator(emplCod: string, emplNom: string, emplCarg: string, emplCond: string): Observable<any> {
+    const payload = {
+      emplCod,
+      emplNom,
+      emplCarg,
+      emplCond
+    };
+
+    return this.http.post<any>(`${this.apiUrl}/ventas/create_empleado/`, payload, this.httpOptions);
+  }
+  listColaborator(){}
 
 }

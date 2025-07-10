@@ -12,7 +12,7 @@ class Producto(models.Model):  #modelo abstracto no existente
 
 #Subclases
 class Montura(Producto):
-    monCod = models.CharField(primary_key=True, max_length=10, unique=True)
+    monCod = models.CharField(primary_key=True, max_length=20, unique=True)
     MATERIAL_CHOICES = [
         ('Metal', 'Metal'),
         ('Plastico', 'Plástico'),
@@ -55,11 +55,20 @@ class Montura(Producto):
 
     #Ajuste para guardar segun el material y sea un autofield
     def save(self, *args, **kwargs):
-        self.proStock = 1  
+        self.proStock = 1
+        
         if not self.monCod:
             codigo_base = self.monMate[0]
             ultimo = self.__class__.objects.filter(monCod__startswith=codigo_base).count() + 1
-            self.monCod = f"{codigo_base}{ultimo}"
+            
+            # Calcular cuántos dígitos necesitamos para alcanzar 15 caracteres
+            digitos_necesarios = 15 - len(codigo_base)
+            
+            # Rellenar con ceros a la izquierda para alcanzar la longitud requerida
+            numero_formateado = str(ultimo).zfill(digitos_necesarios)
+            
+            self.monCod = f"{codigo_base}{numero_formateado}"
+        
         super().save(*args, **kwargs)
 
 class Accesorio(Producto):

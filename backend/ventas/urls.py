@@ -11,7 +11,6 @@ urlpatterns = [
     path('boletas/', views.crear_boleta, name='crear_boleta'),
     path('boletas/lista/', views.listar_boletas, name='listar_boletas'),
     path('boletas/siguiente-correlativo/<str:serie>/', views.obtener_siguiente_correlativo, name='siguiente_correlativo'),
-    path('create_empleado/', views.new_empleado, name = 'nuevo empleado'),
     path('boletas/<int:boleta_id>/eliminar/', views.eliminar_boleta, name='eliminar_boleta'),
 
 
@@ -36,6 +35,10 @@ urlpatterns = [
     path('boletas/<int:boleta_id>/procesar-pago/', views.procesar_pago_con_verificacion, name='procesar_pago'),
     path('boletas/<int:boleta_id>/adelantos/<int:adelanto_id>/', views.eliminar_adelanto, name='eliminar_adelanto'),
     path('resumen-pagos/', views.obtener_resumen_pagos, name='resumen_pagos'),
-
-
+    
+    # Empleados
+    path('create_empleado/', views.new_empleado, name = 'nuevo empleado'),
+    path('delete_empleado/', views.delete_empleado, name = 'borrar empleado'),
+    path('list-empleados/', views.list_empleado, name = 'Lista de empleados'),
+    path('empleado-info/', views.empleado_info, name = 'informacion empleado'),
 ]

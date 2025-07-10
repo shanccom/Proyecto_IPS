@@ -971,6 +971,71 @@ def new_empleado(request):
         return Response(serializer.data, status= status.HTTP_201_CREATED)
     except Exception as e:
         return Response({"error":str(e)})
+# Eliminar Empleado
+@api_view(['DELETE'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+@permission_classes([IsAdminUser])  # Solo staff
+def delete_empleado(request, emplCod):
+    try:
+        empleado = Empleado.object.get(emplCod)
+        # No permitir que se elimine a sí mismo
+        if empleado == request.empleado:
+            return Response({
+                'error': 'No puedes eliminar tu propio registro'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        empleado.delete()
+        return Response({
+            'message': 'Usuario eliminado exitosamente'
+        }, status=status.HTTP_204_NO_CONTENT)
+
+    
+    except Empleado.DoesNotExist:
+        return Response({
+            'error': 'Empleado no encontrado'
+        }, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        logger.error(f"Error al eliminar empleado: {str(e)}")
+        return Response({
+            "error": "Error al eliminar empleado",
+            "details": str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+# Empleados creados
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+@permission_classes([IsAdminUser])  # Solo staff
+def list_empleado(request):
+    try:
+        empleados = Empleado.objects.all()
+        serializer = EmpleadoSerializer(empleados, many=True)
+    except Exception as e:
+        logger.error(f"Error al listar usuarios: {str(e)}")
+        return Response({
+            "error": "Error al obtener usuarios", 
+            "details": str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# Informacion Empleado
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+@permission_classes([IsAdminUser]) 
+def empleado_info(request):
+    try:
+        empleado = request.empleado
+        serializer = EmpleadoSerializer(empleado)
+        return Response({
+            'message': 'Info de empleado obtenido exitosamente',
+            'user': serializer.data
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        logger.error(f"Error durante la recuperación de datos: {str(e)}")
+        return Response({
+            "error": "Ocurrió un error en el servidor.", 
+            "details": str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @csrf_exempt
 @require_http_methods(["DELETE"])   
