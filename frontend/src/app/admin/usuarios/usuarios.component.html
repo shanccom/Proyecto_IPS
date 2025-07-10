@@ -1,5 +1,5 @@
 <!-- usuarios.component.html -->
-<div class="justify-between items-center mb-6 mt-7 ml-[100px] space-y-6">
+<div class="justify-between items-center mb-6 mt-7 ml-[100px] space-y-14">
   <div class="max-w-7xl mx-auto mb-20px">
     <!-- Header -->
     <div class="mb-8">
@@ -8,17 +8,6 @@
           <h1 class="text-3xl font-bold text-foreground mb-2">Gestión de Usuarios</h1>
           <p class="text-muted-foreground">Administra los usuarios del sistema</p>
         </div>
-        <!-- Botón Registrar Empleado mejorado -->
-        <button
-          (click)="abrirModalRegistrar()"
-          class="bg-[rgb(var(--primary-light)/1)] hover:bg-[rgb(var(--primary-light)/0.9)] text-white px-6 py-3 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg"
-        >
-          <!-- Icono + -->
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-          </svg>
-          Registrar Empleado
-        </button>
       </div>
     </div>
 
@@ -119,14 +108,24 @@
         </table>
       </div>
     </div>
-  </div>
-    <!--LIsta de empleadoos-->
-  <div class="mb-8">
-        <div class="flex justify-between items-center">
+    <!--Lista de empleadoos-->
+  <div class="mb-8 mt-15">
+        <div class="flex justify-between items-center py-5">
           <div>
             <h1 class="text-3xl font-bold text-foreground mb-2">Gestión de Empleados</h1>
             <p class="text-muted-foreground">Codigos para el registro de nuevos colaboradores</p>
           </div>
+          <!-- Botón Registrar Empleado -->
+        <button
+          (click)="abrirModalRegistrar()"
+          class="bg-[rgb(var(--primary-light)/1)] hover:bg-[rgb(var(--primary-light)/0.9)] text-white px-6 py-3 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg"
+        >
+          <!-- Icono + -->
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+          </svg>
+          Registrar Empleado
+        </button>
         </div>
   </div>
   <!-- Tabla de empleados  -->
@@ -214,6 +213,8 @@
   </div>
 </div>
 
+  </div>
+    
 <!-- Forms para registrar empleado -->
 <div *ngIf="mostrarModalRegistrar" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
   <div class="bg-background border border-border rounded-lg p-6 w-full max-w-md mx-4 shadow-xl">
