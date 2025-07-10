@@ -73,9 +73,10 @@ export class InventarioComponent implements OnInit {
     const marcaFiltro = (filtrosAplicados.marca || []).map((v: string) => v.toLowerCase());
     const materialFiltro = (filtrosAplicados.material || []).map((v: string) => v.toLowerCase());
     const colorFiltro = (filtrosAplicados.color || []).map((v: string) => v.toLowerCase());
+    const publicoFiltro = (filtrosAplicados.publico || []).map((v: string) => v.toLowerCase());
     
 
-    console.log('Filtros recibidos:', tiposFiltro);
+    console.log('Filtros recibidos:', filtrosAplicados.data);
     if (this.authService.isAuthenticated()) {
       this.productosFiltrados = this.productos.filter(producto => {
         const tipoProducto = (producto.tipo || '').toLowerCase();
