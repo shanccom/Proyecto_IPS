@@ -1,0 +1,49 @@
+<div class="pl-[120px] pr-6 py-6 min-h-screen bg-background text-text font-poppins">
+    <div class="reportes space-y-12">
+
+        <!-- Sección de Ventas -->
+        <div class="flex flex-col lg:flex-row gap-6">
+        <!-- Card de Ventas: 1/3 -->
+        <div class="w-full lg:w-1/3">
+            <app-stats-card
+            icon="bx bx-bar-chart-alt"
+            title="Ventas"
+            [value]="totalVentas"
+            dateRange=""
+            width="w-full"
+            height="h-[150px]">
+            </app-stats-card>
+        </div>
+
+        <!-- Gráfico de Ventas: 2/3 -->
+        <div class="w-full lg:w-2/3">
+            <div class="bg-[#292C2D] p-6 rounded-2xl shadow-md h-full">
+            <app-chart-ventas></app-chart-ventas>
+            </div>
+        </div>
+        </div>
+
+        <!-- Sección de Compras -->
+        <div class="flex flex-col lg:flex-row gap-6">
+        <!-- Card de Compras: 1/3 -->
+        <div class="w-full lg:w-1/3">
+            <app-stats-card
+            icon="bx bx-cart-alt"
+            title="Compras"
+            [value]="totalCompras"
+            dateRange="Total de Compras"
+            width="w-full"
+            height="h-[150px]">
+            </app-stats-card>
+        </div>
+
+        <!-- Gráfico de Compras: 2/3 
+        <div class="w-full lg:w-2/3">
+            <div class="bg-[#292C2D] p-6 rounded-2xl shadow-md h-full">
+            <app-chart-compras></app-chart-compras>
+            </div>
+        </div>-->
+        </div>
+
+    </div>
+</div>

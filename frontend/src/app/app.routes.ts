@@ -7,7 +7,7 @@ import { InventarioComponent } from './inventario/inventario.component'
 import { ClientesComponent } from './clientes/clientes.component';
 import { ListaVentasComponent } from './lista-ventas/lista-ventas.component';
 import { RegisterComponent } from './auth/register/register.component';
-import { ReportesComponent } from './reportes/reportes.component';
+import { ReportesComponent } from './reportes/reportes/reportes.component';
 import { CuentaComponent } from './admin/cuenta/cuenta.component';
 import { UsuariosComponent } from './admin/usuarios/usuarios.component';
 import { ConfiguracionComponent } from './admin/configuracion/configuracion.component';
