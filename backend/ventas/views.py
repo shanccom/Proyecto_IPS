@@ -1235,6 +1235,9 @@ def ultimos_productos_vendidos(request):
     resultado = []
 
     for item in items:
+        valor_unitario = float(item.valor_unitario)
+        fecha = item.boleta.fecha.strftime('%Y-%m-%d %H:%M')
+        subtotal = float(valor_unitario * item.cantidad)
         producto = item.content_object
         if producto:
             if hasattr(producto, 'lunaCod'):
@@ -1242,7 +1245,11 @@ def ultimos_productos_vendidos(request):
                     'codigo': producto.lunaCod,
                     'descripcion': str(producto),
                     'tipo': 'Luna',
-                    'cantidad': item.cantidad
+                    'cantidad': item.cantidad,
+                    'precio': valor_unitario,
+                    'total': subtotal,
+                    'fecha': fecha
+
                 })
             elif hasattr(producto, 'monCod'):
                 descripcion = f"{producto.monMarca} - {producto.monMate} - {producto.monColor}"
@@ -1250,7 +1257,10 @@ def ultimos_productos_vendidos(request):
                     'codigo': producto.monCod,
                     'descripcion': descripcion,
                     'tipo': 'Montura',
-                    'cantidad': item.cantidad
+                    'cantidad': item.cantidad,
+                    'precio': valor_unitario,
+                    'total': subtotal,
+                    'fecha': fecha
                 })
             elif hasattr(producto, 'accCod'):
                 descripcion = f"{producto.accNombre} - {producto.proDescrip or 'Sin descripción'}"
@@ -1258,7 +1268,10 @@ def ultimos_productos_vendidos(request):
                     'codigo': producto.accCod,
                     'descripcion': descripcion,
                     'tipo': 'Accesorio',
-                    'cantidad': item.cantidad
+                    'cantidad': item.cantidad,
+                    'precio': valor_unitario,
+                    'total': subtotal,
+                    'fecha': fecha
                 })
         else:
             # Si es producto personalizado
@@ -1347,26 +1360,61 @@ def resumen_reportes(request):
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def productos_vendidos(request):
-    items = ItemBoleta.objects.filter(boleta__estado__in=['pagada', 'enviada'])
+def todos_productos_vendidos(request):
+    # Trae todas las boletas con estado pagada o enviada
+    boletas = Boleta.objects.filter(estado__in=['pagada', 'enviada']).order_by('-fecha')
+    items = ItemBoleta.objects.filter(boleta__in=boletas).select_related('content_type').order_by('-boleta__fecha')
+    
+    resultado = []
 
-    resultados = []
     for item in items:
+        valor_unitario = float(item.valor_unitario)
+        fecha = item.boleta.fecha.strftime('%Y-%m-%d %H:%M')
+        subtotal = float(valor_unitario * item.cantidad)
         producto = item.content_object
+
         if producto:
-            nombre = getattr(producto, 'proNombre', None) or getattr(producto, 'lunNombre', None) or 'Desconocido'
-            precio = item.valor_unitario
-            cantidad = item.cantidad
-            total = precio * cantidad
-            fecha = item.boleta.fecha.strftime('%Y-%m-%d')
-            resultados.append({
-                'codigo': producto.codigo,
-                'nombre': nombre,
-                'cantidad': cantidad,
-                'precio': float(precio),
-                'total': float(total),
+            if hasattr(producto, 'lunaCod'):
+                resultado.append({
+                    'codigo': producto.lunaCod,
+                    'descripcion': str(producto),
+                    'tipo': 'Luna',
+                    'cantidad': item.cantidad,
+                    'precio': valor_unitario,
+                    'total': subtotal,
+                    'fecha': fecha
+                })
+            elif hasattr(producto, 'monCod'):
+                descripcion = f"{producto.monMarca} - {producto.monMate} - {producto.monColor}"
+                resultado.append({
+                    'codigo': producto.monCod,
+                    'descripcion': descripcion,
+                    'tipo': 'Montura',
+                    'cantidad': item.cantidad,
+                    'precio': valor_unitario,
+                    'total': subtotal,
+                    'fecha': fecha
+                })
+            elif hasattr(producto, 'accCod'):
+                descripcion = f"{producto.accNombre} - {producto.proDescrip or 'Sin descripción'}"
+                resultado.append({
+                    'codigo': producto.accCod,
+                    'descripcion': descripcion,
+                    'tipo': 'Accesorio',
+                    'cantidad': item.cantidad,
+                    'precio': valor_unitario,
+                    'total': subtotal,
+                    'fecha': fecha
+                })
+        else:
+            resultado.append({
+                'codigo': 'PERSONALIZADO',
+                'descripcion': item.descripcion_personalizada or 'Producto personalizado',
+                'tipo': 'Personalizado',
+                'cantidad': item.cantidad,
+                'precio': valor_unitario,
+                'total': subtotal,
                 'fecha': fecha
             })
 
-    return Response(resultados)
-
+    return Response(resultado)
