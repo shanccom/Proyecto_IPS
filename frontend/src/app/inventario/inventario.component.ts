@@ -5,7 +5,7 @@ import { InventarioService } from '../services/inventario.service';
 import { CommonModule } from '@angular/common'; 
 import { FormularioAccesorioComponent } from './formulario-accesorio/formulario-accesorio.component';
 import { FormularioMonturaComponent } from './formulario-montura/formulario-montura.component';
-
+import { AuthService } from '../services/auth.service';
 import jsPDF from 'jspdf';
 import { svg2pdf } from 'svg2pdf.js';
 import { BarcodeComponent } from '../shared/barcode/barcode.component';
@@ -38,19 +38,21 @@ export class InventarioComponent implements OnInit {
   //
   modalCodigoVisible: boolean = false; 
   codigoProducto: string = '';       
-  constructor(private inventarioService: InventarioService) {}
+  constructor(private inventarioService: InventarioService, private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.inventarioService.obtenerProductos().subscribe(
-      (data) => {
-        console.log('Datos recibidos desde el backend:', data);
-        this.productos = data;
-        this.productosFiltrados = [...data];
-      },
-      (error) => {
-        console.error('Error al obtener productos:', error);
-      }
-    );
+    if (this.authService.isAuthenticated()) {
+      this.inventarioService.obtenerProductos().subscribe(
+            (data) => {
+              console.log('Datos recibidos desde el backend:', data);
+              this.productos = data;
+              this.productosFiltrados = [...data];
+            },
+            (error) => {
+              console.error('Error al obtener productos:', error);
+            }
+          );
+    }
   }
 
 
