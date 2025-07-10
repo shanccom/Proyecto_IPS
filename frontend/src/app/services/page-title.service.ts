@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class PageTitleService {
 
-  private title: string = 'hola'; 
+  private title: string = ''; 
 
   setTitle(newTitle: string): void {
     this.title = newTitle;

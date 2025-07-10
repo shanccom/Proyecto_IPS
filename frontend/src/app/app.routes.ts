@@ -29,7 +29,7 @@ export const routes: Routes = [
   { path: 'listaVentas', component:ListaVentasComponent, canActivate: [AuthGuard] },
   { path: 'reportes', component:ReportesComponent, canActivate: [AdminGuard] },
   //Ahora admin
-  { path: 'admin-cuenta', component:CuentaComponent, canActivate: [AdminGuard] },
+  { path: 'admin-cuenta', component:CuentaComponent, canActivate: [AuthGuard] },
   { path: 'admin-usuarios', component:UsuariosComponent, canActivate: [AdminGuard] },
   { path: 'admin-configuracion', component:ConfiguracionComponent, canActivate: [AdminGuard] },
   { path: '**', redirectTo: 'login' }

@@ -43,6 +43,7 @@ export class RegisterComponent {
     this.errorMessage = '';
 
     const registerData = {
+      emplCod: this.emplCod,
       usuarioNom: this.username, // El backend espera usuarioNom
       password: this.password
     };

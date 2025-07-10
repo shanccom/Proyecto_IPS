@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Q, Max
 from django.contrib.contenttypes.models import ContentType
-from .models import Cliente, Luna, Boleta, ItemBoleta
+from .models import Cliente, Luna, Boleta, ItemBoleta, Empleado
 from inventario.models import Montura, Accesorio
 from .serializers import ClienteSerializer, LunaSerializer, EmpleadoSerializer, PagoAdelantoSerializer
 from rest_framework.views import APIView
@@ -961,13 +961,13 @@ def new_empleado(request):
         return Response({"error": "emplCod y emplNom son obligatorios"}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        Empleado = Empleado.objects.create(
+        empleado = Empleado.objects.create(
             emplCod = emplCod,
             emplNom = emplNom,
             emplCarg = emplCarg,
             emplCond = emplCond,
         )
-        serializer = EmpleadoSerializer(Empleado)
+        serializer = EmpleadoSerializer(empleado)
         return Response(serializer.data, status= status.HTTP_201_CREATED)
     except Exception as e:
         return Response({"error":str(e)})

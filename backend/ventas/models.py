@@ -16,7 +16,7 @@ class Empleado(models.Model):
         ('gerente', 'Gerente'),
         ('colaborador', 'Colaborador'),
     ]
-    emplCod = models.AutoField(primary_key = True, )
+    emplCod = models.AutoField(primary_key = True)
     emplNom = models.CharField(max_length = 50)
     emplCarg = models.CharField(max_length = 20, choices=CARGO)
     emplCond = models.CharField(choices = CONDICION_EMPLEADO, max_length=20)

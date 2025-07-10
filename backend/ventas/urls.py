@@ -11,7 +11,7 @@ urlpatterns = [
     path('boletas/', views.crear_boleta, name='crear_boleta'),
     path('boletas/lista/', views.listar_boletas, name='listar_boletas'),
     path('boletas/siguiente-correlativo/<str:serie>/', views.obtener_siguiente_correlativo, name='siguiente_correlativo'),
-    path('create_empleado', views.new_empleado, name = 'nuevo empleado'),
+    path('create_empleado/', views.new_empleado, name = 'nuevo empleado'),
     path('boletas/<int:boleta_id>/eliminar/', views.eliminar_boleta, name='eliminar_boleta'),
 
 
