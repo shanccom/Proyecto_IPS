@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnInit,Inject, PLATFORM_ID } from '@angular/core';
-import { DashboardService } from '../../services/dashboard.service';
+import { ReportesService } from '../../services/reportes.service';
 import Chart from 'chart.js/auto';
 import { isPlatformBrowser } from '@angular/common';
 
@@ -16,7 +16,7 @@ export class ChartComprasComponent implements AfterViewInit{
   chart: any;
   rango: 'dia' | 'mes' | 'anio' = 'dia';
 
-  constructor(private dashboardService: DashboardService, @Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(private reportesService: ReportesService, @Inject(PLATFORM_ID) private platformId: Object) {}
 
 
   ngAfterViewInit(): void {
@@ -28,13 +28,14 @@ export class ChartComprasComponent implements AfterViewInit{
   }
 
   inicializarGrafico() {
-    const canvas = document.getElementById('gananciaChart') as HTMLCanvasElement;
+    const canvas = document.getElementById('comprasChart') as HTMLCanvasElement;
+    // Destruye el gráfico si ya existe
     this.chart = new Chart(canvas, {
       type: 'line',
       data: {
         labels: [],
         datasets: [{
-          label: 'Ventas Total',
+          label: 'Compras Total',
           data: [],
           backgroundColor: 'rgba(54, 162, 235, 0.6)',
           borderColor: 'rgba(54, 162, 235, 1)',
@@ -68,10 +69,9 @@ export class ChartComprasComponent implements AfterViewInit{
   }
   
   cargarDatos() {    
-    this.dashboardService.obtenerVentas(this.rango).subscribe(
+    this.reportesService.obtenerComprasPorRango(this.rango).subscribe(
       (datosReales) => {
-        console.log('Datos reales del backend:', datosReales);
-        
+        console.log('Datos de compras:', datosReales);
         // Completar con datos históricos ficticios
         const datos = this.completarDatosHistoricos(datosReales);
         console.log('Datos completos:', datos);

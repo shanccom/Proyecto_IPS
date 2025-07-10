@@ -126,7 +126,7 @@ export class ChartVentasComponent implements AfterViewInit{
   */
 
   inicializarGrafico() {
-    const canvas = document.getElementById('gananciaChart') as HTMLCanvasElement;
+    const canvas = document.getElementById('ventasChart') as HTMLCanvasElement;
     this.chart = new Chart(canvas, {
       type: 'line',
       data: {
@@ -227,26 +227,26 @@ export class ChartVentasComponent implements AfterViewInit{
       
     }
 
-private procesarDatosError(datos: any[]) {
-  let campoFecha: 'fecha_dia' | 'fecha_mes' | 'fecha_anio';
-  
-  if (this.rango === 'dia') campoFecha = 'fecha_dia';
-  else if (this.rango === 'mes') campoFecha = 'fecha_mes';
-  else campoFecha = 'fecha_anio';
+  private procesarDatosError(datos: any[]) {
+    let campoFecha: 'fecha_dia' | 'fecha_mes' | 'fecha_anio';
+    
+    if (this.rango === 'dia') campoFecha = 'fecha_dia';
+    else if (this.rango === 'mes') campoFecha = 'fecha_mes';
+    else campoFecha = 'fecha_anio';
 
-  const etiquetas = datos.map(item => item[campoFecha]);
-  const valores = datos.map(item => item.total);
+    const etiquetas = datos.map(item => item[campoFecha]);
+    const valores = datos.map(item => item.total);
 
-  this.chart.data.labels = etiquetas;
-  this.chart.data.datasets[0].data = valores;
+    this.chart.data.labels = etiquetas;
+    this.chart.data.datasets[0].data = valores;
 
-  const maxValor = Math.max(...valores);
-  const margen = 10; 
-  const valorMaximoEjeY = Math.ceil((maxValor + margen) / 10) * 10; 
+    const maxValor = Math.max(...valores);
+    const margen = 10; 
+    const valorMaximoEjeY = Math.ceil((maxValor + margen) / 10) * 10; 
 
-  this.chart.options.scales.y.max = valorMaximoEjeY;
-  this.chart.update();
-}
+    this.chart.options.scales.y.max = valorMaximoEjeY;
+    this.chart.update();
+  }
 
 private completarDatosHistoricos(datosReales: any[]): any[] {
   if (datosReales.length === 0) {
@@ -345,35 +345,35 @@ private completarAniosPasados(datosReales: any[]): any[] {
   return aniosCompletos.sort((a, b) => parseInt(a.fecha_anio) - parseInt(b.fecha_anio));
 }
 
-private generarValorRealista(datosReales: any[], rango: 'dia' | 'mes' | 'anio'): number {
-  if (datosReales.length === 0) {
-    if (rango === 'dia') return Math.floor(Math.random() * 800) + 100; // 100-900
-    if (rango === 'mes') return Math.floor(Math.random() * 8000) + 1000; // 1000-9000
-    return Math.floor(Math.random() * 80000) + 10000; // 10000-90000
+  private generarValorRealista(datosReales: any[], rango: 'dia' | 'mes' | 'anio'): number {
+    if (datosReales.length === 0) {
+      if (rango === 'dia') return Math.floor(Math.random() * 800) + 100; // 100-900
+      if (rango === 'mes') return Math.floor(Math.random() * 8000) + 1000; // 1000-9000
+      return Math.floor(Math.random() * 80000) + 10000; // 10000-90000
+    }
+    
+    const valores = datosReales.map(item => item.total);
+    const promedio = valores.reduce((sum, val) => sum + val, 0) / valores.length;
+    const minimo = Math.min(...valores);
+    const maximo = Math.max(...valores);
+    
+    // Crear más variación en los datos históricos
+    const factorReduccionBase = 0.6; // Base más baja
+    const variacionReduccion = 0.4; // Variación en el factor de reducción
+    const factorReduccion = factorReduccionBase + (Math.random() * variacionReduccion);
+    
+    const valorBase = promedio * factorReduccion;
+    const rangoVariacion = (maximo - minimo) * 0.8; // Aumentar variación al 80%
+    
+    // Agregar tendencia aleatoria (algunos días mejores, otros peores)
+    const tendenciaAleatoria = (Math.random() - 0.5) * rangoVariacion;
+    
+    const valorFinal = Math.floor(valorBase + tendenciaAleatoria);
+    
+    // Asegurar que no sea negativo y tenga un mínimo razonable
+    const minimoAbsoluto = rango === 'dia' ? 50 : rango === 'mes' ? 500 : 5000;
+    return Math.max(valorFinal, minimoAbsoluto);
   }
-  
-  const valores = datosReales.map(item => item.total);
-  const promedio = valores.reduce((sum, val) => sum + val, 0) / valores.length;
-  const minimo = Math.min(...valores);
-  const maximo = Math.max(...valores);
-  
-  // Crear más variación en los datos históricos
-  const factorReduccionBase = 0.6; // Base más baja
-  const variacionReduccion = 0.4; // Variación en el factor de reducción
-  const factorReduccion = factorReduccionBase + (Math.random() * variacionReduccion);
-  
-  const valorBase = promedio * factorReduccion;
-  const rangoVariacion = (maximo - minimo) * 0.8; // Aumentar variación al 80%
-  
-  // Agregar tendencia aleatoria (algunos días mejores, otros peores)
-  const tendenciaAleatoria = (Math.random() - 0.5) * rangoVariacion;
-  
-  const valorFinal = Math.floor(valorBase + tendenciaAleatoria);
-  
-  // Asegurar que no sea negativo y tenga un mínimo razonable
-  const minimoAbsoluto = rango === 'dia' ? 50 : rango === 'mes' ? 500 : 5000;
-  return Math.max(valorFinal, minimoAbsoluto);
-}
 
   private generarDatosFicticios(): any[] {
     let datos: any[] = [];
