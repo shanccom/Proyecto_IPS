@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit,Inject, PLATFORM_ID } from '@angular/core';
+import { AfterViewInit, Component, OnInit,Inject, PLATFORM_ID, Input } from '@angular/core';
 import { ReportesService } from '../../services/reportes.service';
 import Chart from 'chart.js/auto';
 import { isPlatformBrowser } from '@angular/common';
@@ -12,7 +12,8 @@ import { isPlatformBrowser } from '@angular/common';
   styleUrl: './chart-compras.component.css'
 })
 export class ChartComprasComponent implements AfterViewInit{
-
+  @Input() width: string = '100%';
+  @Input() height: string = '300px';
   chart: any;
   rango: 'dia' | 'mes' | 'anio' = 'dia';
 

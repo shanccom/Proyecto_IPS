@@ -9,16 +9,19 @@
             icon="bx bx-bar-chart-alt"
             title="Ventas"
             [value]="totalVentas"
-            dateRange=""
+            dateRange="Total de Ventas"
             width="w-full"
             height="h-[150px]">
             </app-stats-card>
         </div>
 
         <!-- Gráfico de Ventas: 2/3 -->
-        <div class="w-full lg:w-2/3">
-            <div class="bg-[#292C2D] p-6 rounded-2xl shadow-md h-full">
-            <app-chart-ventas></app-chart-ventas>
+        <div class="w-full lg:w-2/3 h-full">
+            <div class="bg-secondary p-6 rounded-2xl shadow-md h-full">
+            <app-chart-ventas
+                [width]="'100%'"
+                [height]="'320px'">
+            </app-chart-ventas>
             </div>
         </div>
         </div>
@@ -39,8 +42,11 @@
 
         <!-- Gráfico de Compras: 2/3 -->
         <div class="w-full lg:w-2/3">
-            <div class="bg-[#292C2D] p-6 rounded-2xl shadow-md h-full">
-            <app-chart-compras></app-chart-compras>
+            <div class="bg-secondary p-6 rounded-2xl shadow-md h-full">
+            <app-chart-compras
+                [width]="'100%'"
+                [height]="'320px'">
+            </app-chart-compras>
 
             </div>
         </div>
