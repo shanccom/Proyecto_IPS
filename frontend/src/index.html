@@ -1,6 +1,15 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <script>
+    (function() {
+      const tema = localStorage.getItem('tema') || 'light';
+      const paleta = localStorage.getItem('paleta') || 'blue';
+      document.documentElement.classList.add(`theme-${tema}`);
+      document.documentElement.classList.add(`theme-colors-${paleta}`);
+    })();
+  </script>
+
   <meta charset="utf-8">
   <title>Frontend</title>
   <base href="/">

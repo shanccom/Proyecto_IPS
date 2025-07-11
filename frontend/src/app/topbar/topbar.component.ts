@@ -7,6 +7,9 @@
   import { CommonModule } from '@angular/common';
   import { TemasService } from '../services/temas.service';
   import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
+  import { isPlatformBrowser } from '@angular/common';
+  import { Inject, PLATFORM_ID } from '@angular/core';
+
 
   @Component({
     selector: 'app-topbar',
@@ -27,20 +30,27 @@
       private router: Router,
       private authService: AuthService,
       private pageTitleService: PageTitleService,  // Inyectar el servicio
-      private temasService: TemasService) {
+      private temasService: TemasService,
+      @Inject(PLATFORM_ID) private platformId: Object) {
       const { tema } = this.temasService.obtenerTema();
       this.temaActual = tema;
+      
     }
 
     ngOnInit(): void {
       // Al iniciar, obtener el valor del título desde el servicio
+      
       this.pageTitle = this.pageTitleService.getTitle();
       this.actuTitulo();
       if (this.authService.isAuthenticated()) {
         this.perfil();  // 
         // solo si el token ya está guardado
       }
-
+      
+      if (isPlatformBrowser(this.platformId)) {
+        const temaGuardado = localStorage.getItem('tema') as 'light' | 'dark';
+        this.temaActual = temaGuardado || 'light';
+      }
     }
     isActive(route: string): boolean {
       return this.router.url === route;
@@ -124,6 +134,8 @@
       const nuevoTema = this.temaActual === 'light' ? 'dark' : 'light';
       this.temasService.cambiarTema(nuevoTema);
       this.temaActual = nuevoTema;
+      // Guardar en localStorage
+      localStorage.setItem('tema', nuevoTema);
     }
 
   }
