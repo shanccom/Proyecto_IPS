@@ -1,51 +1,50 @@
-<form [formGroup]="form" (ngSubmit)="guardarCliente()" class="grid grid-cols-2 gap-4 p-6 rounded-lg text-white">
-  
+<form [formGroup]="form" (ngSubmit)="guardarCliente()" class="grid grid-cols-2 gap-4 p-6 rounded-lg">
   <!-- Nombre Completo -->
   <div class="flex flex-col">
-    <label class="mb-1 font-medium">Nombre Completo</label>
+    <label class="mb-1 font-medium text-foreground">Nombre Completo</label>
     <input formControlName="nombre_completo" placeholder="Nombre Completo"
-      class="bg-[#3D4142] text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+      class="bg-background border border-border text-foreground px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
   </div>
-
+  
   <!-- Tipo de Documento -->
   <div class="flex flex-col">
-    <label class="mb-1 font-medium">Tipo de Documento</label>
-    <select formControlName="tipo_documento" class="bg-[#3D4142] text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+    <label class="mb-1 font-medium text-foreground">Tipo de Documento</label>
+    <select formControlName="tipo_documento" class="bg-background border border-border text-foreground px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
       <option value="DNI">DNI</option>
       <option value="Pasaporte">Pasaporte</option>
     </select>
   </div>
+  
   <!-- Número de Documento -->
   <div class="flex flex-col">
-    <label class="mb-1 font-medium">Número de Documento</label>
+    <label class="mb-1 font-medium text-foreground">Número de Documento</label>
     <input formControlName="numero_documento" placeholder="Número de Documento"
-      class="bg-[#3D4142] text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+      class="bg-background border border-border text-foreground px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
   </div>
-
+  
   <!-- Número de Celular -->
   <div class="flex flex-col">
-    <label class="mb-1 font-medium">Número de Celular</label>
+    <label class="mb-1 font-medium text-foreground">Número de Celular</label>
     <input formControlName="numero_celular" placeholder="Número de Celular"
-      class="bg-[#3D4142] text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+      class="bg-background border border-border text-foreground px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
   </div>
-
+  
   <!-- Edad -->
   <div class="flex flex-col">
-    <label class="mb-1 font-medium">Edad</label>
+    <label class="mb-1 font-medium text-foreground">Edad</label>
     <input type="number" formControlName="edad" placeholder="Edad"
-      class="bg-[#3D4142] text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+      class="bg-background border border-border text-foreground px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
   </div>
-
+  
   <!-- Botones -->
   <div class="col-span-2 flex justify-center gap-6 pt-4">
     <button type="submit"
-      class="bg-[#A7DCFF] text-black px-6 py-2 rounded-lg font-semibold hover:bg-[#90c7eb] transition">
+      class="bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-200 border border-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
       Guardar
     </button>
     <button type="button" (click)="cerrarFormulario()"
-      class="bg-gray-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-gray-500 transition">
+      class="bg-secondary hover:bg-secondary/80 text-secondary-foreground px-6 py-2 rounded-lg font-semibold transition-colors duration-200 border border-border focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
       Cancelar
     </button>
   </div>
-
 </form>
