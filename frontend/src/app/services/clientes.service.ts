@@ -11,18 +11,6 @@ export class ClientesService {
 
   constructor(private http: HttpClient, private authService:AuthService) {}
 
-
-  // Metodo para obtener los clientes
-  getClientes(): Observable<any[]> {
-    const headers = this.authService.getAuthHeaders();
-    return this.http.get<any[]>(`${this.baseUrl}obtener_clientes`, {headers});
-  }
-  // Metodo para craer un cliente
-  agregarCliente(cliente: any): Observable<any> {
-    const headers = this.authService.getAuthHeaders();
-    return this.http.post<any>(`${this.baseUrl}crear_cliente/`, cliente, {headers});
-  }
-
   //metodo para crear receta con codigo de cliente
   agregarReceta(receta: any): Observable<any> {
     const headers = this.authService.getAuthHeaders();
@@ -38,5 +26,24 @@ export class ClientesService {
     const headers = this.authService.getAuthHeaders();
     return this.http.get<any>(`${this.baseUrl}recetas_cliente/?nombre_cliente=${codigoCliente}`, {headers});
   }
+  //Clientes
+  // Metodo para obtener los clientes
+  getClientes(): Observable<any[]> {
+    const headers = this.authService.getAuthHeaders();
+    return this.http.get<any[]>(`${this.baseUrl}obtener_clientes`, {headers});
+  }
+  agregarCliente(cliente: any): Observable<any> {
+    const headers = this.authService.getAuthHeaders();
+    return this.http.post<any>(`${this.baseUrl}crear_cliente/`, cliente, {headers});
+  }
+  deleteClient(cliCod: number): Observable<any>{
+    const headers = this.authService.getAuthHeaders();
+    return this.http.delete<any>(`${this.baseUrl}delete_cliente/${cliCod}/`, {headers});
+  }
+  updateClient(cliCod: number, cliente: any): Observable<any>{
+    const headers = this.authService.getAuthHeaders();
+    return this.http.put<any>(`${this.baseUrl}update_cliente/${cliCod}/`, cliente, {headers});
+  }
+
 
 }

@@ -11,7 +11,9 @@ from decimal import Decimal, InvalidOperation
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
+import logging
 
+logger = logging.getLogger(__name__)
 class ClienteListCreateView(generics.ListCreateAPIView):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
@@ -188,3 +190,55 @@ def crear_cliente(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+@permission_classes([IsAdminUser])
+def delete_cliente(request, cliCod):
+    try:
+        cliente = Cliente.objects.get(cliCod = cliCod)
+        cliente.delete()
+        return Response({
+            'message': 'Cliente eliminado exitosamente'
+        }, status=status.HTTP_204_NO_CONTENT)
+    except Cliente.DoesNotExist:
+        return Response({
+            'error': 'Empleado no encontrado'
+        }, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        logger.error(f"Error al eliminar cliente: {str(e)}")
+        return Response({
+            "error": "Error al eliminar cliente",
+            "details": str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['PUT'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+@permission_classes([IsAdminUser])
+def update_cliente(request, cliCod):
+    try:
+        cliente = Cliente.objects.get(cliCod=cliCod)
+        # Actualizar campos si vienen en el request
+        cliente.cliNombComp = request.data.get('nombre_completo', cliente.cliNombComp)
+        cliente.cliTipoDoc = request.data.get('tipo_documento', cliente.cliTipoDoc)
+        cliente.cliNumDoc = request.data.get('numero_documento', cliente.cliNumDoc)
+        cliente.cliNumCel = request.data.get('numero_celular', cliente.cliNumCel)
+        
+        cliente.save()
+        serializer = ClienteSerializer(cliente)
+        return Response({
+                'message': 'Cliente actualizado exitosamente',
+                'cliente': serializer.data
+            }, status=status.HTTP_200_OK)
+    except Cliente.DoesNotExist:
+        return Response({
+            'error': 'Empleado no encontrado'
+        }, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        logger.error(f"Error al eliminar cliente: {str(e)}")
+        return Response({
+            "error": "Error al eliminar cliente",
+            "details": str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

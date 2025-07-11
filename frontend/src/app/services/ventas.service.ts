@@ -243,8 +243,8 @@ export class VentasService {
       const headers = this.authService.getAuthHeaders();
       return this.http.get<any>(`${this.apiUrl}/ventas/empleado_info/`, {headers});
   }
-  updateColaborator(emplCod: string, data: any): Observable<any> {
+  updateColaborator(emplCod: string, cliente: any): Observable<any> {
       const headers = this.authService.getAuthHeaders();
-      return this.http.put<any>(`${this.apiUrl}/ventas/update_empleado/${emplCod}/`, data, { headers });
+      return this.http.put<any>(`${this.apiUrl}/ventas/update_empleado/${emplCod}/`, cliente, { headers });
   }
 }

@@ -25,6 +25,10 @@ export class ClientesComponent implements OnInit {
   recetaSeleccionadaParaEditar: any = null;
   nombreBuscado: string ='';
   clientesFiltrados: any[] = [];
+  mostrarFormularioEditarCliente: boolean = false;
+  mostrarModalEliminar: boolean = false;
+  clienteEditando: any = {};
+  clienteAEliminar: any = null;
   
   
   constructor( private clientesService: ClientesService, private authService: AuthService){};
@@ -109,5 +113,63 @@ export class ClientesComponent implements OnInit {
       cliente.nombre_completo.toLowerCase().includes(nombre)
     );
   }
+  // Método para abrir el formulario de edición
+abrirEditarCliente(cliente: any): void {
+  this.clienteEditando = { ...cliente }; // Copia el cliente para editar
+  this.mostrarFormularioEditarCliente = true;
+}
+
+// Método para cerrar el formulario de edición
+cerrarEditarCliente(): void {
+  this.mostrarFormularioEditarCliente = false;
+  this.clienteEditando = {};
+}
+
+// Método para actualizar el cliente
+actualizarCliente(): void {
+  this.clientesService.updateClient(this.clienteEditando.codigo, this.clienteEditando).subscribe({
+    next: (response) => {
+      console.log('Cliente actualizado:', response);
+      this.obtenerClientes(); // Recargar la lista de clientes
+      this.cerrarEditarCliente();
+      // Aquí puedes agregar una notificación de éxito
+    },
+    error: (error) => {
+      console.error('Error al actualizar cliente:', error);
+      // Aquí puedes agregar una notificación de error
+    }
+  });
+}
+
+// Método para confirmar eliminación
+eliminarCliente(codigo: number, nombre: string): void {
+  this.clienteAEliminar = { codigo, nombre };
+  this.mostrarModalEliminar = true;
+}
+
+// Método para cancelar eliminación
+cancelarEliminar(): void {
+  this.mostrarModalEliminar = false;
+  this.clienteAEliminar = null;
+}
+
+// Método para confirmar eliminación
+confirmarEliminar(): void {
+  if (this.clienteAEliminar) {
+    this.clientesService.deleteClient(this.clienteAEliminar.codigo).subscribe({
+      next: (response) => {
+        console.log('Cliente eliminado:', response);
+        this.obtenerClientes(); // Recargar la lista de clientes
+        this.mostrarModalEliminar = false;
+        this.clienteAEliminar = null;
+        // Notifiacion de exito
+      },
+      error: (error) => {
+        console.error('Error al eliminar cliente:', error);
+        // notificaicon de error
+      }
+    });
+  }
+}
   
 }
