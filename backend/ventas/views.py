@@ -34,6 +34,7 @@ from django.db.models.functions import TruncDay, TruncMonth, TruncYear
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Count
+from collections import Counter
 #
 
 #Hora ventas
@@ -1320,7 +1321,7 @@ def todos_productos_vendidos(request):
                 'total': subtotal,
                 'fecha': fecha
             })
-        return Response(resultado)
+    return Response(resultado)
             
 
 # Empleados
