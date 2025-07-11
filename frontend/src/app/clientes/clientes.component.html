@@ -1,116 +1,193 @@
-<div class="pl-[95px]">
-  <div class="flex justify-between items-center mb-6 mt-7">
-    <input type="text" 
-          [(ngModel)]="nombreBuscado"
-          (input)="filtrarClientes()"
-          placeholder="Buscar cliente por nombre"
-          class="bg-input text-foreground px-4 py-2 rounded-lg shadow w-80">
-    <button class="bg-primary text-background px-4 py-2 rounded-lg shadow hover:bg-primary-light transition" (click)="abrirFormulario()">
-      + Agregar Cliente
-    </button>
-  </div>
+<div class="justify-between items-center mb-6 mt-7 ml-[100px] space-y-14">
+  <div class="max-w-7xl mx-auto mb-20px">
+    <!-- Header -->
+    <div class="mb-8">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-3xl font-bold text-foreground mb-2">Gestión de Clientes</h1>
+          <p class="text-muted-foreground">Administra los clientes del sistema</p>
+        </div>
+        <div class="flex space-x-3">
+          <input type="text" 
+                [(ngModel)]="nombreBuscado"
+                (input)="filtrarClientes()"
+                placeholder="Buscar cliente por nombre"
+                class="px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent w-80">
+          <button (click)="abrirFormulario()" 
+                  class="bg-[rgb(var(--primary-light)/1)] hover:bg-[rgb(var(--primary-light)/0.9)] text-white px-6 py-3 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            Agregar Cliente
+          </button>
+        </div>
+      </div>
+    </div>
 
-  <!-- Modal (Formulario) -->
-  <div *ngIf="mostrarFormulario" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-background rounded-xl shadow-lg p-6 w-full max-w-2xl max-h-full overflow-auto">
-      <h3 class="text-xl font-bold text-foreground font-medium mb-4">Agregar Cliente</h3>
-      <hr class="border-t-2 border-border my-4">
-
-      <app-formulario-cliente 
-        *ngIf="mostrarFormulario" 
-        (cerrar)="cerrarFormulario()" 
-        (guardado)="obtenerClientes()">
-      </app-formulario-cliente>
+    <!-- Tabla de clientes -->
+    <div class="bg-muted rounded-lg shadow-xl overflow-hidden border border-border">
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-secondary">
+            <tr>
+              <th class="px-6 py-4 text-left text-xs font-medium text-secondary-foreground uppercase tracking-wider">Código</th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-secondary-foreground uppercase tracking-wider">Nombre</th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-secondary-foreground uppercase tracking-wider">Tipo Documento</th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-secondary-foreground uppercase tracking-wider">N° Documento</th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-secondary-foreground uppercase tracking-wider">N° Celular</th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-secondary-foreground uppercase tracking-wider">Edad</th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-secondary-foreground uppercase tracking-wider">Acciones</th>
+            </tr>
+          </thead>
+          <tbody class="bg-muted divide-y divide-border">
+            <tr *ngFor="let cliente of clientesFiltrados" 
+                class="hover:bg-accent/10 transition-colors duration-200">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
+                {{ cliente.codigo }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="h-10 w-10 rounded-full bg-primary flex items-center justify-center">
+                    <span class="text-sm font-medium text-white">
+                      {{ cliente.nombre_completo?.charAt(0)?.toUpperCase() }}
+                    </span>
+                  </div>
+                  <div class="ml-4">
+                    <div class="text-sm font-medium text-foreground">{{ cliente.nombre_completo }}</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
+                <span class="px-2 py-1 text-xs font-medium rounded-full border border-border"
+                      [class]="cliente.tipo_documento === 'DNI' ? 'bg-primary/20 text-primary border-primary/30' : 
+                               cliente.tipo_documento === 'Pasaporte' ? 'bg-accent/20 text-accent border-accent/30' : 
+                               'bg-muted text-muted-foreground border-border'">
+                  {{ cliente.tipo_documento }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
+                {{ cliente.numero_documento }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
+                {{ cliente.numero_celular }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
+                {{ cliente.edad }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <div class="flex space-x-2">
+                  <button (click)="abrirVerReceta(cliente.codigo, cliente.nombre_completo)"
+                          class="bg-primary hover:bg-primary-dark text-white px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 flex items-center border border-primary">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                    Ver Recetas
+                  </button>
+                  <button (click)="abrirAgregarReceta(cliente.codigo)"
+                          class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 flex items-center border border-green-600">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Agregar Receta
+                  </button>
+                  <button (click)="abrirEditarCliente(cliente)"
+                          class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 flex items-center border border-blue-600">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                    Editar
+                  </button>
+                  <button (click)="eliminarCliente(cliente.codigo, cliente.nombre_completo)"
+                          class="bg-destructive hover:bg-destructive/90 text-destructive-foreground px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 flex items-center border border-destructive">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                    Eliminar
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="clientesFiltrados.length === 0 && nombreBuscado.length > 0">
+              <td colspan="7" class="px-6 py-8 text-center text-muted-foreground">
+                <div class="flex flex-col items-center">
+                  <svg class="w-12 h-12 mb-4 text-muted-foreground/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                  </svg>
+                  <p class="text-lg font-medium mb-2 text-foreground">No se encontraron clientes</p>
+                  <p class="text-sm">No se encontraron clientes con el nombre "{{ nombreBuscado }}"</p>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="clientesFiltrados.length === 0 && nombreBuscado.length === 0">
+              <td colspan="7" class="px-6 py-8 text-center text-muted-foreground">
+                <div class="flex flex-col items-center">
+                  <svg class="w-12 h-12 mb-4 text-muted-foreground/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                  </svg>
+                  <p class="text-lg font-medium mb-2 text-foreground">No hay clientes registrados</p>
+                  <p class="text-sm">Los clientes aparecerán aquí cuando se registren</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
+</div>
 
-  <!-- Tabla de Clientes -->
-  <div class="overflow-x-auto">
-    <table class="w-full text-sm text-foreground rounded shadow-lg divide-y divide-border">
-      <thead class="bg-muted">
-        <tr class="text-foreground text-left font-normal">
-          <th class="px-4 py-2 text-left text-sm font-normal">Código</th>
-          <th class="px-4 py-2 text-left text-sm font-normal">Nombre</th>
-          <th class="px-4 py-2 text-left text-sm font-normal">Tipo Documento</th>
-          <th class="px-4 py-2 text-left text-sm font-normal">N° Documento</th>
-          <th class="px-4 py-2 text-left text-sm font-normal">N° Celular</th>
-          <th class="px-4 py-2 text-left text-sm font-normal">Edad</th>
-          <th class="px-4 py-2 text-center text-sm font-normal">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let cliente of clientesFiltrados" class="hover:bg-primary-translucent transition">
-          <td class="px-4 py-2 border-b border-border">{{ cliente.codigo }}</td>
-          <td class="px-4 py-2 border-b border-border">{{ cliente.nombre_completo }}</td>
-          <td class="px-4 py-2 border-b border-border">{{ cliente.tipo_documento }}</td>
-          <td class="px-4 py-2 border-b border-border">{{ cliente.numero_documento }}</td>
-          <td class="px-4 py-2 border-b border-border">{{ cliente.numero_celular }}</td>
-          <td class="px-4 py-2 border-b border-border">{{ cliente.edad }}</td>
-          <td class="px-4 py-2 border-b border-border text-center">
-            <button (click)="abrirVerReceta(cliente.codigo, cliente.nombre_completo)" class="bg-primary text-background text-xs px-3 py-1 rounded mr-2">
-              Ver Recetas
-            </button>
-            <button (click)="abrirAgregarReceta(cliente.codigo)" class="bg-primary text-background text-xs px-3 py-1 rounded mr-2">
-              Agregar Receta
-            </button>
-            <button (click)="abrirEditarCliente(cliente)" class="bg-blue-500 text-white text-xs px-3 py-1 rounded mr-2">
-              Editar
-            </button>
-            <button (click)="eliminarCliente(cliente.codigo, cliente.nombre_completo)" class="bg-red-500 text-white text-xs px-3 py-1 rounded">
-              Eliminar
-            </button>
-          </td>
-        </tr>
-      </tbody>
-      <tr *ngIf="clientesFiltrados.length === 0 && nombreBuscado.length > 0">
-        <td colspan="7" class="text-center text-muted-foreground py-4">
-          No se encontraron clientes con el nombre "{{ nombreBuscado }}".
-        </td>
-      </tr>
-    </table>
-  </div>
-
-  <!-- Modal Recetas -->
-  <div *ngIf="mostrarRecetasModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-background rounded-xl shadow-lg p-6 w-full max-w-6xl h-[80%] flex flex-col justify-between overflow-auto px-4 sm:px-8">
-      <div>
-        <h3 class="text-xl font-bold text-foreground font-medium mb-4">Recetas de {{ nombreClienteSeleccionado }}</h3>
-        <hr class="border-t-2 border-border my-4">
-        <app-recetas 
-          *ngIf="recetasCliente.length > 0" 
-          [recetas]="recetasCliente"
-          (editarReceta)="abrirEditarReceta($event)">
-        </app-recetas>
-      </div>
-      <button (click)="cerrarVerRecetas()" class="bg-destructive text-white text-xs px-3 py-1 rounded mt-4 ml-auto">
-        Cerrar
+<!-- Modal para agregar cliente -->
+<div *ngIf="mostrarFormulario" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+  <div class="bg-background border border-border rounded-lg p-6 w-full max-w-2xl mx-4 shadow-xl max-h-full overflow-auto">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-xl font-bold text-foreground">Agregar Cliente</h2>
+      <button (click)="cerrarFormulario()" class="text-muted-foreground hover:text-foreground transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
       </button>
     </div>
+    
+    <app-formulario-cliente 
+      *ngIf="mostrarFormulario" 
+      (cerrar)="cerrarFormulario()" 
+      (guardado)="obtenerClientes()">
+    </app-formulario-cliente>
   </div>
-  <!-- Modal de Edición de Cliente - Agregar después del modal de recetas -->
-<div *ngIf="mostrarFormularioEditarCliente" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-  <div class="bg-background rounded-xl shadow-lg p-6 w-full max-w-2xl max-h-full overflow-auto">
-    <h3 class="text-xl font-bold text-foreground font-medium mb-4">Editar Cliente</h3>
-    <hr class="border-t-2 border-border my-4">
+</div>
 
+<!-- Modal para editar cliente -->
+<div *ngIf="mostrarFormularioEditarCliente" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+  <div class="bg-background border border-border rounded-lg p-6 w-full max-w-2xl mx-4 shadow-xl max-h-full overflow-auto">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-xl font-bold text-foreground">Editar Cliente</h2>
+      <button (click)="cerrarEditarCliente()" class="text-muted-foreground hover:text-foreground transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    
     <form (ngSubmit)="actualizarCliente()" class="space-y-4">
       <div>
-        <label class="block text-sm font-medium text-foreground mb-1">Nombre Completo</label>
+        <label class="block text-sm font-medium text-foreground mb-2">Nombre Completo</label>
         <input 
           type="text" 
           [(ngModel)]="clienteEditando.nombre_completo" 
           name="nombre_completo"
-          class="w-full bg-input text-foreground px-4 py-2 rounded-lg shadow border border-border"
-          required>
+          required
+          class="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          placeholder="Ingrese el nombre completo">
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-foreground mb-1">Tipo de Documento</label>
+        <label class="block text-sm font-medium text-foreground mb-2">Tipo de Documento</label>
         <select 
           [(ngModel)]="clienteEditando.tipo_documento" 
           name="tipo_documento"
-          class="w-full bg-input text-foreground px-4 py-2 rounded-lg shadow border border-border"
-          required>
+          required
+          class="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
           <option value="">Seleccione tipo</option>
           <option value="DNI">DNI</option>
           <option value="Pasaporte">Pasaporte</option>
@@ -119,77 +196,128 @@
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-foreground mb-1">Número de Documento</label>
+        <label class="block text-sm font-medium text-foreground mb-2">Número de Documento</label>
         <input 
           type="text" 
           [(ngModel)]="clienteEditando.numero_documento" 
           name="numero_documento"
-          class="w-full bg-input text-foreground px-4 py-2 rounded-lg shadow border border-border"
-          required>
+          required
+          class="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          placeholder="Ingrese el número de documento">
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-foreground mb-1">Número de Celular</label>
+        <label class="block text-sm font-medium text-foreground mb-2">Número de Celular</label>
         <input 
           type="text" 
           [(ngModel)]="clienteEditando.numero_celular" 
           name="numero_celular"
-          class="w-full bg-input text-foreground px-4 py-2 rounded-lg shadow border border-border">
+          class="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          placeholder="Ingrese el número de celular">
       </div>
 
-      <div class="flex justify-end space-x-2 mt-6">
-        <button 
-          type="button" 
-          (click)="cerrarEditarCliente()" 
-          class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
-          Cancelar
-        </button>
-        <button 
-          type="submit" 
-          class="bg-primary text-background px-4 py-2 rounded-lg hover:bg-primary-light transition">
+      <div class="flex space-x-3 pt-4">
+        <button
+          type="submit"
+          class="flex-1 bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-md font-medium transition-colors duration-200 border border-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
           Guardar Cambios
+        </button>
+        <button
+          type="button"
+          (click)="cerrarEditarCliente()"
+          class="flex-1 bg-secondary hover:bg-secondary/80 text-secondary-foreground py-2 px-4 rounded-md font-medium transition-colors duration-200 border border-border focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+          Cancelar
         </button>
       </div>
     </form>
   </div>
 </div>
-<!-- Modal de Confirmación para Eliminar -->
-<div *ngIf="mostrarModalEliminar" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-  <div class="bg-background rounded-xl shadow-lg p-6 w-full max-w-md">
-    <h3 class="text-xl font-bold text-foreground font-medium mb-4">Confirmar Eliminación</h3>
-    <hr class="border-t-2 border-border my-4">
-    
-    <p class="text-foreground mb-6">
-      ¿Está seguro que desea eliminar al cliente <strong>{{ clienteAEliminar?.nombre }}</strong>?
-    </p>
-    
-    <div class="flex justify-end space-x-2">
-      <button 
-        (click)="cancelarEliminar()" 
-        class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
-        Cancelar
+
+<!-- Modal de confirmación para eliminar -->
+<div *ngIf="mostrarModalEliminar" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+  <div class="bg-background border border-border rounded-lg p-6 w-full max-w-md mx-4 shadow-xl">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-bold text-foreground">Confirmar Eliminación</h2>
+      <button (click)="cancelarEliminar()" class="text-muted-foreground hover:text-foreground transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
       </button>
-      <button 
-        (click)="confirmarEliminar()" 
-        class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
-        Eliminar
-      </button>
+    </div>
+    
+    <div class="space-y-4">
+      <div class="bg-destructive/10 border border-destructive/30 rounded-lg p-4">
+        <div class="flex items-center">
+          <svg class="w-6 h-6 text-destructive mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+          </svg>
+          <div>
+            <h3 class="font-medium text-destructive">¿Está seguro que desea eliminar este cliente?</h3>
+            <p class="text-sm text-muted-foreground mt-1">
+              Se eliminará al cliente <strong>{{ clienteAEliminar?.nombre }}</strong> y esta acción no se puede deshacer.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex space-x-3 pt-4">
+        <button
+          (click)="confirmarEliminar()"
+          class="flex-1 bg-destructive hover:bg-destructive/90 text-destructive-foreground py-2 px-4 rounded-md font-medium transition-colors duration-200 border border-destructive focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+          Eliminar Cliente
+        </button>
+        <button
+          (click)="cancelarEliminar()"
+          class="flex-1 bg-secondary hover:bg-secondary/80 text-secondary-foreground py-2 px-4 rounded-md font-medium transition-colors duration-200 border border-border focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+          Cancelar
+        </button>
+      </div>
     </div>
   </div>
 </div>
-  <!-- Modal (Formulario)Agregar Receta -->
-  <div *ngIf="mostrarFormularioReceta" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-background rounded-xl shadow-lg p-6 w-full max-w-2xl max-h-full overflow-auto">
-      <h3 class="text-xl font-bold text-foreground font-medium mb-4">Agregar Receta</h3>
-      <hr class="border-t-2 border-border my-4">
 
-      <app-formulario-receta 
-        *ngIf="mostrarFormularioReceta"
-        [cliCod]="cliSeleccionado"
-        [recetaEditar]="recetaSeleccionadaParaEditar"
-        (cerrar)="cerrarAgregarReceta()" 
-        (recetaGuardada)="obtenerRecetas(cliSeleccionado)">
-      </app-formulario-receta>
+<!-- Modal de recetas -->
+<div *ngIf="mostrarRecetasModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+  <div class="bg-background border border-border rounded-lg p-6 w-full max-w-6xl mx-4 shadow-xl h-[80%] flex flex-col">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-xl font-bold text-foreground">Recetas de {{ nombreClienteSeleccionado }}</h2>
+      <button (click)="cerrarVerRecetas()" class="text-muted-foreground hover:text-foreground transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
     </div>
+    
+    <div class="flex-1 overflow-auto">
+      <app-recetas 
+        *ngIf="recetasCliente.length > 0" 
+        [recetas]="recetasCliente"
+        (editarReceta)="abrirEditarReceta($event)">
+      </app-recetas>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para agregar/editar receta -->
+<div *ngIf="mostrarFormularioReceta" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+  <div class="bg-background border border-border rounded-lg p-6 w-full max-w-2xl mx-4 shadow-xl max-h-full overflow-auto">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-xl font-bold text-foreground">
+        {{ recetaSeleccionadaParaEditar ? 'Editar Receta' : 'Agregar Receta' }}
+      </h2>
+      <button (click)="cerrarAgregarReceta()" class="text-muted-foreground hover:text-foreground transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    
+    <app-formulario-receta 
+      *ngIf="mostrarFormularioReceta"
+      [cliCod]="cliSeleccionado"
+      [recetaEditar]="recetaSeleccionadaParaEditar"
+      (cerrar)="cerrarAgregarReceta()" 
+      (recetaGuardada)="obtenerRecetas(cliSeleccionado)">
+    </app-formulario-receta>
   </div>
 </div>
