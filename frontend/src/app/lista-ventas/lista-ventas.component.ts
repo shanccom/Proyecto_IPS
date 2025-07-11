@@ -60,6 +60,8 @@ private actualizarSaldosPendientes(): void {
         if (estado.esta_pagada_completa) {
           // Si está pagada completa, mantener 'enviada' si ya está enviada, sino 'pagada'
           boleta.estado = boleta.estado === 'enviada' ? 'enviada' : 'pagada';
+         // this.notification.success(`Boleta ${boleta.serie}-${boleta.correlativo} actualizada`);
+
         } else if (estado.monto_adelantos > 0) {
           // Si tiene adelantos, mantener 'enviada' si ya está enviada, sino 'parcial'
           boleta.estado = boleta.estado === 'enviada' ? 'enviada' : 'parcial';
@@ -73,7 +75,6 @@ private actualizarSaldosPendientes(): void {
           estado: boleta.estado,
           pagada_completa: boleta.esta_pagada_completa
         });
-          this.notification.success(`Boleta ${boleta.serie}-${boleta.correlativo} actualizada`);
 
       },
       error: (error) => {
@@ -1110,7 +1111,7 @@ obtenerSaldoPendiente(boleta: any): number {
 
       // Notificación de advertencia si tiene saldo pendiente
       this.notification.warning(`Esta boleta tiene un saldo pendiente de S/. ${saldoPendiente.toFixed(2)}. ¿Está seguro de enviarla a SUNAT?`, 'Advertencia');
-      
+      /*
       // Usamos la notificación de confirmación en lugar de confirm() tradicional
       this.notification.confirm({
         title: 'Confirmar Envío a SUNAT',
@@ -1123,7 +1124,7 @@ obtenerSaldoPendiente(boleta: any): number {
         onCancel: () => {
           console.log('El usuario canceló el envío a SUNAT');
         }
-      });
+      });*/
       return; // Salir del método si se ha mostrado la confirmación
     }
 

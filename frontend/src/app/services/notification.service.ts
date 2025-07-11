@@ -8,10 +8,18 @@ export class NotificationService {
   // Opciones base para todos los toasts
   private baseOpts = {
     toast: true,
-    position: 'bottom-end' as SweetAlertPosition,
+    position: 'bottom-end' as SweetAlertPosition, // Asegurar posición adecuada
     showConfirmButton: false,
-    timer: 3000,
+    timer: 5000, // Aumentamos el tiempo de duración a 5 segundos
     timerProgressBar: true,
+    // Asegurando que las notificaciones no se sobrepongan y se apilen
+    didOpen: (toast: any) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer);
+      toast.addEventListener('mouseleave', Swal.resumeTimer);
+    },
+    // Configuración adicional para evitar que se sobrepongan
+    stack: true,  // Apilar notificaciones
+    toastClass: 'swal2-toast', // Mantener estilo de apilamiento
   };
 
   private fire(icon: SweetAlertIcon, title: string, text?: string) {
