@@ -147,9 +147,9 @@
       </button>
     </div>
     
-    <app-formulario-cliente
-      *ngIf="mostrarFormulario"
-      (cerrar)="cerrarFormulario()"
+    <app-formulario-cliente 
+      *ngIf="mostrarFormulario" 
+      (cerrar)="cerrarFormulario()" 
       (guardado)="obtenerClientes()">
     </app-formulario-cliente>
   </div>
@@ -309,16 +309,6 @@
         </svg>
       </button>
     </div>
-    
-    <app-formulario-receta
-      *ngIf="mostrarFormularioReceta"
-      [cliCod]="cliSeleccionado"
-      [recetaEditar]="recetaSeleccionadaParaEditar"
-      (cerrar)="cerrarAgregarReceta()"
-      (recetaGuardada)="obtenerRecetas(cliSeleccionado)">
-    </app-formulario-receta>
-  </div>
-</div>
     
     <app-formulario-receta 
       *ngIf="mostrarFormularioReceta"
