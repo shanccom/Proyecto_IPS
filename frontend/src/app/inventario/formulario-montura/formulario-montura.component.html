@@ -1,10 +1,10 @@
-<form [formGroup]="form" (ngSubmit)="guardar()" class="grid grid-cols-2 gap-4 p-6 rounded-lg text-white">
+<form [formGroup]="form" (ngSubmit)="guardar()" class="grid grid-cols-2 gap-4 p-6 rounded-lg">
 
   <!-- Precio Venta -->
   <div class="flex flex-col">
-    <label class="mb-1 font-medium">Precio Venta</label>
+    <label class="mb-1 font-medium text-foreground">Precio Venta</label>
     <input type="number" formControlName="proPrecioVenta" placeholder="Precio Venta"
-      class="bg-[#3D4142] text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+      class="bg-background border border-border text-foreground px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
     <small *ngIf="form.get('proPrecioVenta')?.touched && form.get('proPrecioVenta')?.hasError('required')" class="text-red-400 text-xs mt-1">
       El precio de venta es obligatorio.
     </small>
@@ -15,9 +15,9 @@
 
   <!-- Costo -->
   <div class="flex flex-col">
-    <label class="mb-1 font-medium">Costo</label>
+    <label class="mb-1 font-medium text-foreground">Costo</label>
     <input type="number" formControlName="proCosto" placeholder="Costo"
-      class="bg-[#3D4142] text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+      class="bg-background border border-border text-foreground px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
     <small *ngIf="form.get('proCosto')?.touched && form.get('proCosto')?.hasError('required')" class="text-red-400 text-xs mt-1">
       El costo es obligatorio.
     </small>
@@ -28,9 +28,9 @@
 
   <!-- Marca -->
   <div class="flex flex-col">
-    <label class="mb-1 font-medium">Marca</label>
+    <label class="mb-1 font-medium text-foreground">Marca</label>
     <select formControlName="monMarca" (change)="onSelectCambio('marca', $event)"
-      class="bg-[#3D4142] text-white px-3 py-2 rounded">
+      class="bg-background border border-border text-foreground px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
       <option value="" disabled selected>Seleccione una marca</option>
       <option *ngFor="let marca of opcionesMarcas" [value]="marca">{{ marca }}</option>
       <option value="otro">Otro</option>
@@ -41,9 +41,9 @@
 
   <!-- Público -->
   <div class="flex flex-col">
-    <label class="mb-1 font-medium">Público</label>
+    <label class="mb-1 font-medium text-foreground">Público</label>
     <select formControlName="monPubl" (change)="onSelectCambio('publ', $event)"
-      class="bg-[#3D4142] text-white px-3 py-2 rounded">
+      class="bg-background border border-border text-foreground px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
       <option value="" disabled selected>Seleccione un público</option>
       <option *ngFor="let publ of opcionesPublicos" [value]="publ">{{ publ }}</option>
       <option value="otro">Otro</option>
@@ -54,9 +54,9 @@
 
   <!-- Material -->
   <div class="flex flex-col">
-    <label class="mb-1 font-medium">Material</label>
+    <label class="mb-1 font-medium text-foreground">Material</label>
     <select formControlName="monMate" (change)="onSelectCambio('mate', $event)"
-      class="bg-[#3D4142] text-white px-3 py-2 rounded">
+      class="bg-background border border-border text-foreground px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
       <option value="" disabled selected>Seleccione un material</option>
       <option *ngFor="let mate of opcionesMateriales" [value]="mate">{{ mate }}</option>
       <option value="otro">Otro</option>
@@ -67,9 +67,9 @@
 
   <!-- Color -->
   <div class="flex flex-col">
-    <label class="mb-1 font-medium">Color</label>
+    <label class="mb-1 font-medium text-foreground">Color</label>
     <select formControlName="monColor" (change)="onSelectCambio('color', $event)"
-      class="bg-[#3D4142] text-white px-3 py-2 rounded">
+      class="bg-background border border-border text-foreground px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
       <option value="" disabled selected>Seleccione un color</option>
       <option *ngFor="let color of opcionesColores" [value]="color">{{ color }}</option>
       <option value="otro">Otro</option>
@@ -80,7 +80,7 @@
 
   <!-- Vendida -->
   <div class="flex flex-col">
-    <label class="mb-1 font-medium">Vendida</label>
+    <label class="mb-1 font-medium text-foreground">Vendida</label>
     <div class="flex items-center space-x-4">
       <label><input type="radio" formControlName="monVendida" name="monVendida" [value]="true" /> Sí</label>
       <label><input type="radio" formControlName="monVendida" name="monVendida" [value]="false" /> No</label>
